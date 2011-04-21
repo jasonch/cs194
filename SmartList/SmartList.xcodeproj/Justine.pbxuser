@@ -1,0 +1,185 @@
+// !$*UTF8*$!
+{
+	1D3623240D0F684500981E51 /* SmartListAppDelegate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {968, 478}}";
+			sepNavSelRange = "{272, 0}";
+			sepNavVisRange = "{0, 946}";
+		};
+	};
+	1D3623250D0F684500981E51 /* SmartListAppDelegate.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1965, 2990}}";
+			sepNavSelRange = "{954, 0}";
+			sepNavVisRange = "{239, 1605}";
+		};
+	};
+	1D6058900D05DD3D006BFB54 /* SmartList */ = {
+		activeExec = 0;
+		executables = (
+			D1E267F1135CFC0500B6A40B /* SmartList */,
+		);
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = D1E267F1135CFC0500B6A40B /* SmartList */;
+		activeTarget = 1D6058900D05DD3D006BFB54 /* SmartList */;
+		addToTargets = (
+			1D6058900D05DD3D006BFB54 /* SmartList */,
+		);
+		codeSenseManager = D1E26806135CFC2500B6A40B /* Code sense */;
+		executables = (
+			D1E267F1135CFC0500B6A40B /* SmartList */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					790,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 325040475;
+			PBXWorkspaceStateSaveDate = 325040475;
+		};
+		perUserProjectItems = {
+			D1E26844135D09F700B6A40B = D1E26844135D09F700B6A40B /* PBXTextBookmark */;
+			D1E2684D135D0D2900B6A40B = D1E2684D135D0D2900B6A40B /* PBXTextBookmark */;
+			D1E268FB135FB99B00B6A40B /* PBXTextBookmark */ = D1E268FB135FB99B00B6A40B /* PBXTextBookmark */;
+			D1E268FC135FB99B00B6A40B /* PBXTextBookmark */ = D1E268FC135FB99B00B6A40B /* PBXTextBookmark */;
+			D1E268FD135FB99B00B6A40B /* PBXTextBookmark */ = D1E268FD135FB99B00B6A40B /* PBXTextBookmark */;
+			D1E26906135FB9B300B6A40B /* PBXTextBookmark */ = D1E26906135FB9B300B6A40B /* PBXTextBookmark */;
+			D1E26915135FBAF000B6A40B /* PBXTextBookmark */ = D1E26915135FBAF000B6A40B /* PBXTextBookmark */;
+		};
+		sourceControlManager = D1E26805135CFC2500B6A40B /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	D1E267F1135CFC0500B6A40B /* SmartList */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = SmartList;
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	D1E26805135CFC2500B6A40B /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	D1E26806135CFC2500B6A40B /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	D1E26844135D09F700B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623240D0F684500981E51 /* SmartListAppDelegate.h */;
+		name = "SmartListAppDelegate.h: 12";
+		rLen = 0;
+		rLoc = 272;
+		rType = 0;
+		vrLen = 946;
+		vrLoc = 0;
+	};
+	D1E2684D135D0D2900B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* SmartListAppDelegate.m */;
+		name = "SmartListAppDelegate.m: 31";
+		rLen = 0;
+		rLoc = 954;
+		rType = 0;
+		vrLen = 1608;
+		vrLoc = 239;
+	};
+	D1E268FB135FB99B00B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623240D0F684500981E51 /* SmartListAppDelegate.h */;
+		name = "SmartListAppDelegate.h: 12";
+		rLen = 0;
+		rLoc = 272;
+		rType = 0;
+		vrLen = 946;
+		vrLoc = 0;
+	};
+	D1E268FC135FB99B00B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* SmartListAppDelegate.m */;
+		name = "SmartListAppDelegate.m: 31";
+		rLen = 0;
+		rLoc = 954;
+		rType = 0;
+		vrLen = 1605;
+		vrLoc = 239;
+	};
+	D1E268FD135FB99B00B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* SmartListAppDelegate.m */;
+		name = "SmartListAppDelegate.m: 31";
+		rLen = 0;
+		rLoc = 954;
+		rType = 0;
+		vrLen = 1605;
+		vrLoc = 239;
+	};
+	D1E26906135FB9B300B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* SmartListAppDelegate.m */;
+		name = "SmartListAppDelegate.m: 31";
+		rLen = 0;
+		rLoc = 954;
+		rType = 0;
+		vrLen = 1605;
+		vrLoc = 239;
+	};
+	D1E26915135FBAF000B6A40B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* SmartListAppDelegate.m */;
+		name = "SmartListAppDelegate.m: 31";
+		rLen = 0;
+		rLoc = 954;
+		rType = 0;
+		vrLen = 1605;
+		vrLoc = 239;
+	};
+}
