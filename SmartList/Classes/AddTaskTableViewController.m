@@ -14,7 +14,9 @@
 
 -(void) setup
 {
-	self.title = @"New Task";		
+	self.title = @"New Task";
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
+																																						   
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
@@ -26,8 +28,10 @@
 	return self;
 }
 
-#pragma mark -
-#pragma mark View lifecycle
+-(void) saveTask
+{
+	
+}
 
 /*
 - (void)viewDidLoad {
@@ -78,7 +82,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 4;
+    return 5;
 }
 
 
@@ -102,10 +106,13 @@
 			[cell.textLabel setText: @"Duration:"];
 			break;
 		case 3:
-			slider = [[UISlider alloc] init];
+			slider = [[[UISlider alloc] initWithFrame:CGRectMake(114,12,180,23)] autorelease];
 			[cell.textLabel setText: @"Chunks:"];
 			[cell addSubview:slider];
 
+			break;
+		case 4:
+			[cell.textLabel setText: @"Priority:"];
 			break;
 		default:
 			break;
