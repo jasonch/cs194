@@ -2,7 +2,7 @@
 //  SmartListAppDelegate.m
 //  SmartList
 //
-//  Created by Justine DiPrete on 4/18/11.
+//  Created by Justine DiPrete on 4/24/11.
 //  Copyright 2011 Stanford. All rights reserved.
 //
 
@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-    // Override point for customization after application launch.
+	// Override point for customization after application launch.
     
 	WhatNowViewController *wnvc = [[WhatNowViewController alloc] initInManagedObjectContext: self.managedObjectContext];
 	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext: self.managedObjectContext];

@@ -2,7 +2,7 @@
 //  SmartListAppDelegate.h
 //  SmartList
 //
-//  Created by Justine DiPrete on 4/18/11.
+//  Created by Justine DiPrete on 4/24/11.
 //  Copyright 2011 Stanford. All rights reserved.
 //
 
