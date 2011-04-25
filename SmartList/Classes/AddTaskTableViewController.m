@@ -100,22 +100,30 @@
     }
     switch (indexPath.row) {
 		case 0:
-			[cell.textLabel setText: @"Task:"];
+			nameField = [[[UITextField alloc] initWithFrame:CGRectMake(80,8,214,31)] autorelease];
+			nameField.borderStyle = UITextBorderStyleRoundedRect;
+			[cell.textLabel setText: @"Task"];
+			[cell addSubview:nameField];
 			break;
 		case 1:
-			[cell.textLabel setText: @"Due Date:"];
+			[cell.textLabel setText: @"Due Date"];
+			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(80,8,214,31)] autorelease]; 
+			[dueDateLabel setText:@"Due date!"];
+			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
-			[cell.textLabel setText: @"Duration:"];
+			[cell.textLabel setText: @"Duration"];
+			[durationLabel setText: @"duration!"];
+			[cell addSubview:durationLabel];
 			break;
 		case 3:
-			slider = [[[UISlider alloc] initWithFrame:CGRectMake(114,12,180,23)] autorelease];
-			[cell.textLabel setText: @"Chunks:"];
+			slider = [[[UISlider alloc] initWithFrame:CGRectMake(100,12,194,23)] autorelease];
+			[cell.textLabel setText: @"Chunks"];
 			[cell addSubview:slider];
 
 			break;
 		case 4:
-			[cell.textLabel setText: @"Priority:"];
+			[cell.textLabel setText: @"Priority"];
 			break;
 		default:
 			break;

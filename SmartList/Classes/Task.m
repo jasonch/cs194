@@ -26,8 +26,7 @@
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext
 {
 	Task *task = nil;
-	
-	
+		
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:aContext];
