@@ -38,6 +38,19 @@
 	if (!error && !task) {
 		task = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:aContext];
 		task.name = aName;
+		
+		//defaults
+		task.status = 0;
+		task.progress = 0;
+		task.creation_time = [[[NSDate alloc] init] autorelease];
+		
+		//get from table
+		task.due_date = [[[NSDate alloc] init] autorelease];
+		task.duration = (NSNumber*) 30;
+		task.sittings = (NSNumber*) 1;
+		task.priority = (NSNumber*) 1;
+		task.user = nil;
+		
 	}
 	return task;
 }
