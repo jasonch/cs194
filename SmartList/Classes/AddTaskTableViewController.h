@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DueDateViewController.h"
 #import "DurationViewController.h"
+#import "Task.h"
 
 
 @interface AddTaskTableViewController : UITableViewController {

@@ -28,9 +28,12 @@
 	return self;
 }
 
+#pragma mark currently working on
 -(void) saveTask
 {
-	
+	Task *newTask = [Task taskWithName:@"New task" inManagedObjectContext:context];
+	NSLog(@"New task created: %@", newTask.name);
+	[self.navigationController popViewControllerAnimated: NO];
 }
 
 /*
