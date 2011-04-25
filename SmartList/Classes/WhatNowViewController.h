@@ -18,6 +18,9 @@
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
 -(IBAction)startPressed:(UIButton*)sender;
--(IBAction)donePressed:(UIButton*)sender;
+-(IBAction)blacklistPressed:(UIButton*)sender; 
+-(BOOL)canBecomeFirstResponder;
+-(void)viewDidAppear:(BOOL)animated;
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event;
 
 @end

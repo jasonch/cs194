@@ -29,14 +29,36 @@
 
 -(IBAction)startPressed:(UIButton*)sender
 {
-	
+	[freeTimeLabel setText:@"You are currently working on..."];
+	[sender setTitle: @"Finished" forState: UIControlStateNormal];
+//	[sender setTitle: @"Finished" forState: UIControlStateApplication];
+//	[sender setTitle: @"Finished" forState: UIControlStateHighlighted];
+//	[sender setTitle: @"Finished" forState: UIControlStateReserved];
+//	[sender setTitle: @"Finished" forState: UIControlStateSelected];
+//	[sender setTitle: @"Finished" forState: UIControlStateDisabled];
 }
 
 
--(IBAction)donePressed:(UIButton*)sender
+-(IBAction)blacklistPressed:(UIButton*)sender
 {
 	
 }
+
+#pragma mark Shake Functionality
+-(BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [self becomeFirstResponder];
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+	if (event.type == UIEventSubtypeMotionShake) {
+		[taskLabel setText:@"New task!"];
+	}
+}
+
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
