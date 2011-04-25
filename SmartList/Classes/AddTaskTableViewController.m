@@ -103,13 +103,16 @@
 			[cell addSubview:nameField];
 			break;
 		case 1:
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			[cell.textLabel setText: @"Due Date"];
-			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(80,8,214,31)] autorelease]; 
+			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
 			[dueDateLabel setText:@"Due date!"];
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			[cell.textLabel setText: @"Duration"];
+			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
 			[durationLabel setText: @"duration!"];
 			[cell addSubview:durationLabel];
 			break;
@@ -174,6 +177,19 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	if (indexPath.row == 1)
+	{
+		DueDateViewController *ddvc = [[DueDateViewController alloc] init];
+		[self.navigationController pushViewController:ddvc animated:YES];
+		[ddvc release];
+	}
+	else if (indexPath.row == 2)
+	{
+		DurationViewController *dvc = [[DurationViewController alloc] init];
+		[self.navigationController pushViewController:dvc animated:YES];
+		[dvc release];
+	}
     // Navigation logic may go here. Create and push another view controller.
 	/*
 	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];

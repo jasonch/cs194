@@ -22,7 +22,7 @@
 	// Override point for customization after application launch.
     
 	WhatNowViewController *wnvc = [[WhatNowViewController alloc] initInManagedObjectContext: self.managedObjectContext];
-	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext: self.managedObjectContext];
+	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext: self.managedObjectContext withUser:nil];
 	
 	UINavigationController *nav1 = [[UINavigationController alloc] init];
 	UINavigationController *nav2 = [[UINavigationController alloc] init];

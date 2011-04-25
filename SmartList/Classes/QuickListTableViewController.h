@@ -8,14 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "AddTaskTableViewController.h"
+#import "CoreDataTableViewController.h"
+#import "User.h"
+#import "Task.h"
 
 
-
-@interface QuickListTableViewController : UITableViewController {
+@interface QuickListTableViewController : CoreDataTableViewController {
 	NSManagedObjectContext *context;
+	User *user;
 }
 
 
--initInManagedObjectContext:(NSManagedObjectContext*)aContext;
+-initInManagedObjectContext:(NSManagedObjectContext*)aContext withUser:(User*)aUser;
 
 @end
