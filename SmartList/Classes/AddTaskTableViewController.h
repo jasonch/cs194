@@ -12,6 +12,9 @@
 @interface AddTaskTableViewController : UITableViewController {
 	NSManagedObjectContext *context;
 	UISlider *slider;
+	UITextField *nameField;
+	UILabel *dueDateLabel;
+	UILabel *durationLabel;
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
