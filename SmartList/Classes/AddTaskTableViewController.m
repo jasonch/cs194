@@ -31,9 +31,21 @@
 #pragma mark currently working on
 -(void) saveTask
 {
-	Task *newTask = [Task taskWithName:@"New task" inManagedObjectContext:context];
-	NSLog(@"New task created: %@", newTask.name);
-	[self.navigationController popViewControllerAnimated: NO];
+	if (nameField.text == nil) {
+		
+		// blank task name exception
+		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
+														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+		
+		[noName show];
+		[noName release];
+	} 
+	else {
+		
+		Task *newTask = [Task taskWithName:nameField.text inManagedObjectContext:context];
+		NSLog(@"New task created: %@", newTask.name);
+		[self.navigationController popViewControllerAnimated: YES];
+	}
 }
 
 /*
@@ -102,6 +114,7 @@
 		case 0:
 			nameField = [[[UITextField alloc] initWithFrame:CGRectMake(80,8,214,31)] autorelease];
 			nameField.borderStyle = UITextBorderStyleRoundedRect;
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell.textLabel setText: @"Task"];
 			[cell addSubview:nameField];
 			break;
@@ -122,11 +135,13 @@
 		case 3:
 			slider = [[[UISlider alloc] initWithFrame:CGRectMake(100,12,194,23)] autorelease];
 			[cell.textLabel setText: @"Chunks"];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
 
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			break;
 		default:
 			break;
