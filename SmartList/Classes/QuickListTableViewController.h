@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AddTaskTableViewController.h"
 #import "CoreDataTableViewController.h"
+#import "ViewTaskViewController.h"
 #import "User.h"
 #import "Task.h"
 

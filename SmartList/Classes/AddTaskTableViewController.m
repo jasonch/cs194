@@ -32,7 +32,6 @@
 -(void) saveTask
 {
 	if (nameField.text == nil) {
-		
 		// blank task name exception
 		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
 														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
@@ -48,6 +47,11 @@
 	}
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	[textField resignFirstResponder];
+	return NO;
+}
+
 /*
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -55,7 +59,6 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-*/
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -114,6 +117,8 @@
 		case 0:
 			nameField = [[[UITextField alloc] initWithFrame:CGRectMake(80,8,214,31)] autorelease];
 			nameField.borderStyle = UITextBorderStyleRoundedRect;
+			nameField.returnKeyType = UIReturnKeyDone;
+			nameField.delegate = self;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell.textLabel setText: @"Task"];
 			[cell addSubview:nameField];
@@ -141,6 +146,9 @@
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
+			progress = [[[UIProgressView alloc] initWithFrame:CGRectMake(100,12,194,23)] autorelease];
+			progress.progress = .8;
+			[cell addSubview:progress];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			break;
 		default:

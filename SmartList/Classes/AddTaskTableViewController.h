@@ -12,12 +12,13 @@
 #import "Task.h"
 
 
-@interface AddTaskTableViewController : UITableViewController {
+@interface AddTaskTableViewController : UITableViewController <UITextFieldDelegate> {
 	NSManagedObjectContext *context;
 	UISlider *slider;
 	UITextField *nameField;
 	UILabel *dueDateLabel;
 	UILabel *durationLabel;
+	UIProgressView *progress;
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;

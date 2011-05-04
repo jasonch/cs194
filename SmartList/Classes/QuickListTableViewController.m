@@ -85,7 +85,12 @@
 
 -(void)managedObjectSelected:(NSManagedObject *)managedObject
 {
-
+	Task *task = (Task*)managedObject;
+	NSLog(@"task name: %@", task.name);
+	
+	ViewTaskViewController *vtvc = [[ViewTaskViewController alloc] initInManagedObjectContext:context withTask:task];
+	[self.navigationController pushViewController:vtvc animated:YES];
+	[vtvc release];
 }
 
 
