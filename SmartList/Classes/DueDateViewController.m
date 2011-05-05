@@ -11,6 +11,15 @@
 
 @implementation DueDateViewController
 
+@synthesize delegate;
+
+-initWithDate:(NSDate*)aDate
+{
+	dueDatePicker = [[UIDatePicker alloc] init];
+	[dueDatePicker setDate: aDate];
+	return self;
+}
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -21,12 +30,22 @@
 }
 */
 
-/*
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	self.title = @"Due Date";
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDate)];
+
+	
 }
-*/
+
+-(void)saveDate
+{
+	[self.delegate setDate:[dueDatePicker date]];
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -52,6 +71,7 @@
 
 - (void)dealloc {
     [super dealloc];
+	[dueDatePicker release];
 }
 
 

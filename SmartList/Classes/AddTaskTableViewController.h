@@ -12,14 +12,19 @@
 #import "Task.h"
 
 
-@interface AddTaskTableViewController : UITableViewController {
+@interface AddTaskTableViewController : UITableViewController <DueDateViewControllerDelegate> {
 	NSManagedObjectContext *context;
 	UISlider *slider;
 	UITextField *nameField;
 	UILabel *dueDateLabel;
 	UILabel *durationLabel;
+	NSDate *dueDate;
+	NSNumber *duration;
+	NSDateFormatter *formatter;
+	DueDateViewController *ddvc;
 }
 
+-(void)setDate:(NSDate *)aDate;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
 
 @end

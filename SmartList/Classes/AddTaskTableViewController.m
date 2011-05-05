@@ -11,12 +11,28 @@
 
 @implementation AddTaskTableViewController
 
+-(void)setDate:(NSDate *)aDate
+{
+	dueDate = aDate;
+}
 
 -(void) setup
 {
 	self.title = @"New Task";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
-																																						   
+	
+	formatter = [[NSDateFormatter alloc] init];
+	[formatter setDateStyle:NSDateFormatterNoStyle];
+	[formatter setTimeStyle:NSDateFormatterShortStyle];
+	[formatter setDateFormat:(NSString*) @"EEE, MM/d, hh:mm aaa"];
+	
+	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
+	dueDate = [[NSDate alloc] init];
+	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	
+	//Declare DueDateViewController
+	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
+	[ddvc setDelegate:self];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
@@ -36,20 +52,22 @@
 	[self.navigationController popViewControllerAnimated: NO];
 }
 
-/*
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-*/
 
-/*
+
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	NSLog(@"Date: %@", [formatter stringFromDate:dueDate]);
+	
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -108,8 +126,6 @@
 		case 1:
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			[cell.textLabel setText: @"Due Date"];
-			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
-			[dueDateLabel setText:@"Due date!"];
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
@@ -136,44 +152,7 @@
 }
 
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 
 #pragma mark -
@@ -183,9 +162,7 @@
 	
 	if (indexPath.row == 1)
 	{
-		DueDateViewController *ddvc = [[DueDateViewController alloc] init];
 		[self.navigationController pushViewController:ddvc animated:YES];
-		[ddvc release];
 	}
 	else if (indexPath.row == 2)
 	{
@@ -222,6 +199,11 @@
 
 - (void)dealloc {
     [super dealloc];
+	[dueDate release];
+	[dueDateLabel release];
+	[formatter release];
+	//[ddvc setDelegate:nil];
+	//[ddvc release];
 }
 
 
