@@ -8,9 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+@class DurationViewController;
 
-@interface DurationViewController : UIViewController {
-	IBOutlet UIPickerView *durationPicker;
+@protocol DurationViewControllerDelegate <NSObject>
+
+-(void)setDuration: (NSNumber*) aDuration;
+
+@end
+
+
+@interface DurationViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate> {
+	NSMutableArray *minuteArray;
+	NSMutableArray *hourArray;
 }
+
+@property(assign) id delegate;
+@property (nonatomic, retain) IBOutlet UIPickerView *durationPicker;
 
 @end

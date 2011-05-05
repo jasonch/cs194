@@ -12,7 +12,7 @@
 #import "Task.h"
 
 
-@interface AddTaskTableViewController : UITableViewController <UITextFieldDelegate, DueDateViewControllerDelegate> {
+@interface AddTaskTableViewController : UITableViewController <UITextFieldDelegate, DueDateViewControllerDelegate, DurationViewControllerDelegate> {
 	NSManagedObjectContext *context;
 	UISlider *slider;
 	UITextField *nameField;
@@ -21,11 +21,13 @@
 	NSDate *dueDate;
 	NSNumber *duration;
 	NSDateFormatter *formatter;
+	UISlider *prioritySlider;
 	DueDateViewController *ddvc;
-	UIProgressView *progress;
+	DurationViewController *dvc;
 }
 
 -(void)setDate:(NSDate *)aDate;
+-(void)setDuration: (NSNumber*) aDuration;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
 
 @end

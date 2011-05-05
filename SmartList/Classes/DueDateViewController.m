@@ -16,7 +16,6 @@
 -initWithDate:(NSDate*)aDate
 {
 	dueDatePicker = [[UIDatePicker alloc] init];
-	[dueDatePicker setDate: aDate];
 	return self;
 }
 

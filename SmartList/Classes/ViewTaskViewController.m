@@ -14,6 +14,14 @@
 -(void) setup
 {
 	self.title = task.name;	
+	startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	startButton.frame = CGRectMake(30, 300, 125, 40);
+	[startButton setTitle:@"Start" forState:UIControlStateNormal];
+	completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	completeButton.frame = CGRectMake(170, 300, 125, 40);
+	[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
+	[self.view addSubview:startButton];
+	[self.view addSubview:completeButton];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask
@@ -92,14 +100,14 @@
     switch (indexPath.row) {
 		case 0:
 			[cell.textLabel setText: @"Task"];
-			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
+			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
 			[nameLabel setText: task.name];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:nameLabel];
 			break;
 		case 1:
 			[cell.textLabel setText: @"Due Date"];
-			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
+			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
 			NSDateFormatter *format = [[NSDateFormatter alloc] init];
 			[format setDateFormat:@"MMM dd, yyyy HH:mm"];
 			NSString *dateString = [format stringFromDate:task.due_date];
@@ -109,21 +117,21 @@
 			break;
 		case 2:
 			[cell.textLabel setText: @"Duration"];
-			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
+			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
 			[durationLabel setText: [task.duration stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
 			[cell.textLabel setText: @"Chunks"];
-			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
+			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
 			[chunksLabel setText: [task.sittings stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:chunksLabel];			
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
-			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
+			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
 			[priorityLabel setText: [task.priority stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			

@@ -16,6 +16,11 @@
 	dueDate = aDate;
 }
 
+-(void)setDuration: (NSNumber*) aDuration
+{
+	duration = aDuration;
+}
+
 -(void) setup
 {
 	self.title = @"New Task";
@@ -30,9 +35,15 @@
 	dueDate = [[NSDate alloc] init];
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
+	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
+	duration = [NSNumber numberWithInt:0];
+	[durationLabel setText:@"0 hours and 0 minutes"];
+	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
+	dvc = [[DurationViewController alloc] init];
+	[dvc setDelegate:self];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
@@ -68,7 +79,10 @@
 	else 
 	{
 		Task *newTask = [Task taskWithName:nameField.text inManagedObjectContext:context];
-		NSLog(@"New task created: '%@'", newTask.name);
+		//newTask.duration = duration;
+		newTask.due_date = dueDate;
+		newTask.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
+		newTask.sittings = [NSNumber numberWithInt:(20*[slider value])];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }
@@ -86,9 +100,22 @@
 }
 
 
+-(void)setDurationLabel
+{
+	NSString *durationString = @"";
+	int hours = [duration intValue];
+	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%d", hours]];
+	durationString = [durationString stringByAppendingString:@" hours and "];
+	double minutes = [duration doubleValue] - (double)hours;
+	minutes *= 60.0;
+	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%g", minutes]];
+	durationString = [durationString stringByAppendingString:@" mins"];
+	[durationLabel setText:durationString];
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	[self setDurationLabel];	
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	NSLog(@"Date: %@", [formatter stringFromDate:dueDate]);
 	
@@ -160,8 +187,6 @@
 		case 2:
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			[cell.textLabel setText: @"Duration"];
-			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(200,15,100,15)] autorelease]; 
-			[durationLabel setText: @"duration!"];
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
@@ -173,10 +198,9 @@
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
-			progress = [[[UIProgressView alloc] initWithFrame:CGRectMake(100,12,194,23)] autorelease];
-			progress.progress = .8;
-			[cell addSubview:progress];
+			prioritySlider = [[[UISlider alloc] initWithFrame:CGRectMake(100, 12, 194, 23)] autorelease];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			[cell addSubview:prioritySlider];
 			break;
 		default:
 			break;
@@ -200,9 +224,7 @@
 	}
 	else if (indexPath.row == 2)
 	{
-		DurationViewController *dvc = [[DurationViewController alloc] init];
 		[self.navigationController pushViewController:dvc animated:YES];
-		[dvc release];
 	}
     // Navigation logic may go here. Create and push another view controller.
 	/*
@@ -238,6 +260,7 @@
 	[formatter release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
+	//[dvc release];
 }
 
 

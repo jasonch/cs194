@@ -20,6 +20,8 @@
 	UILabel *dueDateLabel;
 	UILabel *durationLabel;
 	UILabel *priorityLabel;
+	UIButton *startButton;
+	UIButton *completeButton;
 	Task *task;
 }
 
