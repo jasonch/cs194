@@ -93,8 +93,17 @@
 	[vtvc release];
 }
 
+- (void)deleteManagedObject:(NSManagedObject *)managedObject
+{
+	//remove from database
+	NSLog(@"something happened");
+	[context deleteObject:managedObject];
+}
 
-
+- (BOOL)canDeleteManagedObject:(NSManagedObject *)managedObject
+{
+	return YES;
+}
 
 
 - (void)dealloc {

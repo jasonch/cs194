@@ -25,7 +25,7 @@
 @property (nonatomic, retain) NSManagedObject * user;
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext;
-
++(BOOL) checkExistenceOfTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext; 
 
 @end
 

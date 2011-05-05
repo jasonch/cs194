@@ -31,7 +31,7 @@
 #pragma mark currently working on
 -(void) saveTask
 {
-	if (nameField.text == nil) {
+	if (nameField.text == nil || [nameField.text isEqualToString:@""]) { // This seems kind of dumb.
 		// blank task name exception
 		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
 														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
@@ -39,10 +39,20 @@
 		[noName show];
 		[noName release];
 	} 
-	else {
-		
+	else if ([Task checkExistenceOfTask:nameField.text inManagedObjectContext:context]) 
+	{
+		// duplicate task name exception
+		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Duplicate task" message: @"A task with this name already exists." 
+															   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+			
+		[duplicate show];
+		[duplicate release];
+	
+	}
+	else 
+	{
 		Task *newTask = [Task taskWithName:nameField.text inManagedObjectContext:context];
-		NSLog(@"New task created: %@", newTask.name);
+		NSLog(@"New task created: '%@'", newTask.name);
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }

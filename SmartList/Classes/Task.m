@@ -54,4 +54,20 @@
 	return task;
 }
 
+// This code is duplicate. Find a way to condense it with the above function while maintaining the full functionality.
++(BOOL) checkExistenceOfTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext 
+{
+	Task *task = nil;
+	
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+	
+	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:aContext];
+	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
+	NSError *error = nil;
+	task = [[aContext executeFetchRequest:request error:&error] lastObject];
+	
+	if (task) return YES;	
+	return NO;
+}
+
 @end
