@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "DueDateViewController.h"
 #import "DurationViewController.h"
+#import "AddTaskTableViewController.h"
 #import "Task.h"
 
 
@@ -26,5 +27,7 @@
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
+-(void)startPressed:(UIButton*)sender;
+-(void)completePressed:(UIButton*)sender; 
 
 @end

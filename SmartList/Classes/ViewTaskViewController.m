@@ -17,9 +17,11 @@
 	startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 	startButton.frame = CGRectMake(30, 300, 125, 40);
 	[startButton setTitle:@"Start" forState:UIControlStateNormal];
+	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 	completeButton.frame = CGRectMake(170, 300, 125, 40);
 	[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
+	[completeButton addTarget:self action:@selector(completePressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:startButton];
 	[self.view addSubview:completeButton];
 }
@@ -35,12 +37,31 @@
 }
 
 
+-(void)startPressed:(UIButton*)sender
+{
+	
+}
+
+-(void)completePressed:(UIButton*)sender
+{
+	[context deleteObject:(NSManagedObject*)task];
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+
+-(void)editPressed
+{
+	AddTaskTableViewController *attvc = [[AddTaskTableViewController alloc] initInManagedObjectContext:context withTask:task];
+	[self.navigationController pushViewController:attvc animated:YES];
+	[attvc release];
+}
+
  - (void)viewDidLoad {
 	 [super viewDidLoad];
 	 [self setup];
  
- // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	 self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered target:self action:@selector(editPressed)];
+	 
  }
  
 
@@ -125,7 +146,7 @@
 		case 3:
 			[cell.textLabel setText: @"Chunks"];
 			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
-			[chunksLabel setText: [task.sittings stringValue]];
+			[chunksLabel setText: [task.chunk_size stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:chunksLabel];			
 			break;

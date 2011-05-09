@@ -15,12 +15,16 @@
 @dynamic creation_time;
 @dynamic id;
 @dynamic due_date;
-@dynamic duration;
-@dynamic sittings;
 @dynamic progress;
 @dynamic name;
 @dynamic priority;
 @dynamic user;
+@dynamic chunk_size;
+@dynamic duration;
+
+
+
+
 
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext

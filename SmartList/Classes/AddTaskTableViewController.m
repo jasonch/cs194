@@ -26,6 +26,8 @@
 	self.title = @"New Task";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
 	
+	task = [Task taskWithName:@"new task" inManagedObjectContext:context];
+	
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
@@ -55,6 +57,56 @@
 	return self;
 }
 
+
+-(void)setDurationLabel
+{
+	NSString *durationString = @"";
+	int hours = [duration intValue];
+	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%d", hours]];
+	durationString = [durationString stringByAppendingString:@" hours and "];
+	double minutes = [duration doubleValue] - (double)hours;
+	minutes *= 60.0;
+	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%g", minutes]];
+	durationString = [durationString stringByAppendingString:@" mins"];
+	[durationLabel setText:durationString];
+}
+
+-(void) setupEditMode
+{
+	self.title = @"Edit Task";
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
+	
+	formatter = [[NSDateFormatter alloc] init];
+	[formatter setDateStyle:NSDateFormatterNoStyle];
+	[formatter setTimeStyle:NSDateFormatterShortStyle];
+	[formatter setDateFormat:(NSString*) @"EEE, MM/d, hh:mm aaa"];
+	
+	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
+	dueDate = task.due_date;
+	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	
+	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
+	duration = task.duration;
+	[self setDurationLabel];
+	
+	
+	//Declare DueDateViewController
+	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
+	[ddvc setDelegate:self];
+	dvc = [[DurationViewController alloc] init];
+	[dvc setDelegate:self];
+}
+
+-initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask
+{
+	task = aTask;
+	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+		context = aContext;
+		[self setupEditMode];
+    }
+	return self;
+}
+
 #pragma mark currently working on
 -(void) saveTask
 {
@@ -78,11 +130,11 @@
 	}
 	else 
 	{
-		Task *newTask = [Task taskWithName:nameField.text inManagedObjectContext:context];
-		//newTask.duration = duration;
-		newTask.due_date = dueDate;
-		newTask.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
-		newTask.sittings = [NSNumber numberWithInt:(20*[slider value])];
+		//task.duration = duration;
+		task.name = nameField.text;
+		task.due_date = dueDate;
+		task.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
+		task.chunk_size = [NSNumber numberWithInt:(20*[slider value])];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }
@@ -100,19 +152,6 @@
 }
 
 
--(void)setDurationLabel
-{
-	NSString *durationString = @"";
-	int hours = [duration intValue];
-	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%d", hours]];
-	durationString = [durationString stringByAppendingString:@" hours and "];
-	double minutes = [duration doubleValue] - (double)hours;
-	minutes *= 60.0;
-	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%g", minutes]];
-	durationString = [durationString stringByAppendingString:@" mins"];
-	[durationLabel setText:durationString];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	[self setDurationLabel];	
@@ -121,11 +160,15 @@
 	
 }
 
-/*
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+	if (![task.name isEqual:@""])
+	{
+		[nameField setText:task.name];
+	}
 }
-*/
+
 /*
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

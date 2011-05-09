@@ -24,10 +24,12 @@
 	UISlider *prioritySlider;
 	DueDateViewController *ddvc;
 	DurationViewController *dvc;
+	Task *task;
 }
 
 -(void)setDate:(NSDate *)aDate;
 -(void)setDuration: (NSNumber*) aDuration;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
+-initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
 
 @end

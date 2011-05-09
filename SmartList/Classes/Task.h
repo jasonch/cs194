@@ -17,17 +17,21 @@
 @property (nonatomic, retain) NSDate * creation_time;
 @property (nonatomic, retain) NSNumber * id;
 @property (nonatomic, retain) NSDate * due_date;
-@property (nonatomic, retain) NSNumber * duration;
-@property (nonatomic, retain) NSNumber * sittings;
 @property (nonatomic, retain) NSDecimalNumber * progress;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * priority;
 @property (nonatomic, retain) NSManagedObject * user;
+@property (nonatomic, retain) NSNumber * chunk_size;
+@property (nonatomic, retain) NSNumber * duration;
+
+
+
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext;
 +(BOOL) checkExistenceOfTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext; 
 
 @end
+
 
 
 
