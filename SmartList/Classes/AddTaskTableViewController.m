@@ -18,7 +18,7 @@
 
 -(void)setDuration: (NSNumber*) aDuration
 {
-	duration = aDuration;
+	duration = [aDuration retain];
 }
 
 -(void) setup
@@ -130,7 +130,7 @@
 	}
 	else 
 	{
-		//task.duration = duration;
+		task.duration = duration;
 		task.name = nameField.text;
 		task.due_date = dueDate;
 		task.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
@@ -304,6 +304,7 @@
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];
+	[duration release];
 }
 
 

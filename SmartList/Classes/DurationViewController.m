@@ -64,7 +64,9 @@
 		default:
 			break;
 	}
-	[self.delegate setDuration:[NSNumber numberWithDouble:hour]];
+	NSNumber *duration = [[NSNumber alloc] initWithDouble:hour];
+	[self.delegate setDuration:duration];
+	[duration release];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
