@@ -58,7 +58,8 @@
 	if (task == nil)
 		[taskLabel setText:@"No task to schedule"];
 	else
-		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];	
+		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
+	NSLog(@"%@", [task description]);
 }
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
@@ -145,10 +146,8 @@
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
-	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d", spareTime]; 
-	request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"due_date"
-																					ascending:YES
-																					selector:@selector(compare:)]];		
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d", spareTime];
+
 	NSError *error = nil; 
 	
 	NSArray *array = [context executeFetchRequest:request error:&error];
@@ -160,6 +159,19 @@
 		int count = [array count];
 		NSMutableArray *m_array = [[NSMutableArray alloc] initWithCapacity:[array count]];
 		[m_array addObjectsFromArray:array];
+		
+		// pre-sort it by due date, progress, and priority
+		NSComparator taskSorter = ^(id id1, id id2) {
+			double effective_priority_1 = [[id1 valueForKey:@"priority"] doubleValue]
+				* [[id1 valueForKey:@"duration"] doubleValue] * (1 - [[id1 valueForKey:@"progress"] doubleValue])
+				/ [[id1 valueForKey:@"due_date"] timeIntervalSinceNow];
+						
+			double effective_priority_2 = [[id2 valueForKey:@"priority"] doubleValue]
+				* [[id2 valueForKey:@"duration"] doubleValue] * (1 - [[id2 valueForKey:@"progress"] doubleValue])
+				/ [[id2 valueForKey:@"due_date"] timeIntervalSinceNow];
+			return effective_priority_1 > effective_priority_2? NSOrderedAscending: NSOrderedDescending;
+		};
+		[m_array sortUsingComparator:taskSorter];
 		
 		for (int k = count - 1; k >= 0; k--){
 			BOOL feasible = YES;
