@@ -50,7 +50,7 @@
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
 {
-	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+	if (self == [super initWithStyle:UITableViewStyleGrouped]) {
 		context = aContext;
 		[self setup];
     }
@@ -105,7 +105,7 @@
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask
 {
 	task = aTask;
-	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+	if (self == [super initWithStyle:UITableViewStyleGrouped]) {
 		context = aContext;
 		[self setupEditMode];
     }
@@ -159,8 +159,9 @@
 		task.duration = [NSNumber numberWithFloat:duration];
 		task.name = nameField.text;
 		task.due_date = dueDate;
-		task.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
-		task.chunk_size = [NSNumber numberWithInt:(20*[slider value])];
+		task.priority = [NSNumber numberWithInt:([prioritySlider value])];
+		task.chunk_size = [NSNumber numberWithInt:(
+												   [slider value])];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }
@@ -191,7 +192,7 @@
     [super viewDidAppear:animated];
 	if (![task.name isEqual:@""])
 	{
-		[nameField setText:name];
+        nameField.text = name;
 		prioritySlider.minimumValue = 1;
 		prioritySlider.maximumValue = 5;
 		prioritySlider.value = priority;
@@ -335,7 +336,7 @@
 
 - (void)dealloc {
     [super dealloc];
-	[dueDate release];
+	//[dueDate release];
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
