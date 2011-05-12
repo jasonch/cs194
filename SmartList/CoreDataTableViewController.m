@@ -135,10 +135,6 @@
 - (void)managedObjectSelected:(NSManagedObject *)managedObject
 {
     // Navigation logic may go here. Create and push another view controller.
-//     ViewTaskViewController *vtvc = [[ViewTaskViewController alloc] init];
-//     [self.navigationController pushViewController:vtvc animated:YES];
-//     [vtvc release];
-
 }
 
 - (void)deleteManagedObject:(NSManagedObject *)managedObject
@@ -202,10 +198,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	[self managedObjectSelected:[[self fetchedResultsControllerForTableView:tableView] objectAtIndexPath:indexPath]];
-	
-//	ViewTaskViewController *vtvc = [[ViewTaskViewController alloc] init];
-//	[self.navigationController pushViewController:vtvc animated:YES];
-//	[vtvc release];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
