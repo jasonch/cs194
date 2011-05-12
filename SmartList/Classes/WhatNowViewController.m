@@ -56,6 +56,8 @@
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
 		[taskLabel setText:@"New task!"];
+		[self getNextScheduledTaskWithDurationOf:2.0];
+
 	}
 }
 
@@ -74,6 +76,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self setup];
+	[self getNextScheduledTaskWithDurationOf:2.0];
 }
 
 
@@ -102,6 +105,37 @@
 - (void)dealloc {
     [super dealloc];
 }
+
+- (Task *)getNextScheduledTaskWithDurationOf: (double)spareTime {
+	
+	NSLog(@"Get Next Scheduled Task");
+	
+	Task *task = nil;
+	
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+	
+	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+	//request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size < %d", spareTime]; 
+	request.predicate = nil;
+	
+	NSError *error = nil; 
+	
+	NSArray *array = [[context executeFetchRequest:request error:&error] lastObject];
+
+	NSLog(@"Fetched %d objects", [array count]);
+	
+	if (!error & array != nil) {
+		int count = [array count];
+		for (int i = 0; i < count; i++) {
+			//NSLog (@"%d. %@\n", i, [array objectAtIndex:i]);
+		}
+	}
+
+	
+	return nil;
+}
+
+
 
 
 @end

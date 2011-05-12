@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Task.h"
 
 
 @interface WhatNowViewController : UIViewController {	
@@ -22,5 +23,6 @@
 -(BOOL)canBecomeFirstResponder;
 -(void)viewDidAppear:(BOOL)animated;
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event;
+- (Task *)getNextScheduledTaskWithDurationOf: (double)spare;
 
 @end
