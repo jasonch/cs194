@@ -16,17 +16,15 @@
 	dueDate = aDate;
 }
 
--(void)setDuration: (NSNumber*) aDuration
+-(void)setDuration: (float) aDuration
 {
-	duration = [aDuration retain];
+	duration = aDuration;
 }
 
 -(void) setup
 {
 	self.title = @"New Task";
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
-	
-	task = [Task taskWithName:@"new task" inManagedObjectContext:context];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];	
 	
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
@@ -38,8 +36,10 @@
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
-	duration = [NSNumber numberWithInt:0];
+	duration = 0;
 	[durationLabel setText:@"0 hours and 0 minutes"];
+	
+	name = [[NSString alloc] initWithString:@""];
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
@@ -61,10 +61,10 @@
 -(void)setDurationLabel
 {
 	NSString *durationString = @"";
-	int hours = [duration intValue];
+	int hours = (int)duration;
 	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%d", hours]];
 	durationString = [durationString stringByAppendingString:@" hours and "];
-	double minutes = [duration doubleValue] - (double)hours;
+	double minutes = duration - (double)hours;
 	minutes *= 60.0;
 	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%g", minutes]];
 	durationString = [durationString stringByAppendingString:@" mins"];
@@ -74,7 +74,7 @@
 -(void) setupEditMode
 {
 	self.title = @"Edit Task";
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveExistingTask)];
 	
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
@@ -82,13 +82,18 @@
 	[formatter setDateFormat:(NSString*) @"EEE, MM/d, hh:mm aaa"];
 	
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
+	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
-	duration = task.duration;
+	duration = [task.duration floatValue];
 	[self setDurationLabel];
 	
+	name = [[NSString alloc] initWithString:@""];
+	name = task.name;
+	priority = [task.priority intValue];
+	chunk_size = [task.chunk_size intValue];
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
@@ -130,7 +135,28 @@
 	}
 	else 
 	{
-		task.duration = duration;
+		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
+		task.duration = [NSNumber numberWithFloat:duration];
+		task.due_date = dueDate;
+		task.priority = [NSNumber numberWithInt:(([prioritySlider value]))];
+		task.chunk_size = [NSNumber numberWithInt:([slider value])];
+		[self.navigationController popViewControllerAnimated: YES];
+	}
+}
+
+-(void) saveExistingTask
+{
+	if (nameField.text == nil || [nameField.text isEqualToString:@""]) { // This seems kind of dumb.
+		// blank task name exception
+		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
+														delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+		
+		[noName show];
+		[noName release];
+	} 
+	else 
+	{
+		task.duration = [NSNumber numberWithFloat:duration];
 		task.name = nameField.text;
 		task.due_date = dueDate;
 		task.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
@@ -165,7 +191,12 @@
     [super viewDidAppear:animated];
 	if (![task.name isEqual:@""])
 	{
-		[nameField setText:task.name];
+		[nameField setText:name];
+		prioritySlider.minimumValue = 1;
+		prioritySlider.maximumValue = 5;
+		prioritySlider.value = priority;
+		slider.maximumValue = 20;
+		slider.value = chunk_size;
 	}
 }
 
@@ -263,10 +294,16 @@
 	
 	if (indexPath.row == 1)
 	{
+		name = nameField.text;
+		priority = [prioritySlider value];
+		chunk_size = [slider value];
 		[self.navigationController pushViewController:ddvc animated:YES];
 	}
 	else if (indexPath.row == 2)
 	{
+		name = nameField.text;
+		priority = [prioritySlider value];
+		chunk_size = [slider value];
 		[self.navigationController pushViewController:dvc animated:YES];
 	}
     // Navigation logic may go here. Create and push another view controller.
@@ -301,10 +338,11 @@
 	[dueDate release];
 	[dueDateLabel release];
 	[formatter release];
+	[durationLabel release];
+	[name release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];
-	[duration release];
 }
 
 

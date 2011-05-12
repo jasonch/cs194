@@ -12,7 +12,7 @@
 
 @protocol DurationViewControllerDelegate <NSObject>
 
--(void)setDuration: (NSNumber*) aDuration;
+-(void)setDuration: (float) aDuration;
 
 @end
 
