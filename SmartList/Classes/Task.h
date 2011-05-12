@@ -28,7 +28,7 @@
 
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext;
-+(BOOL) checkExistenceOfTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext; 
++(Task*) findTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext; 
 
 @end
 

@@ -17,6 +17,17 @@
 	UITabBarItem *item = [[UITabBarItem alloc] initWithTitle: @"What Now?" image:[UIImage imageNamed: @"78-stopwatch.png"] tag:0];
 	self.tabBarItem = item;
 	[item release];
+	
+	UIBarButtonItem *blacklistButton = [[UIBarButtonItem alloc] initWithTitle:@"Blacklist" style:UIBarButtonItemStyleBordered target:self action:@selector(viewBlacklist)];
+	self.navigationItem.rightBarButtonItem = blacklistButton;
+	[blacklistButton release];
+
+	// set up blacklist
+	blacklist = [[[NSMutableArray alloc] init] retain];   	
+	
+	currentTask = [Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
+
+	[self updateCurrentTask];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
@@ -31,17 +42,47 @@
 {
 	[freeTimeLabel setText:@"You are currently working on..."];
 	[sender setTitle: @"Finished" forState: UIControlStateNormal];
-//	[sender setTitle: @"Finished" forState: UIControlStateApplication];
-//	[sender setTitle: @"Finished" forState: UIControlStateHighlighted];
-//	[sender setTitle: @"Finished" forState: UIControlStateReserved];
-//	[sender setTitle: @"Finished" forState: UIControlStateSelected];
-//	[sender setTitle: @"Finished" forState: UIControlStateDisabled];
+	[sender addTarget:self action:@selector(finishPressed:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(IBAction)finishPressed:(UIButton*)sender
+{
+	[freeTimeLabel setText:@"You have some free time!"];
+	[sender setTitle: @"Start" forState: UIControlStateNormal];
+	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+	
+	//[context deleteObject:(NSManagedObject*)currentTask];
+	[self updateCurrentTask];
 }
 
 
 -(IBAction)blacklistPressed:(UIButton*)sender
 {
 	
+	NSString *blacklisted = [NSString stringWithFormat:@"You have blacklisted the task '%@'",
+						 taskLabel.text];
+	UIAlertView *blacklistAlert = [[UIAlertView alloc] initWithTitle: @"Task blacklisted" message: blacklisted
+													   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+	
+	[blacklistAlert show];
+	[blacklistAlert release];
+	
+	[blacklist addObject:taskLabel.text]; //[blacklist addObject:currentTask.name];
+	[self updateCurrentTask];
+}
+
+
+-(void)viewBlacklist
+{		
+	BlacklistViewController *bvc = [[BlacklistViewController alloc] initInManagedObjectContext:context withBlacklist:blacklist];
+	[self.navigationController pushViewController:bvc animated:YES];
+	[bvc release];
+}
+
+-(void) updateCurrentTask {
+	//currentTask = some new task;
+	//make sure this task is not on the blacklist
+	//taskLabel.text = currentTask.name;
 }
 
 #pragma mark Shake Functionality
@@ -49,41 +90,42 @@
     return YES;
 }
 
--(void)viewDidAppear:(BOOL)animated {
-    [self becomeFirstResponder];
-}
-
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		[taskLabel setText:@"New task!"];
+		[taskLabel setText:@"New task!"]; //placeholder
+		[self updateCurrentTask];
 	}
 }
 
-
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
+#pragma mark memory management
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	[self setup];
+	
+	// accessing calendar
+	
+	/*
+	 NOTE: need to import proper files!
+	 
+	EKEventStore *eventStore = [[EKEventStore alloc] init];
+	
+	 can use this method to look up events within the specified time range
+	 
+	 - (NSPredicate *)predicateForEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate calendars:(NSArray *)calendars
+	 
+	 followed by
+	 
+	 - (NSArray *)eventsMatchingPredicate:(NSPredicate *)predicate
+
+	 we can then use this array of EKEvent objects to make our What Now? suggestion make sense by checking start/end date, and even location if we want to
+	 
+	 */
 }
 
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+-(void)viewDidAppear:(BOOL)animated {
+    [self becomeFirstResponder];
 }
-*/
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -100,6 +142,7 @@
 
 
 - (void)dealloc {
+	[blacklist release];
     [super dealloc];
 }
 

@@ -26,6 +26,7 @@
 	self.title = @"New Task";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
 	
+
 	task = [Task taskWithName:@"new task" inManagedObjectContext:context];
 	
 	formatter = [[NSDateFormatter alloc] init];
@@ -118,7 +119,7 @@
 		[noName show];
 		[noName release];
 	} 
-	else if ([Task checkExistenceOfTask:nameField.text inManagedObjectContext:context]) 
+	else if ([Task findTask:nameField.text inManagedObjectContext:context]) 
 	{
 		// duplicate task name exception
 		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Duplicate task" message: @"A task with this name already exists." 
@@ -144,13 +145,11 @@
 	return NO;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -163,10 +162,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if (![task.name isEqual:@""])
-	{
-		[nameField setText:task.name];
-	}
+// This is the part that's making the task name reset every time.	
+//	if (![task.name isEqual:@""])
+//	{
+//		[nameField setText:task.name];
+//	}
 }
 
 /*
@@ -260,6 +260,10 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	if (indexPath.row != 0) {
+		[nameField resignFirstResponder];
+	}
 	
 	if (indexPath.row == 1)
 	{
