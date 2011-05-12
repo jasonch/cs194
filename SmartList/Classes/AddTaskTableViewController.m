@@ -16,17 +16,15 @@
 	dueDate = aDate;
 }
 
--(void)setDuration: (NSNumber*) aDuration
+-(void)setDuration: (float) aDuration
 {
-	duration = [aDuration retain];
+	duration = aDuration;
 }
 
 -(void) setup
 {
 	self.title = @"New Task";
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
-	
-	task = [Task taskWithName:@"new task" inManagedObjectContext:context];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];	
 	
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
@@ -38,7 +36,7 @@
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
-	duration = [NSNumber numberWithInt:0];
+	duration = 0;
 	[durationLabel setText:@"0 hours and 0 minutes"];
 	
 	//Declare DueDateViewController
@@ -61,10 +59,10 @@
 -(void)setDurationLabel
 {
 	NSString *durationString = @"";
-	int hours = [duration intValue];
+	int hours = (int)duration;
 	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%d", hours]];
 	durationString = [durationString stringByAppendingString:@" hours and "];
-	double minutes = [duration doubleValue] - (double)hours;
+	double minutes = duration - (double)hours;
 	minutes *= 60.0;
 	durationString = [durationString stringByAppendingString:[NSString stringWithFormat:@"%g", minutes]];
 	durationString = [durationString stringByAppendingString:@" mins"];
@@ -74,7 +72,7 @@
 -(void) setupEditMode
 {
 	self.title = @"Edit Task";
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveTask)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveExistingTask)];
 	
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
@@ -86,9 +84,8 @@
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
-	duration = task.duration;
+	duration = [task.duration floatValue];
 	[self setDurationLabel];
-	
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
@@ -130,7 +127,28 @@
 	}
 	else 
 	{
-		task.duration = duration;
+		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
+		task.duration = [NSNumber numberWithFloat:duration];
+		task.due_date = dueDate;
+		task.priority = [NSNumber numberWithInt:(([prioritySlider value]))];
+		task.chunk_size = [NSNumber numberWithInt:([slider value])];
+		[self.navigationController popViewControllerAnimated: YES];
+	}
+}
+
+-(void) saveExistingTask
+{
+	if (nameField.text == nil || [nameField.text isEqualToString:@""]) { // This seems kind of dumb.
+		// blank task name exception
+		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
+														delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+		
+		[noName show];
+		[noName release];
+	} 
+	else 
+	{
+		task.duration = [NSNumber numberWithFloat:duration];
 		task.name = nameField.text;
 		task.due_date = dueDate;
 		task.priority = [NSNumber numberWithInt:(5*[prioritySlider value])];
@@ -166,6 +184,11 @@
 	if (![task.name isEqual:@""])
 	{
 		[nameField setText:task.name];
+		prioritySlider.minimumValue = 1;
+		prioritySlider.maximumValue = 5;
+		prioritySlider.value = [task.priority floatValue];
+		slider.maximumValue = 20;
+		slider.value = [task.chunk_size floatValue];
 	}
 }
 
@@ -301,10 +324,10 @@
 	[dueDate release];
 	[dueDateLabel release];
 	[formatter release];
+	[durationLabel release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];
-	[duration release];
 }
 
 

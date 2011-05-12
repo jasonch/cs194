@@ -47,7 +47,7 @@
 
 -(void)saveDuration
 {
-	double hour = [durationPicker selectedRowInComponent:0];
+	float hour = [durationPicker selectedRowInComponent:0];
 	int minute = [durationPicker selectedRowInComponent:1];
 	switch (minute) {
 		case 0:
@@ -64,9 +64,7 @@
 		default:
 			break;
 	}
-	NSNumber *duration = [[NSNumber alloc] initWithDouble:hour];
-	[self.delegate setDuration:duration];
-	[duration release];
+	[self.delegate setDuration:hour];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 

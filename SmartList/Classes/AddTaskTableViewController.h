@@ -19,7 +19,7 @@
 	UILabel *dueDateLabel;
 	UILabel *durationLabel;
 	NSDate *dueDate;
-	NSNumber *duration;
+	float duration;
 	NSDateFormatter *formatter;
 	UISlider *prioritySlider;
 	DueDateViewController *ddvc;
@@ -28,7 +28,7 @@
 }
 
 -(void)setDate:(NSDate *)aDate;
--(void)setDuration: (NSNumber*) aDuration;
+-(void)setDuration: (float) aDuration;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
 

@@ -14,23 +14,34 @@
 -(void) setup
 {
 	self.title = task.name;	
-	startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	startButton.frame = CGRectMake(30, 300, 125, 40);
-	[startButton setTitle:@"Start" forState:UIControlStateNormal];
-	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-	completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	completeButton.frame = CGRectMake(170, 300, 125, 40);
-	[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
-	[completeButton addTarget:self action:@selector(completePressed:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:startButton];
-	[self.view addSubview:completeButton];
+	[nameLabel setText: task.name];
+	NSDateFormatter *format = [[NSDateFormatter alloc] init];
+	[format setDateFormat:@"MMM dd, yyyy HH:mm"];
+	NSString *dateString = [format stringFromDate:task.due_date];
+	[format release];
+	[dueDateLabel setText:dateString];
+	[durationLabel setText: [task.duration stringValue]];
+	[chunksLabel setText: [task.chunk_size stringValue]];
+	[priorityLabel setText: [task.priority stringValue]];
+	
 }
+
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask
 {
 	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
 		context = aContext;
 		task = aTask;
+		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		startButton.frame = CGRectMake(30, 300, 125, 40);
+		[startButton setTitle:@"Start" forState:UIControlStateNormal];
+		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+		completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		completeButton.frame = CGRectMake(170, 300, 125, 40);
+		[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
+		[completeButton addTarget:self action:@selector(completePressed:) forControlEvents:UIControlEventTouchUpInside];
+		[self.view addSubview:startButton];
+		[self.view addSubview:completeButton];
 		[self setup];
     }
 	return self;
@@ -70,11 +81,12 @@
  [super viewWillAppear:animated];
  }
  */
-/*
+
  - (void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
+	 [super viewDidAppear:animated];
+	 [self setup];
  }
- */
+ 
 /*
  - (void)viewWillDisappear:(BOOL)animated {
  [super viewWillDisappear:animated];
@@ -132,6 +144,7 @@
 			NSDateFormatter *format = [[NSDateFormatter alloc] init];
 			[format setDateFormat:@"MMM dd, yyyy HH:mm"];
 			NSString *dateString = [format stringFromDate:task.due_date];
+			[format release];
 			[dueDateLabel setText:dateString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:dueDateLabel];
