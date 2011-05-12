@@ -39,6 +39,8 @@
 	duration = 0;
 	[durationLabel setText:@"0 hours and 0 minutes"];
 	
+	name = [[NSString alloc] initWithString:@""];
+	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
@@ -80,12 +82,18 @@
 	[formatter setDateFormat:(NSString*) @"EEE, MM/d, hh:mm aaa"];
 	
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
+	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
 	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
+	
+	name = [[NSString alloc] initWithString:@""];
+	name = task.name;
+	priority = [task.priority intValue];
+	chunk_size = [task.chunk_size intValue];
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
@@ -183,12 +191,12 @@
     [super viewDidAppear:animated];
 	if (![task.name isEqual:@""])
 	{
-		[nameField setText:task.name];
+		[nameField setText:name];
 		prioritySlider.minimumValue = 1;
 		prioritySlider.maximumValue = 5;
-		prioritySlider.value = [task.priority floatValue];
+		prioritySlider.value = priority;
 		slider.maximumValue = 20;
-		slider.value = [task.chunk_size floatValue];
+		slider.value = chunk_size;
 	}
 }
 
@@ -286,10 +294,16 @@
 	
 	if (indexPath.row == 1)
 	{
+		name = nameField.text;
+		priority = [prioritySlider value];
+		chunk_size = [slider value];
 		[self.navigationController pushViewController:ddvc animated:YES];
 	}
 	else if (indexPath.row == 2)
 	{
+		name = nameField.text;
+		priority = [prioritySlider value];
+		chunk_size = [slider value];
 		[self.navigationController pushViewController:dvc animated:YES];
 	}
     // Navigation logic may go here. Create and push another view controller.
@@ -325,6 +339,7 @@
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
+	[name release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];

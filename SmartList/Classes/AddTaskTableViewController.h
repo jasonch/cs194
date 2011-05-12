@@ -25,6 +25,9 @@
 	DueDateViewController *ddvc;
 	DurationViewController *dvc;
 	Task *task;
+	NSString *name;
+	int priority;
+	int chunk_size;
 }
 
 -(void)setDate:(NSDate *)aDate;
