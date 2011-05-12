@@ -21,10 +21,7 @@
 @dynamic user;
 @dynamic chunk_size;
 @dynamic duration;
-
-
-
-
+@dynamic blacklisted;
 
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext
@@ -69,3 +66,5 @@
 }
 
 @end
+
+

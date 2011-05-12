@@ -23,8 +23,7 @@
 @property (nonatomic, retain) NSManagedObject * user;
 @property (nonatomic, retain) NSNumber * chunk_size;
 @property (nonatomic, retain) NSNumber * duration;
-
-
+@property (nonatomic, retain) NSNumber * blacklisted;
 
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext;

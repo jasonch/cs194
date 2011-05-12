@@ -24,5 +24,7 @@
 -(void)viewDidAppear:(BOOL)animated;
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event;
 - (Task *)getNextScheduledTaskWithDurationOf: (double)spare;
+- (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k;
+- (void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
 
 @end

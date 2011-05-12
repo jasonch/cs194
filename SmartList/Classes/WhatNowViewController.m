@@ -53,11 +53,17 @@
     [self becomeFirstResponder];
 }
 
+- (void) updateWhatNowTask {
+	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
+	if (task == nil)
+		[taskLabel setText:@"No task to schedule"];
+	else
+		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];	
+}
+
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		[taskLabel setText:@"New task!"];
-		[self getNextScheduledTaskWithDurationOf:2.0];
-
+		[self updateWhatNowTask];
 	}
 }
 
@@ -76,7 +82,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self setup];
-	[self getNextScheduledTaskWithDurationOf:2.0];
+	[self updateWhatNowTask];
 }
 
 
@@ -106,35 +112,71 @@
     [super dealloc];
 }
 
+- (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k {
+	return YES;
+}
+
+- (void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j {
+	NSObject *tmp = [m_array objectAtIndex:i];
+	[m_array replaceObjectAtIndex:i withObject:[m_array objectAtIndex:j]];
+	[m_array replaceObjectAtIndex:j withObject:tmp];
+}
+
+- (Task *)getTaskWithPriorityArray:(NSMutableArray *)m_array {
+	int count = [m_array count];
+	
+	// use a parabolic function to give higher priority more weight
+	int total = (count - 1) * count * (2*count - 1) / 6;
+	
+	int rand = arc4random() % (1 + total);
+	rand = sqrt(rand + 0.0);
+
+	// reverse the index because zero priority is highest
+	int index = count - rand - 1; 
+	
+	return [m_array objectAtIndex:rand];
+}
+
+
 - (Task *)getNextScheduledTaskWithDurationOf: (double)spareTime {
 	
 	NSLog(@"Get Next Scheduled Task");
-	
-	Task *task = nil;
-	
+		
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
-	//request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size < %d", spareTime]; 
-	request.predicate = nil;
-	
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d", spareTime]; 
+	request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"due_date"
+																					ascending:YES
+																					selector:@selector(compare:)]];		
 	NSError *error = nil; 
 	
-	NSArray *array = [[context executeFetchRequest:request error:&error] lastObject];
-
-	NSLog(@"Fetched %d objects", [array count]);
+	NSArray *array = [context executeFetchRequest:request error:&error];
 	
 	if (!error & array != nil) {
-		int count = [array count];
-		for (int i = 0; i < count; i++) {
-			//NSLog (@"%d. %@\n", i, [array objectAtIndex:i]);
-		}
-	}
+		NSLog(@"Fetched %d objects", [array count]);
 
-	
+		// schedule 
+		int count = [array count];
+		NSMutableArray *m_array = [[NSMutableArray alloc] initWithCapacity:[array count]];
+		[m_array addObjectsFromArray:array];
+		
+		for (int k = count - 1; k >= 0; k--){
+			BOOL feasible = YES;
+			for (int next = k; next >= 0; next--) {
+				[self MutableArraySwap:m_array indexOne:k indexTwo:next];
+				
+				feasible = [self ScheduleFeasibleWith:m_array at:k];
+				if (feasible)
+					break;
+			}
+			if (feasible == NO)
+				return nil;
+		}
+		return [self getTaskWithPriorityArray:m_array];
+	}
 	return nil;
 }
-
 
 
 
