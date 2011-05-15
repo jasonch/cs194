@@ -39,8 +39,8 @@
 	duration = 0;
 	[durationLabel setText:@"0 hours and 0 minutes"];
 	
-	name = nil; //[[NSString alloc] initWithString:@""];
-	
+	//name = [[NSString alloc] initWithString:@""];
+	name = @"";
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
@@ -89,8 +89,7 @@
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
-	
-	name = [[NSString alloc] initWithString:@""];
+	//name = [[NSString alloc] initWithString:@""];
 	name = task.name;
 	priority = [task.priority intValue];
 	chunk_size = [task.chunk_size intValue];
@@ -190,7 +189,7 @@
     [super viewDidAppear:animated];
 	if (task != nil && ![task.name isEqual:@""])
 	{
-        nameField.text = name;
+        [nameField setText:name];
 		prioritySlider.minimumValue = 1;
 		prioritySlider.maximumValue = 5;
 		prioritySlider.value = priority;
@@ -244,7 +243,7 @@
     }
     switch (indexPath.row) {
 		case 0:
-			nameField = [[[UITextField alloc] initWithFrame:CGRectMake(80,8,214,31)] autorelease];
+			nameField = [[UITextField alloc] initWithFrame:CGRectMake(80,8,214,31)];
 			nameField.borderStyle = UITextBorderStyleRoundedRect;
 			nameField.returnKeyType = UIReturnKeyDone;
 			nameField.delegate = self;
@@ -263,7 +262,7 @@
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
-			slider = [[[UISlider alloc] initWithFrame:CGRectMake(100,12,194,23)] autorelease];
+			slider = [[UISlider alloc] initWithFrame:CGRectMake(100,12,194,23)];
 			[cell.textLabel setText: @"Chunks"];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
@@ -271,7 +270,7 @@
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
-			prioritySlider = [[[UISlider alloc] initWithFrame:CGRectMake(100, 12, 194, 23)] autorelease];
+			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(100, 12, 194, 23)];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:prioritySlider];
 			break;
@@ -337,16 +336,18 @@
 
 
 - (void)dealloc {
-	//[dueDate release];
+	[dueDate release];
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
 	//[name release];
+	[nameField release];
+	[slider release];
+	[prioritySlider release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];
 	[super dealloc];
-
 }
 
 
