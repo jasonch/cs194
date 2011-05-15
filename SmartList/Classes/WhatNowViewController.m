@@ -26,6 +26,7 @@
 	blacklist = [[[NSMutableArray alloc] init] retain];   	
 	
 	currentTask = [Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
+	calendarTasks = nil;
 
 	[self updateCurrentTask];
 }
@@ -41,6 +42,12 @@
 -(IBAction)startPressed:(UIButton*)sender
 {
 	[freeTimeLabel setText:@"You are currently working on..."];
+	
+	if ([self addCurrentTaskToCalendar] == YES) {
+		// do something like update the task status in the DB
+		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
+	}
+	
 	[sender setTitle: @"Finished" forState: UIControlStateNormal];
 	[sender addTarget:self action:@selector(finishPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -59,7 +66,11 @@
 -(IBAction)blacklistPressed:(UIButton*)sender
 {
 	
-	NSString *blacklisted = [NSString stringWithFormat:@"You have blacklisted the task '%@'",
+	if (currentTask == nil)
+		return;
+	
+	
+	NSString *blacklisted = [NSString stringWithFormat:@"'%@' will no longer be scheduled until you remove it from the Blacklist",
 						 taskLabel.text];
 	UIAlertView *blacklistAlert = [[UIAlertView alloc] initWithTitle: @"Task blacklisted" message: blacklisted
 													   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
@@ -68,6 +79,9 @@
 	[blacklistAlert release];
 	
 	[blacklist addObject:taskLabel.text]; //[blacklist addObject:currentTask.name];
+
+	[currentTask setValue:[NSNumber numberWithBool:YES] forKey:@"blacklisted"];
+	
 	[self updateCurrentTask];
 }
 
@@ -80,9 +94,13 @@
 }
 
 -(void) updateCurrentTask {
-	//currentTask = some new task;
-	//make sure this task is not on the blacklist
-	//taskLabel.text = currentTask.name;
+	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
+	if (task == nil)
+		[taskLabel setText:@"No task to schedule!"];
+	else
+		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
+	currentTask = task;
+	NSLog(@"%@", [task description]);
 }
 
 #pragma mark Shake Functionality
@@ -91,18 +109,9 @@
 }
 
 
-- (void) updateWhatNowTask {
-	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
-	if (task == nil)
-		[taskLabel setText:@"No task to schedule"];
-	else
-		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
-	NSLog(@"%@", [task description]);
-}
-
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		[self updateWhatNowTask];
+		[self updateCurrentTask];
 	}
 }
 
@@ -112,26 +121,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self setup];
-	[self updateWhatNowTask];
-	
-	// accessing calendar
-	
-	/*
-	 NOTE: need to import proper files!
-	 
-	EKEventStore *eventStore = [[EKEventStore alloc] init];
-	
-	 can use this method to look up events within the specified time range
-	 
-	 - (NSPredicate *)predicateForEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate calendars:(NSArray *)calendars
-	 
-	 followed by
-	 
-	 - (NSArray *)eventsMatchingPredicate:(NSPredicate *)predicate
+		
+}
 
-	 we can then use this array of EKEvent objects to make our What Now? suggestion make sense by checking start/end date, and even location if we want to
-	 
-	 */
+-(void)getTaskFromCalendar {
+	
+	EKEventStore *eventStore = [[EKEventStore alloc] init];
+	NSPredicate *fromNowPredicate = [eventStore predicateForEventsWithStartDate:[NSDate date] endDate:[NSDate distantFuture] calendars:nil];
+
+	if (calendarTasks != nil)
+		[calendarTasks release];
+
+	NSArray *events = [eventStore eventsMatchingPredicate:fromNowPredicate];
+	calendarTasks = [[NSMutableArray alloc] initWithCapacity:[events count]];
+	[calendarTasks addObjectsFromArray:events];
+		
+	[calendarTasks sortUsingSelector:@selector(compareStartDateWithEvent:)];
+	
+	[eventStore release];
+	
+	NSLog(@"%@", [calendarTasks description]);
+	
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -169,6 +179,7 @@
 
 - (Task *)getTaskWithPriorityArray:(NSMutableArray *)m_array {
 	int count = [m_array count];
+	if (count == 0) return nil;
 	
 	// use a parabolic function to give higher priority more weight
 	int total = (count - 1) * count * (2*count - 1) / 6;
@@ -179,7 +190,7 @@
 	// reverse the index because zero priority is highest
 	int index = count - rand - 1; 
 	
-	return [m_array objectAtIndex:rand];
+	return [m_array objectAtIndex:index];
 }
 
 
@@ -190,7 +201,7 @@
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
-	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d", spareTime];
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d and blacklisted == NO", spareTime];
 
 	NSError *error = nil; 
 	
@@ -234,6 +245,38 @@
 	return nil;
 }
 
+- (BOOL)addCurrentTaskToCalendar {
+	EKEventStore *eventStore = [[EKEventStore alloc] init];
+	EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+	event.title = currentTask.name;
+	event.startDate = [NSDate date];
+	event.endDate = [NSDate dateWithTimeIntervalSinceNow:60*60*2];
+	[event setCalendar:[eventStore defaultCalendarForNewEvents]];
+	
+	NSError *error;
+	[eventStore	saveEvent:event span:EKSpanThisEvent error:&error];
+	if (error == noErr) {
+		UIAlertView *alert = [[UIAlertView alloc]
+							  initWithTitle:@"Task Added to Calendar"
+							  message:[NSString stringWithFormat:@"Start working on %@, and come back when you're finished!", currentTask.name]
+							  delegate:nil
+							  cancelButtonTitle:@"Okay"
+							  otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+		[eventStore release];
+		return YES;
+	}
+	[eventStore release];
+	
+	return NO;
+}
 
+- (EKEvent *)getNextCalendarTask {
+
+	if ([calendarTasks count] == 0)
+		return nil;	
+	return nil;
+}
 
 @end

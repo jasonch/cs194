@@ -39,7 +39,7 @@
 	duration = 0;
 	[durationLabel setText:@"0 hours and 0 minutes"];
 	
-	name = [[NSString alloc] initWithString:@""];
+	name = nil; //[[NSString alloc] initWithString:@""];
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
@@ -188,7 +188,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if (![task.name isEqual:@""])
+	if (task != nil && ![task.name isEqual:@""])
 	{
         nameField.text = name;
 		prioritySlider.minimumValue = 1;
@@ -337,15 +337,16 @@
 
 
 - (void)dealloc {
-    [super dealloc];
 	//[dueDate release];
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
-	[name release];
+	//[name release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];
+	[super dealloc];
+
 }
 
 

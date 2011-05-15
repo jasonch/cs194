@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <EventKit/EKEventStore.h>
+#import <EventKit/EKEvent.h>
 #import "BlacklistViewController.h"
 #import "Task.h"
 
 @interface WhatNowViewController : UIViewController {	
 	NSManagedObjectContext *context;
 	NSMutableArray *blacklist;
+	NSMutableArray *calendarTasks;
 	Task *currentTask;
 	IBOutlet UILabel *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
@@ -24,12 +27,14 @@
 -(IBAction)finishPressed:(UIButton*)sender;
 -(IBAction)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
+-(void)getTaskFromCalendar;
 -(void)updateCurrentTask;
 -(BOOL)canBecomeFirstResponder;
 -(void)viewDidAppear:(BOOL)animated;
-- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event;
-- (Task *)getNextScheduledTaskWithDurationOf: (double)spare;
-- (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k;
-- (void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
+-(void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event;
+-(Task *)getNextScheduledTaskWithDurationOf: (double)spare;
+-(BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k;
+-(void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
+-(BOOL)addCurrentTaskToCalendar;
 
 @end
