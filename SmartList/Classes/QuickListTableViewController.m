@@ -78,9 +78,37 @@
 
 
 
-/**
- * Pushes BookForSaleViewController with selected bookForSale
- **/
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForManagedObject:(NSManagedObject *)managedObject
+{
+    static NSString *ReuseIdentifier = @"CoreDataTableViewCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReuseIdentifier];
+    if (cell == nil) {
+		UITableViewCellStyle cellStyle = self.subtitleKey ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
+        cell = [[[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:ReuseIdentifier] autorelease];
+    }
+	
+	if (self.titleKey) {
+		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, cell.frame.size.width - 20, 20)];
+		titleLabel.text = [managedObject valueForKey:self.titleKey];
+		[titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+		[cell addSubview:titleLabel];
+//		cell.textLabel.text = [managedObject valueForKey:self.titleKey];
+//		cell.textLabel.frame = CGRectMake(5, 0, cell.frame.size.width - 20, 20);
+//		[cell.textLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16]];
+	}
+	if (self.subtitleKey) cell.detailTextLabel.text = [managedObject valueForKey:self.subtitleKey];
+	cell.accessoryType = [self accessoryTypeForManagedObject:managedObject];
+	
+	UIProgressView *progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+	[progressBar setProgress:[((Task*)managedObject).progress floatValue]];
+	[progressBar setFrame:CGRectMake(5, cell.frame.size.height - 15, 150, 10)];
+	[cell addSubview:progressBar];
+	UIImage *thumbnail = [self thumbnailImageForManagedObject:managedObject];
+	if (thumbnail) cell.imageView.image = thumbnail;
+	
+	return cell;
+}
 
 
 -(void)managedObjectSelected:(NSManagedObject *)managedObject

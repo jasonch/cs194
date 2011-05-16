@@ -39,8 +39,8 @@
 	duration = 0;
 	[durationLabel setText:@"0 hours and 0 minutes"];
 	
-	//name = [[NSString alloc] initWithString:@""];
 	name = @"";
+	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
@@ -89,7 +89,6 @@
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
-	//name = [[NSString alloc] initWithString:@""];
 	name = task.name;
 	priority = [task.priority intValue];
 	chunk_size = [task.chunk_size intValue];
@@ -137,6 +136,7 @@
 		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
 		task.duration = [NSNumber numberWithFloat:duration];
 		task.due_date = dueDate;
+		NSLog(@"Priority: %d", [prioritySlider value]);
 		task.priority = [NSNumber numberWithInt:(([prioritySlider value]))];
 		task.chunk_size = [NSNumber numberWithInt:([slider value])];
 		[self.navigationController popViewControllerAnimated: YES];
@@ -271,6 +271,8 @@
 		case 4:
 			[cell.textLabel setText: @"Priority"];
 			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(100, 12, 194, 23)];
+			prioritySlider.minimumValue = 1;
+			prioritySlider.maximumValue = 5;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:prioritySlider];
 			break;
@@ -336,11 +338,10 @@
 
 
 - (void)dealloc {
-	[dueDate release];
+	//[dueDate release];
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
-	//[name release];
 	[nameField release];
 	[slider release];
 	[prioritySlider release];
