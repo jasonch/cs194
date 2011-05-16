@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSNumber * chunk_size;
 @property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSNumber * blacklisted;
+@property (nonatomic, retain) NSDate * started_time;
 
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext;

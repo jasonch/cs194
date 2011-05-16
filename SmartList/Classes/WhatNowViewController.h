@@ -17,6 +17,7 @@
 	NSMutableArray *blacklist;
 	NSMutableArray *calendarTasks;
 	Task *currentTask;
+	BOOL busy;
 	IBOutlet UILabel *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
 }
@@ -36,5 +37,6 @@
 -(BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k;
 -(void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
 -(BOOL)addCurrentTaskToCalendar;
+-(BOOL)updateProgressOfTask:(Task *)task;
 
 @end

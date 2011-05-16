@@ -28,6 +28,8 @@
 	currentTask = [Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
 	calendarTasks = nil;
 
+	busy = NO;
+	
 	[self updateCurrentTask];
 }
 
@@ -41,15 +43,43 @@
 
 -(IBAction)startPressed:(UIButton*)sender
 {
-	[freeTimeLabel setText:@"You are currently working on..."];
 	
-	if ([self addCurrentTaskToCalendar] == YES) {
-		// do something like update the task status in the DB
+	if (!busy && [self addCurrentTaskToCalendar] == YES) {
+		[freeTimeLabel setText:@"You are currently working on..."];
+
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
-	}
+		[currentTask setValue:[NSDate date] forKey:@"started_time"];
+		[sender setTitle: @"Pause" forState: UIControlStateNormal];
+		[sender addTarget:self action:@selector(finishPressed:) forControlEvents:UIControlEventTouchUpInside];
+		busy = YES;
+		NSLog (@"%@", [currentTask description]);
+	}	
+}
+
+- (BOOL)updateProgressOfTask:(Task *)task {
+	if ([task.status intValue] != 1)
+		return NO;
 	
-	[sender setTitle: @"Finished" forState: UIControlStateNormal];
-	[sender addTarget:self action:@selector(finishPressed:) forControlEvents:UIControlEventTouchUpInside];
+	NSTimeInterval timePassed = [task.started_time timeIntervalSinceNow];
+	if (timePassed > 0.0) {
+		[task setValue:[NSNumber numberWithInt:3] forKey:@"status"]; // 3 => error
+		return NO; // started in the future!?
+	}
+	timePassed = -1*timePassed;
+	
+	if (timePassed/3600. >= [task.chunk_size doubleValue])
+		timePassed = [task.chunk_size doubleValue];
+	
+	double progress = timePassed / (3600.*[task.duration doubleValue]) + [task.progress doubleValue];
+
+	if (progress >= 1)
+		[task setValue:[NSNumber numberWithInt:2] forKey:@"status"]; // 2 => completed
+	else 
+		[task setValue:[NSNumber numberWithInt:0] forKey:@"status"]; // 0 => active
+
+	[task setValue:[NSNumber numberWithDouble:progress] forKey:@"progress"];
+		
+	return YES;
 }
 
 -(IBAction)finishPressed:(UIButton*)sender
@@ -58,15 +88,17 @@
 	[sender setTitle: @"Start" forState: UIControlStateNormal];
 	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	
-	//[context deleteObject:(NSManagedObject*)currentTask];
+	// update database
+	[self updateProgressOfTask:currentTask];	
+	busy = NO;
+	
 	[self updateCurrentTask];
 }
 
 
 -(IBAction)blacklistPressed:(UIButton*)sender
 {
-	
-	if (currentTask == nil)
+	if (currentTask == nil || busy)
 		return;
 	
 	
@@ -82,6 +114,7 @@
 
 	[currentTask setValue:[NSNumber numberWithBool:YES] forKey:@"blacklisted"];
 	
+	busy = NO;
 	[self updateCurrentTask];
 }
 
@@ -94,10 +127,14 @@
 }
 
 -(void) updateCurrentTask {
+	
+	// checks all started tasks and update their status if needed
+	
 	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
-	if (task == nil)
+	if (task == nil) {
+		busy = YES;
 		[taskLabel setText:@"No task to schedule!"];
-	else
+	} else
 		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
 	currentTask = task;
 	NSLog(@"%@", [task description]);
@@ -111,7 +148,8 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		[self updateCurrentTask];
+		if (!busy)
+			[self updateCurrentTask];
 	}
 }
 
@@ -273,7 +311,6 @@
 }
 
 - (EKEvent *)getNextCalendarTask {
-
 	if ([calendarTasks count] == 0)
 		return nil;	
 	return nil;
