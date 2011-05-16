@@ -44,8 +44,7 @@
         cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:@"DefaultCell"] autorelease];
     }
 	Task *task = (Task*)[blacklist objectAtIndex:indexPath.row];
-    [cell.textLabel setText:task
-	 .name];
+    [cell.textLabel setText:task.name];
     return cell;
 }
 
@@ -66,6 +65,9 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
+		Task *deleted = [blacklist objectAtIndex:indexPath.row];
+		[deleted setValue:[NSNumber numberWithBool:NO] forKey:@"blacklisted"];
+		NSLog (@"unblacklisted: %@", [deleted description]);
 		[blacklist removeObjectAtIndex:indexPath.row];
 		// let what now? controller know
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];

@@ -89,9 +89,9 @@
     }
 	
 	if (self.titleKey) {
-		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, cell.frame.size.width - 20, 20)];
+		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 20, 20)];
 		titleLabel.text = [managedObject valueForKey:self.titleKey];
-		[titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18]];
+		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
 		[cell addSubview:titleLabel];
 //		cell.textLabel.text = [managedObject valueForKey:self.titleKey];
 //		cell.textLabel.frame = CGRectMake(5, 0, cell.frame.size.width - 20, 20);
