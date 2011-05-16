@@ -33,16 +33,17 @@
 	
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
 	dueDate = [[NSDate alloc] init];
-	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	dueDate = [NSDate distantFuture];
+	//[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
-	duration = 0;
-	[durationLabel setText:@"0 hours and 0 minutes"];
+	duration = 1;
+	[durationLabel setText:@"1 hour and 0 minutes"];
 	
 	name = @"";
 	
 	//Declare DueDateViewController
-	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
+	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
 	[ddvc setDelegate:self];
 	dvc = [[DurationViewController alloc] init];
 	[dvc setDelegate:self];
@@ -179,7 +180,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	[self setDurationLabel];	
-	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	if ([dueDate timeIntervalSinceNow] < 2592000)
+	{
+		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	}
 	NSLog(@"Date: %@", [formatter stringFromDate:dueDate]);
 	
 }

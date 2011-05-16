@@ -35,7 +35,7 @@
     [super viewDidLoad];
 	self.title = @"Due Date";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDate)];
-
+	[dueDatePicker setDate:[NSDate date] animated:NO];
 	
 }
 
