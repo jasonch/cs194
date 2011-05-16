@@ -35,9 +35,9 @@
 		{
 			NSFetchRequest *request = [[NSFetchRequest alloc] init];
 			request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
-			request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name"
-																							 ascending:YES
-																							  selector:@selector(caseInsensitiveCompare:)]];
+			request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"creation_time"
+																							 ascending:NO
+																							  selector:@selector(compare:)]];
 			
 			request.predicate = nil;
 			//request.predicate = [NSPredicate predicateWithFormat:@"user = %@", user];

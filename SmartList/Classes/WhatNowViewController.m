@@ -254,6 +254,7 @@
 		[m_array addObjectsFromArray:array];
 		
 		// pre-sort it by due date, progress, and priority
+		// eff_priority = priority * duration * progress / (due_date - today)
 		NSComparator taskSorter = ^(id id1, id id2) {
 			double effective_priority_1 = [[id1 valueForKey:@"priority"] doubleValue]
 				* [[id1 valueForKey:@"duration"] doubleValue] * (1 - [[id1 valueForKey:@"progress"] doubleValue])
