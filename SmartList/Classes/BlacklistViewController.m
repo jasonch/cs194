@@ -43,13 +43,15 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:@"DefaultCell"] autorelease];
     }
-    [cell.textLabel setText:[blacklist objectAtIndex:indexPath.row]];
+	Task *task = (Task*)[blacklist objectAtIndex:indexPath.row];
+    [cell.textLabel setText:task
+	 .name];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-	Task *task = [Task findTask:[blacklist objectAtIndex:indexPath.row] inManagedObjectContext:context];
+	Task *task = (Task*)[blacklist objectAtIndex:indexPath.row];
 	
 	ViewTaskViewController *vtvc = [[ViewTaskViewController alloc] initInManagedObjectContext:context withTask:task];
 	[self.navigationController pushViewController:vtvc animated:YES];

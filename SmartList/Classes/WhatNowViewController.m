@@ -78,7 +78,7 @@
 	[blacklistAlert show];
 	[blacklistAlert release];
 	
-	[blacklist addObject:taskLabel.text]; //[blacklist addObject:currentTask.name];
+	[blacklist addObject:currentTask];
 
 	[currentTask setValue:[NSNumber numberWithBool:YES] forKey:@"blacklisted"];
 	
