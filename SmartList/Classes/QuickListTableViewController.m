@@ -93,9 +93,7 @@
 		titleLabel.text = [managedObject valueForKey:self.titleKey];
 		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
 		[cell addSubview:titleLabel];
-//		cell.textLabel.text = [managedObject valueForKey:self.titleKey];
-//		cell.textLabel.frame = CGRectMake(5, 0, cell.frame.size.width - 20, 20);
-//		[cell.textLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16]];
+		[titleLabel release];
 	}
 	if (self.subtitleKey) cell.detailTextLabel.text = [managedObject valueForKey:self.subtitleKey];
 	cell.accessoryType = [self accessoryTypeForManagedObject:managedObject];
@@ -104,6 +102,25 @@
 	[progressBar setProgress:[((Task*)managedObject).progress floatValue]];
 	[progressBar setFrame:CGRectMake(5, cell.frame.size.height - 15, 150, 10)];
 	[cell addSubview:progressBar];
+	[progressBar release];
+	
+	if ([((Task*)managedObject).due_date timeIntervalSinceNow] < 2592000)
+	{
+		UILabel *dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.frame.size.width - 80, (cell.frame.size.height - 15)/2, 80, 15)]; 
+		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+		[formatter setDateStyle:NSDateFormatterNoStyle];
+		[formatter setTimeStyle:NSDateFormatterShortStyle];
+		[formatter setDateFormat:(NSString*) @"MMM dd"];
+		[dueDateLabel setText:[formatter stringFromDate:((Task*)managedObject).due_date]];
+		[dueDateLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:14]];
+		if ([((Task*)managedObject).due_date timeIntervalSinceNow] < 86400)
+		{
+			dueDateLabel.textColor = [UIColor redColor];
+		}
+		[cell addSubview:dueDateLabel];
+		[formatter release];
+		[dueDateLabel release];
+	}
 	UIImage *thumbnail = [self thumbnailImageForManagedObject:managedObject];
 	if (thumbnail) cell.imageView.image = thumbnail;
 	
