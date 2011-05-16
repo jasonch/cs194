@@ -22,6 +22,7 @@
 @dynamic chunk_size;
 @dynamic duration;
 @dynamic blacklisted;
+@dynamic started_time;
 
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext
