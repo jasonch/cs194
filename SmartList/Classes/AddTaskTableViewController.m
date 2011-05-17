@@ -85,7 +85,10 @@
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
 	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
-	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	if ([dueDate timeIntervalSinceNow] > 60*60*24*30*100) // over 100 months from now
+		[dueDateLabel setText:@"N/A"];
+	else
+		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
@@ -139,7 +142,7 @@
 		task.due_date = dueDate;
 		NSLog(@"Priority: %d", [prioritySlider value]);
 		task.priority = [NSNumber numberWithInt:(([prioritySlider value]))];
-		task.chunk_size = [NSNumber numberWithInt:([slider value])];
+		task.chunk_size = [NSNumber numberWithDouble:(duration/([slider value] + 1))];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }
