@@ -18,6 +18,7 @@
 
 @interface DueDateViewController : UIViewController {
 	IBOutlet UIDatePicker *dueDatePicker;
+	NSDate *date;
 }
 
 @property(assign) id delegate;

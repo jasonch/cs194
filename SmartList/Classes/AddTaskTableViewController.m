@@ -142,7 +142,7 @@
 		task.due_date = dueDate;
 		NSLog(@"Priority: %d", [prioritySlider value]);
 		task.priority = [NSNumber numberWithInt:(([prioritySlider value]))];
-		task.chunk_size = [NSNumber numberWithDouble:(duration/([slider value] + 1))];
+		task.chunk_size = [NSNumber numberWithDouble:[slider value]];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }

@@ -16,6 +16,7 @@
 -initWithDate:(NSDate*)aDate
 {
 	dueDatePicker = [[UIDatePicker alloc] init];
+	date = [[NSDate alloc] initWithDate:aDate];
 	return self;
 }
 
@@ -35,8 +36,7 @@
     [super viewDidLoad];
 	self.title = @"Due Date";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDate)];
-	[dueDatePicker setDate:[NSDate date] animated:NO];
-	
+	[dueDatePicker setDate:date animated:NO];
 }
 
 -(void)saveDate
@@ -71,6 +71,7 @@
 - (void)dealloc {
     [super dealloc];
 	[dueDatePicker release];
+	[date release];
 }
 
 

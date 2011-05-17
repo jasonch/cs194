@@ -205,7 +205,13 @@
     [super dealloc];
 }
 
+- (void)checkAndUpdateTaskDB {
+	
+	
+}
+
 - (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k {
+	
 	return YES;
 }
 
@@ -236,7 +242,7 @@
 	
 	NSLog(@"Get Next Scheduled Task");
 		
-	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
 	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d and blacklisted == NO", spareTime];
@@ -276,8 +282,10 @@
 				if (feasible)
 					break;
 			}
-			if (feasible == NO)
+			if (feasible == NO) {
+				[m_array release];
 				return nil;
+			}
 		}
 		return [self getTaskWithPriorityArray:m_array];
 	}
@@ -297,7 +305,7 @@
 	if (error == noErr) {
 		UIAlertView *alert = [[UIAlertView alloc]
 							  initWithTitle:@"Task Added to Calendar"
-							  message:[NSString stringWithFormat:@"Start working on %@, and come back when you're finished!", currentTask.name]
+							  message:[NSString stringWithFormat:@"Start working on %@, and come back when you're done!", currentTask.name]
 							  delegate:nil
 							  cancelButtonTitle:@"Okay"
 							  otherButtonTitles:nil];
