@@ -62,6 +62,7 @@
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
 		[currentTask setValue:[NSDate date] forKey:@"started_time"];
 		[sender setTitle: @"Pause" forState: UIControlStateNormal];
+		//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
 		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 		busy = YES;
 		NSLog (@"%@", [currentTask description]);
@@ -98,6 +99,7 @@
 {
 	[freeTimeLabel setText:@"You have some free time!"];
 	[sender setTitle: @"Start" forState: UIControlStateNormal];
+	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
 	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	
 	// update database
@@ -363,5 +365,13 @@
 		return nil;	
 	return nil;
 }
+
+//+ (Task*) currentTask {
+//	return currentTask;
+//}
+//
+//+ (BOOL) busy {
+//	return busy;
+//}
 
 @end

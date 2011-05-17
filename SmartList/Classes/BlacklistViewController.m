@@ -22,7 +22,7 @@
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
 {
 	context = aContext;	
-	//blacklist = aBlacklist;
+	blacklist = [[NSMutableArray alloc] init];
 	
 	NSArray *fetchResults = [[NSArray alloc] init];
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -34,7 +34,7 @@
 	fetchResults = [context executeFetchRequest:request error:&error];
 	NSLog(@"%@", fetchResults); //works ok
 	
-	blacklist = [NSMutableArray arrayWithArray:fetchResults];
+	//blacklist = [NSMutableArray arrayWithArray:fetchResults];
 	
 	if (self = [super initWithStyle:UITableViewStylePlain])
 	{
@@ -47,7 +47,7 @@
 #pragma mark tableView methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return [blacklist count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath { 

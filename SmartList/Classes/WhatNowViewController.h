@@ -40,5 +40,7 @@
 -(void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
 -(BOOL)addCurrentTaskToCalendar;
 -(BOOL)updateProgressOfTask:(Task *)task;
+//+ (Task*) currentTask;
+//+ (BOOL) busy;
 
 @end

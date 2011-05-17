@@ -11,6 +11,7 @@
 #import "DueDateViewController.h"
 #import "DurationViewController.h"
 #import "AddTaskTableViewController.h"
+#import "WhatNowViewController.h"
 #import "Task.h"
 
 
@@ -24,10 +25,13 @@
 	UIButton *startButton;
 	UIButton *completeButton;
 	Task *task;
+	Task *currentTask;
+	BOOL busy;
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
 -(void)startPressed:(UIButton*)sender;
+-(void)pausePressed:(UIButton*)sender;
 -(void)completePressed:(UIButton*)sender; 
 
 @end
