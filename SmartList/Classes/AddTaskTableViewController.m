@@ -236,6 +236,18 @@
 }
 
 
+-(void)sliderChanged:(id)sender
+{
+	UISlider *sittingsSlider = (UISlider *)sender;
+	sittingsSlider.maximumValue = duration;
+	sittingsSlider.minimumValue = .25;
+	//double hours = floor([sittingsSlider value]);
+	double minutes = floor([sittingsSlider value]*4)/4;
+	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
+	hourString = [hourString stringByAppendingString:@" hours"];
+	hourLabel.text = hourString;
+}
+
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -265,11 +277,15 @@
 			[cell.textLabel setText: @"Duration"];
 			[cell addSubview:durationLabel];
 			break;
-		case 3:
-			slider = [[UISlider alloc] initWithFrame:CGRectMake(100,12,194,23)];
-			[cell.textLabel setText: @"Chunks"];
+		case 3:			
+			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 15)];
+			hourLabel.text = @".25 hours";
+			slider = [[UISlider alloc] initWithFrame:CGRectMake(144,20,154,15)];
+			[slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
+			[cell.textLabel setText: @"Sitting Length"];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
+			[cell addSubview:hourLabel];
 
 			break;
 		case 4:
@@ -286,7 +302,6 @@
     
     return cell;
 }
-
 
 
 
@@ -349,6 +364,7 @@
 	[nameField release];
 	[slider release];
 	[prioritySlider release];
+	[hourLabel release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
 	//[dvc release];

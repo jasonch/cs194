@@ -18,6 +18,7 @@
 	UITextField *nameField;
 	UILabel *dueDateLabel;
 	UILabel *durationLabel;
+	UILabel *hourLabel;
 	NSDate *dueDate;
 	float duration;
 	NSDateFormatter *formatter;
