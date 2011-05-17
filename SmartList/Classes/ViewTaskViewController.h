@@ -14,7 +14,7 @@
 #import "Task.h"
 
 
-@interface ViewTaskViewController : UITableViewController {
+@interface ViewTaskViewController : UITableViewController <UIAlertViewDelegate> {
 	NSManagedObjectContext *context;
 	UILabel *chunksLabel;
 	UILabel *nameLabel;

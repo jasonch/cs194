@@ -35,6 +35,7 @@
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		startButton.frame = CGRectMake(30, 300, 125, 40);
 		[startButton setTitle:@"Start" forState:UIControlStateNormal];
+		
 		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 		completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		completeButton.frame = CGRectMake(170, 300, 125, 40);
@@ -55,8 +56,14 @@
 
 -(void)completePressed:(UIButton*)sender
 {
-	[context deleteObject:(NSManagedObject*)task];
-	[self.navigationController popViewControllerAnimated:YES];
+	UIAlertView *removeTask = [[UIAlertView alloc]
+						  initWithTitle: @"Complete this task"
+						  message: @"Marking this task as complete will remove it from your QuickList."
+						  delegate: self
+						  cancelButtonTitle:@"Cancel"
+						  otherButtonTitles:@"OK",nil];
+	[removeTask show];
+	[removeTask release];
 }
 
 
@@ -65,6 +72,16 @@
 	AddTaskTableViewController *attvc = [[AddTaskTableViewController alloc] initInManagedObjectContext:context withTask:task];
 	[self.navigationController pushViewController:attvc animated:YES];
 	[attvc release];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		// user pressed cancel, do nothing
+	}
+	else {
+		[context deleteObject:(NSManagedObject*)task];
+		[self.navigationController popViewControllerAnimated:YES];
+	}
 }
 
  - (void)viewDidLoad {
