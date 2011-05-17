@@ -29,7 +29,7 @@
 	
 	[self setup];
 	
-	if (self = [super initWithStyle:UITableViewStylePlain])
+	if (self == [super initWithStyle:UITableViewStylePlain])
 	{
 		if (user == nil)
 		{
