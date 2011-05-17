@@ -19,11 +19,12 @@
 	
 }
 
--initInManagedObjectContext:(NSManagedObjectContext*)aContext
+-initInManagedObjectContext:(NSManagedObjectContext*)aContext withBlacklist:(NSMutableArray*)aBlacklist
 {
 	context = aContext;	
-	blacklist = [[NSMutableArray alloc] init];
+	blacklist = aBlacklist;
 	
+	/*
 	NSArray *fetchResults = [[NSArray alloc] init];
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
@@ -34,7 +35,8 @@
 	fetchResults = [context executeFetchRequest:request error:&error];
 	NSLog(@"%@", fetchResults); //works ok
 	
-	//blacklist = [NSMutableArray arrayWithArray:fetchResults];
+	blacklist = [NSMutableArray arrayWithArray:fetchResults];
+	*/
 	
 	if (self = [super initWithStyle:UITableViewStylePlain])
 	{

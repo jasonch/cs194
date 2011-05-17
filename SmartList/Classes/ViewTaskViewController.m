@@ -24,6 +24,7 @@
 	[chunksLabel setText: [task.chunk_size stringValue]];
 	[priorityLabel setText: [task.priority stringValue]];
 	//busy = [WhatNowViewController busy];	
+	//currentTask = [WhatNowViewController currentTask];	
 }
 
 
@@ -36,6 +37,17 @@
 		startButton.frame = CGRectMake(30, 300, 125, 40);
 		[startButton setTitle:@"Start" forState:UIControlStateNormal];
 		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+
+		/* what we want:
+		if (currentTask != task) {
+			[startButton setTitle:@"Start" forState:UIControlStateNormal];
+			[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+		} else {
+			[startButton setTitle:@"Pause" forState:UIControlStateNormal];
+			[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+		}
+		 */
+
 		completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		completeButton.frame = CGRectMake(170, 300, 125, 40);
 		[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
@@ -50,12 +62,12 @@
 
 -(void)startPressed:(UIButton*)sender
 {
-	if (busy && currentTask != nil) {
+	if (busy) {
 		NSString *alertMessage = [NSString stringWithFormat:@"You are already working on '%@'.",
 								  currentTask.name];
 		UIAlertView *alreadyBusy = [[UIAlertView alloc] initWithTitle: @"Already working on a task" 
 															  message: alertMessage
-															 delegate:self 
+															 delegate: self 
 													cancelButtonTitle: @"Ok" 
 													otherButtonTitles: nil];
 		
@@ -100,8 +112,6 @@
 	[taskEnded release];
 	
 	//currentTask = nil;
-	//updateProgress
-	//busy = NO;
 }
 
 -(void)completePressed:(UIButton*)sender

@@ -112,27 +112,28 @@
 
 -(void)blacklistPressed:(UIButton*)sender
 {
-//	if (currentTask == nil) {
-//		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
-//														  message: @"Action could not be performed because there are no tasks in your QuickList." 
-//														 delegate:self 
-//												cancelButtonTitle: @"Ok" 
-//												otherButtonTitles: nil];
-//		
-//		[noTasks show];
-//		[noTasks release];
-//		return;
-//	} else if (busy) {
-//		UIAlertView *currentlyBusy = [[UIAlertView alloc] initWithTitle: @"Task cannot be Blacklisted" 
-//														  message: @"You cannot Blacklist a task you are currently working on. Pause or Complete the task." 
-//														 delegate:self 
-//												cancelButtonTitle: @"Ok" 
-//												otherButtonTitles: nil];
-//		
-//		[currentlyBusy show];
-//		[currentlyBusy release];
-//		return;
-//	}	
+	/*
+	if (currentTask == nil) {
+		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
+														  message: @"Action could not be performed because there are no tasks in your QuickList." 
+														 delegate:self 
+												cancelButtonTitle: @"Ok" 
+												otherButtonTitles: nil];
+		
+		[noTasks show];
+		[noTasks release];
+		return;
+	} else if (busy) {
+		UIAlertView *currentlyBusy = [[UIAlertView alloc] initWithTitle: @"Task cannot be Blacklisted" 
+														  message: @"You cannot Blacklist a task you are currently working on. Pause or Complete the task." 
+														 delegate:self 
+												cancelButtonTitle: @"Ok" 
+												otherButtonTitles: nil];
+		
+		[currentlyBusy show];
+		[currentlyBusy release];
+		return;
+	}	*/
 	
 	if (currentTask == nil || busy) {
 		return;
@@ -157,7 +158,7 @@
 
 -(void)viewBlacklist
 {		
-	BlacklistViewController *bvc = [[BlacklistViewController alloc] initInManagedObjectContext:context];
+	BlacklistViewController *bvc = [[BlacklistViewController alloc] initInManagedObjectContext:context withBlacklist:blacklist];
 	[self.navigationController pushViewController:bvc animated:YES];
 	[bvc release];
 }

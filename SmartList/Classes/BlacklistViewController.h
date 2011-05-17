@@ -16,6 +16,6 @@
 	NSMutableArray *blacklist;
 }
 
--initInManagedObjectContext:(NSManagedObjectContext*)aContext;
+-initInManagedObjectContext:(NSManagedObjectContext*)aContext withBlacklist:(NSMutableArray*)aBlacklist;
 
 @end
