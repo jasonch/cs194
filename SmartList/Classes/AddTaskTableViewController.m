@@ -241,7 +241,6 @@
 	UISlider *sittingsSlider = (UISlider *)sender;
 	sittingsSlider.maximumValue = duration;
 	sittingsSlider.minimumValue = .25;
-	//double hours = floor([sittingsSlider value]);
 	double minutes = floor([sittingsSlider value]*4)/4;
 	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
 	hourString = [hourString stringByAppendingString:@" hours"];
