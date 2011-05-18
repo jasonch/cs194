@@ -23,7 +23,6 @@
 	[durationLabel setText: [task.duration stringValue]];
 	[chunksLabel setText: [task.chunk_size stringValue]];
 	[priorityLabel setText: [task.priority stringValue]];
-	
 }
 
 
@@ -32,10 +31,19 @@
 	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
 		context = aContext;
 		task = aTask;
+		
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		startButton.frame = CGRectMake(30, 300, 125, 40);
-		[startButton setTitle:@"Start" forState:UIControlStateNormal];
-		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+		
+		if ([task.status intValue] == 1) { // started
+			[startButton setTitle:@"Pause" forState:UIControlStateNormal];
+			[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+		} else {
+			[startButton setTitle:@"Start" forState:UIControlStateNormal];
+			[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+		}
+		
+
 		completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		completeButton.frame = CGRectMake(170, 300, 125, 40);
 		[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
@@ -50,7 +58,14 @@
 
 -(void)startPressed:(UIButton*)sender
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:task];
+	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
+}
+
+-(void)pausePressed:(UIButton*)sender
+{	
+	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
 }
 
 -(void)completePressed:(UIButton*)sender
@@ -58,6 +73,14 @@
 	[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 	[context deleteObject:(NSManagedObject*)task];
 	[self.navigationController popViewControllerAnimated:YES];
+	UIAlertView *removeTask = [[UIAlertView alloc]
+						  initWithTitle: @"Complete this task"
+						  message: @"Marking this task as complete will remove it from your QuickList."
+						  delegate: self
+						  cancelButtonTitle:@"Cancel"
+						  otherButtonTitles:@"OK",nil];
+	[removeTask show];
+	[removeTask release];
 }
 
 
@@ -66,6 +89,16 @@
 	AddTaskTableViewController *attvc = [[AddTaskTableViewController alloc] initInManagedObjectContext:context withTask:task];
 	[self.navigationController pushViewController:attvc animated:YES];
 	[attvc release];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		// user pressed cancel, do nothing
+	}
+	else {
+		[context deleteObject:(NSManagedObject*)task];
+		[self.navigationController popViewControllerAnimated:YES];
+	}
 }
 
  - (void)viewDidLoad {
