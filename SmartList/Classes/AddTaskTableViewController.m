@@ -18,6 +18,10 @@
 
 -(void)setDuration: (float) aDuration
 {
+	[slider setMaximumValue:aDuration];
+	[slider setValue:aDuration];
+	[hourLabel setText:[NSString stringWithFormat:@"%.2f", aDuration]];
+
 	duration = aDuration;
 }
 
@@ -97,6 +101,9 @@
 	priority = [task.priority intValue];
 	chunk_size = [task.chunk_size intValue];
 	
+	[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
+	NSLog(@"edit task: %@", [task description]);
+		
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
@@ -143,6 +150,8 @@
 		NSLog(@"Priority: %d", [prioritySlider value]);
 		task.priority = [NSNumber numberWithInt:(([prioritySlider value]))];
 		task.chunk_size = [NSNumber numberWithDouble:[slider value]];
+		task.blacklisted = [NSNumber numberWithBool:blacklistedSwitch.on];
+		NSLog(@"task: %@", [task description]);
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }
@@ -163,8 +172,8 @@
 		task.name = nameField.text;
 		task.due_date = dueDate;
 		task.priority = [NSNumber numberWithInt:([prioritySlider value])];
-		task.chunk_size = [NSNumber numberWithInt:(
-												   [slider value])];
+		task.chunk_size = [NSNumber numberWithInt:([slider value])];
+		task.blacklisted = [NSNumber numberWithBool:blacklistedSwitch.on];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
 }
@@ -202,6 +211,7 @@
 		prioritySlider.value = priority;
 		slider.maximumValue = 20;
 		slider.value = chunk_size;
+		[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
 	}
 }
 
@@ -235,7 +245,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 5;
+    return 6;
 }
 
 
@@ -281,10 +291,11 @@
 			break;
 		case 3:			
 			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 15)];
-			hourLabel.text = @".25 hours";
+			hourLabel.text = @"1 hour";
 			slider = [[UISlider alloc] initWithFrame:CGRectMake(144,20,154,15)];
 			[slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Sitting Length"];
+			[slider setValue:1];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
 			[cell addSubview:hourLabel];
@@ -297,6 +308,13 @@
 			prioritySlider.maximumValue = 5;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:prioritySlider];
+			break;
+		case 5:
+			[cell.textLabel setText:@"Blacklisted"];
+			blacklistedSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 10, 50, 23)];
+			[blacklistedSwitch setOn:NO animated:NO];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			[cell addSubview:blacklistedSwitch];
 			break;
 		default:
 			break;
@@ -366,6 +384,7 @@
 	[nameField release];
 	[slider release];
 	[prioritySlider release];
+	[blacklistedSwitch release];
 	[hourLabel release];
 	//[ddvc setDelegate:nil];
 	//[ddvc release];
