@@ -227,8 +227,9 @@
 
 	// reverse the index because zero priority is highest
 	int index = count - rand - 1; 
-	
-	return [m_array objectAtIndex:index];
+	NSLog(@"Index: %d, Array Size: %d", index, count);
+    //temporarly 0 so it doesn't crash
+	return [m_array objectAtIndex:0];
 }
 
 

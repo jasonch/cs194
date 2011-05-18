@@ -89,7 +89,7 @@
     }
 	
 	if (self.titleKey) {
-		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 20, 20)];
+		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 82, 20)];
 		titleLabel.text = [managedObject valueForKey:self.titleKey];
 		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
 		[cell addSubview:titleLabel];

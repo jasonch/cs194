@@ -15,11 +15,14 @@
 {
 	self.title = task.name;	
 	[nameLabel setText: task.name];
-	NSDateFormatter *format = [[NSDateFormatter alloc] init];
-	[format setDateFormat:@"MMM dd, yyyy HH:mm"];
-	NSString *dateString = [format stringFromDate:task.due_date];
-	[format release];
-	[dueDateLabel setText:dateString];
+	if ([task.due_date timeIntervalSinceNow] < 2592000)
+	{
+		NSDateFormatter *format = [[NSDateFormatter alloc] init];
+		[format setDateFormat:@"MMM dd, yyyy HH:mm"];
+		NSString *dateString = [format stringFromDate:task.due_date];
+		[format release];
+		[dueDateLabel setText:dateString];
+	}
 	[durationLabel setText: [task.duration stringValue]];
 	[chunksLabel setText: [task.chunk_size stringValue]];
 	[priorityLabel setText: [task.priority stringValue]];
@@ -29,7 +32,7 @@
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask
 {
-	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+	if (self == [super initWithStyle:UITableViewStyleGrouped]) {
 		context = aContext;
 		task = aTask;
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -133,39 +136,42 @@
     switch (indexPath.row) {
 		case 0:
 			[cell.textLabel setText: @"Task"];
-			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[nameLabel setText: task.name];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:nameLabel];
 			break;
 		case 1:
-			[cell.textLabel setText: @"Due Date"];
-			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
-			NSDateFormatter *format = [[NSDateFormatter alloc] init];
-			[format setDateFormat:@"MMM dd, yyyy HH:mm"];
-			NSString *dateString = [format stringFromDate:task.due_date];
-			[format release];
-			[dueDateLabel setText:dateString];
+			[cell.textLabel setText: @"Due Date"];			
+			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
+			if ([task.due_date timeIntervalSinceNow] < 2592000)
+			{
+				NSDateFormatter *format = [[NSDateFormatter alloc] init];
+				[format setDateFormat:@"MMM dd, yyyy HH:mm"];
+				NSString *dateString = [format stringFromDate:task.due_date];
+				[format release];
+				[dueDateLabel setText:dateString];
+			}
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
 			[cell.textLabel setText: @"Duration"];
-			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[durationLabel setText: [task.duration stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
 			[cell.textLabel setText: @"Chunks"];
-			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[chunksLabel setText: [task.chunk_size stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:chunksLabel];			
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
-			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[priorityLabel setText: [task.priority stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			
@@ -185,7 +191,7 @@
 	 return YES;
  }
  
-
+*/
 
 /*
  // Override to support editing the table view.

@@ -85,8 +85,11 @@
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
 	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
-	[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
+	if ([dueDate timeIntervalSinceNow] < 2592000)
+	{
+		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
+	}
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
