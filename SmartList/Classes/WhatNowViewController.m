@@ -30,6 +30,8 @@
 
 	busy = NO;
 	
+	// set up event listeners
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
 	[self updateCurrentTask];
 }
 
@@ -40,6 +42,21 @@
 	return self;
 }
 
+-(void)startPressedWithTask:(Task *)aTask
+{
+	if (busy) {
+		NSString *message = [NSString stringWithFormat:@"You are working on %@", [currentTask name]];
+		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
+													delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[busyAlert show];
+		[busyAlert release];
+	} else {
+	}
+
+		
+	
+}
 
 -(IBAction)startPressed:(UIButton*)sender
 {

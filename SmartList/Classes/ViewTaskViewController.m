@@ -50,11 +50,12 @@
 
 -(void)startPressed:(UIButton*)sender
 {
-	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:task];
 }
 
 -(void)completePressed:(UIButton*)sender
 {
+	[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 	[context deleteObject:(NSManagedObject*)task];
 	[self.navigationController popViewControllerAnimated:YES];
 }
