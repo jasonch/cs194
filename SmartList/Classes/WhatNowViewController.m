@@ -42,6 +42,8 @@
 
 	busy = NO;
 	
+	// set up event listeners
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
 	[self updateCurrentTask];
 }
 
@@ -52,11 +54,27 @@
 	return self;
 }
 
+-(void)startPressedWithTask:(Task *)aTask
+{
+	if (busy) {
+		NSString *message = [NSString stringWithFormat:@"You are working on %@", [currentTask name]];
+		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
+													delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[busyAlert show];
+		[busyAlert release];
+	} else {
+	}
+
+		
+	
+}
 
 -(void)startPressed:(UIButton*)sender
 {
+	NSLog(@"start pressed");
 	
-	if (!busy && [self addCurrentTaskToCalendar] == YES) {
+	if (!busy && currentTask != nil && [self addCurrentTaskToCalendar] == YES) {
 		[freeTimeLabel setText:@"You are currently working on..."];
 
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
@@ -169,7 +187,6 @@
 	
 	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
 	if (task == nil) {
-		busy = YES;
 		[taskLabel setText:@"No task to schedule!"];
 		//startButton.enabled = NO;
 	} else
@@ -267,14 +284,19 @@
 	int count = [m_array count];
 	if (count == 0) return nil;
 	
-	// use a parabolic function to give higher priority more weight
-	int total = (count - 1) * count * (2*count - 1) / 6;
+	// use a linear function to give higher priority more weight
+	// total number of "lottery tickets"
+	int total = (count + 1) * count / 2;
 	
-	int rand = arc4random() % (1 + total);
-	rand = sqrt(rand + 0.0);
-
+	// randomly pick one lottery ticket
+	int rand = arc4random() % total + 1;
+	
+	// convert lottery ticket number back to the ticket holder
+	// this should be the inverse function of assigning tickets
+	rand = floor(sqrt(1+8*rand)-1)/2; 
+	
 	// reverse the index because zero priority is highest
-	int index = count - rand - 1; 
+	int index = count - rand; 
 	
 	return [m_array objectAtIndex:index];
 }
@@ -287,7 +309,7 @@
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
-	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %d and blacklisted == NO", spareTime];
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %f and blacklisted == NO", spareTime];
 
 	NSError *error = nil; 
 	

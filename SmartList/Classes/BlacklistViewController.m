@@ -22,21 +22,19 @@
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withBlacklist:(NSMutableArray*)aBlacklist
 {
 	context = aContext;	
-	blacklist = aBlacklist;
+	//blacklist = aBlacklist;
 	
-	/*
 	NSArray *fetchResults = [[NSArray alloc] init];
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
-	//request.predicate = [NSPredicate predicateWithFormat:@"blacklisted == 0"];
-	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", @"Test"];
+	request.predicate = [NSPredicate predicateWithFormat:@"blacklisted = %@ AND (status == 0 OR status == 1)", [NSNumber numberWithBool:YES]];
 	NSError *error = nil;
 	fetchResults = [context executeFetchRequest:request error:&error];
 	NSLog(@"%@", fetchResults); //works ok
 	
-	blacklist = [NSMutableArray arrayWithArray:fetchResults];
-	*/
+	blacklist = [[NSMutableArray arrayWithArray:fetchResults] retain];
+	
 	
 	if (self = [super initWithStyle:UITableViewStylePlain])
 	{

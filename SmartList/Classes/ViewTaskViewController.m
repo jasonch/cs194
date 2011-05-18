@@ -95,35 +95,41 @@
 
 -(void)pausePressed:(UIButton*)sender
 {	
-	busy = NO;
-	[sender setTitle: @"Start" forState: UIControlStateNormal];
-	[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
-	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-	
-	NSString *alertMessage = [NSString stringWithFormat:@"You have stopped working on '%@'. Press Start to begin again.",
-							  nameLabel.text];
-	UIAlertView *taskEnded = [[UIAlertView alloc] initWithTitle: @"Task ended" 
-														message: alertMessage 
-													   delegate:self 
-											  cancelButtonTitle: @"Ok" 
-											  otherButtonTitles: nil];
-	
-	[taskEnded show];
-	[taskEnded release];
-	
-	//currentTask = nil;
+//	busy = NO;
+//	[sender setTitle: @"Start" forState: UIControlStateNormal];
+//	[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+//	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+//	
+//	NSString *alertMessage = [NSString stringWithFormat:@"You have stopped working on '%@'. Press Start to begin again.",
+//							  nameLabel.text];
+//	UIAlertView *taskEnded = [[UIAlertView alloc] initWithTitle: @"Task ended" 
+//														message: alertMessage 
+//													   delegate:self 
+//											  cancelButtonTitle: @"Ok" 
+//											  otherButtonTitles: nil];
+//	
+//	[taskEnded show];
+//	[taskEnded release];
+//	
+//	currentTask = nil;
+
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:task];
 }
 
 -(void)completePressed:(UIButton*)sender
 {
-	UIAlertView *removeTask = [[UIAlertView alloc]
-						  initWithTitle: @"Complete this task"
-						  message: @"Marking this task as complete will remove it from your QuickList."
-						  delegate: self
-						  cancelButtonTitle:@"Cancel"
-						  otherButtonTitles:@"OK",nil];
-	[removeTask show];
-	[removeTask release];
+//	UIAlertView *removeTask = [[UIAlertView alloc]
+//						  initWithTitle: @"Complete this task"
+//						  message: @"Marking this task as complete will remove it from your QuickList."
+//						  delegate: self
+//						  cancelButtonTitle:@"Cancel"
+//						  otherButtonTitles:@"OK",nil];
+//	[removeTask show];
+//	[removeTask release];
+
+	[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
+//	[context deleteObject:(NSManagedObject*)task];
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 
