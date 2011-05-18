@@ -42,7 +42,7 @@
 		
 		//defaults
 		task.status = [NSNumber numberWithInt:0];
-		task.progress = [NSDecimalNumber decimalNumberWithString:@"0.0"];
+		task.progress = [NSDecimalNumber decimalNumberWithString:@"0.5"];
 		task.creation_time = [[[NSDate alloc] init] autorelease];
 		task.user = nil;
 		
