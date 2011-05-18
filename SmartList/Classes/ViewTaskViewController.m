@@ -73,15 +73,13 @@
 
 -(void)completePressed:(UIButton*)sender
 {
-	[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
-	[context deleteObject:(NSManagedObject*)task];
-	[self.navigationController popViewControllerAnimated:YES];
 	UIAlertView *removeTask = [[UIAlertView alloc]
 						  initWithTitle: @"Complete this task"
 						  message: @"Marking this task as complete will remove it from your QuickList."
 						  delegate: self
 						  cancelButtonTitle:@"Cancel"
 						  otherButtonTitles:@"OK",nil];
+	 
 	[removeTask show];
 	[removeTask release];
 }
@@ -99,6 +97,7 @@
 		// user pressed cancel, do nothing
 	}
 	else {
+		[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 		[context deleteObject:(NSManagedObject*)task];
 		[self.navigationController popViewControllerAnimated:YES];
 	}

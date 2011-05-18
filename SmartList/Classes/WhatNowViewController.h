@@ -20,8 +20,8 @@
 	BOOL busy;
 	IBOutlet UILabel *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
-	UIButton *startButton;
-	UIButton *blacklistButton;
+	IBOutlet UIButton *startButton;
+	IBOutlet UIButton *blacklistButton;
 }
 
 

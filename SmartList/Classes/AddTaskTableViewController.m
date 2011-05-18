@@ -20,6 +20,7 @@
 {
 	[slider setMaximumValue:aDuration];
 	[slider setValue:aDuration];
+	chunk_size = aDuration;
 	[hourLabel setText:[NSString stringWithFormat:@"%.2f", aDuration]];
 
 	duration = aDuration;
@@ -209,8 +210,8 @@
 		prioritySlider.minimumValue = 1;
 		prioritySlider.maximumValue = 5;
 		prioritySlider.value = priority;
-		slider.maximumValue = 20;
-		slider.value = chunk_size;
+		//slider.maximumValue = 20;
+		//slider.value = chunk_size;
 		[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
 	}
 }
