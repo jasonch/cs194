@@ -220,10 +220,14 @@
 		currentTask = nil;
 		[freeTimeLabel setText:@"You are currently working on..."];
 		[taskLabel setText:calendarTask.title];
+		NSLog(@"CALENDAR BUSY!!");
 		return;
 	}
 	
-	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
+	EKEvent *nextCalendarTask = [self getNextCalendarTask];
+	double spareTime = nextCalendarTask==nil?100.0:[nextCalendarTask.startDate timeIntervalSinceNow]/3600.;
+	
+	Task * task = [self getNextScheduledTaskWithDurationOf:spareTime];
 	if (task == nil) {
 		[taskLabel setText:@"No task to schedule!"];
 		//startButton.enabled = NO;
@@ -430,6 +434,11 @@
 	if ([calendarTasks count] == 0)
 		return nil;	
 	
+	for (int i = 0; i < [calendarTasks count]; i++) {
+		EKEvent *event = [calendarTasks objectAtIndex:i];
+		if ([event.startDate timeIntervalSinceNow] < 0) continue;
+		return event;
+	}
 	return nil;
 }
 
@@ -441,6 +450,7 @@
 		EKEvent *event = [calendarTasks objectAtIndex:i];
 		if ([event.startDate timeIntervalSinceNow] > 0) break;
 		if ([event.endDate timeIntervalSinceNow] < 0) continue;
+		NSLog(@"found calendar task: %@", [event description]);
 		return event;
 	}
 	return nil;
