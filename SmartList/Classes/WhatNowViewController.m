@@ -227,11 +227,12 @@
 	if (task == nil) {
 		[taskLabel setText:@"No task to schedule!"];
 		//startButton.enabled = NO;
-	} else
+	} else {
 		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
 		currentTask = task;
 		NSLog(@"%@", [task description]);
 		//startButton.enabled = YES;
+	}
 }
 
 #pragma mark Shake Functionality
