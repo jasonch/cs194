@@ -32,7 +32,6 @@
 	[self.view addSubview:blacklistButton];
 	
 	currentTask = nil; //[Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
-	calendarTasks = nil;
 
 	busy = NO;
 	
@@ -45,6 +44,7 @@
 	// set up event listeners
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
+	[self getTaskFromCalendar];
 	
 	[self setup];
 	return self;
@@ -214,7 +214,14 @@
 
 -(void) updateCurrentTask {
 	
-	// checks all started tasks and update their status if needed
+	EKEvent *calendarTask = [self getCurrentCalendarTask];
+	if (calendarTask != nil) {
+		busy = YES;
+		currentTask = nil;
+		[freeTimeLabel setText:@"You are currently working on..."];
+		[taskLabel setText:calendarTask.title];
+		return;
+	}
 	
 	Task * task = [self getNextScheduledTaskWithDurationOf:2.0];
 	if (task == nil) {
@@ -264,9 +271,6 @@
 	[calendarTasks sortUsingSelector:@selector(compareStartDateWithEvent:)];
 	
 	[eventStore release];
-	
-	NSLog(@"%@", [calendarTasks description]);
-	
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -274,6 +278,11 @@
 	if (!busy) {
 		NSLog(@"refreshing What Now? view controller");
 		[self updateCurrentTask];
+	} else if (currentTask == nil) { // means we're on a calendar task
+		EKEvent *event = [self getCurrentCalendarTask];
+		if (event == nil) { // but the event ended
+			busy = NO;
+		}
 	}
 }
 
@@ -416,8 +425,23 @@
 }
 
 - (EKEvent *)getNextCalendarTask {
+	
 	if ([calendarTasks count] == 0)
 		return nil;	
+	
+	return nil;
+}
+
+- (EKEvent *)getCurrentCalendarTask {
+	if ([calendarTasks count] == 0)
+		return nil;
+	
+	for (int i = 0; i < [calendarTasks count]; i++) {
+		EKEvent *event = [calendarTasks objectAtIndex:i];
+		if ([event.startDate timeIntervalSinceNow] > 0) break;
+		if ([event.endDate timeIntervalSinceNow] < 0) continue;
+		return event;
+	}
 	return nil;
 }
 

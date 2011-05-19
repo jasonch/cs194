@@ -33,6 +33,7 @@
 -(void)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
 -(void)getTaskFromCalendar;
+-(EKEvent *)getCurrentCalendarTask;
 -(void)updateCurrentTask;
 -(BOOL)canBecomeFirstResponder;
 -(void)viewDidAppear:(BOOL)animated;
