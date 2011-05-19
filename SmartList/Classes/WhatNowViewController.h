@@ -32,6 +32,7 @@
 -(void)pausePressedWithTask:(NSNotification *)note;
 -(void)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
+-(void)checkAndUpdateTaskDB;
 -(void)getTaskFromCalendar;
 -(EKEvent *)getCurrentCalendarTask;
 -(EKEvent *)getNextCalendarTask;
@@ -42,7 +43,7 @@
 -(Task *)getNextScheduledTaskWithDurationOf: (double)spare;
 -(BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k;
 -(void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
--(BOOL)addCurrentTaskToCalendar;
+-(BOOL)addTaskToCalendar:(Task *)aTask fromTime:(NSDate *)from toTime:(NSDate *)to;
 -(BOOL)updateProgressOfTask:(Task *)task;
 //+ (Task*) currentTask;
 //+ (BOOL) busy;

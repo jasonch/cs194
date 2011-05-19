@@ -23,6 +23,8 @@
 		[format release];
 		[dueDateLabel setText:dateString];
 	}
+
+	[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 	if ([task.status intValue] == 1) { // started
 		[startButton setTitle:@"Pause" forState:UIControlStateNormal];
 		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -30,10 +32,6 @@
 		[startButton setTitle:@"Start" forState:UIControlStateNormal];
 		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	}
-	
-	//[durationLabel setText: [task.duration stringValue]];
-	//[chunksLabel setText: [task.chunk_size stringValue]];
-	//[priorityLabel setText: [task.priority stringValue]];
 }
 
 
@@ -46,6 +44,7 @@
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		startButton.frame = CGRectMake(30, 300, 125, 40);
 		
+		[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 		if ([task.status intValue] == 1) { // started
 			[startButton setTitle:@"Pause" forState:UIControlStateNormal];
 			[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -69,65 +68,15 @@
 
 -(void)startPressed:(UIButton*)sender
 {
-//	if (busy) {
-//		NSString *alertMessage = [NSString stringWithFormat:@"You are already working on '%@'.",
-//								  currentTask.name];
-//		UIAlertView *alreadyBusy = [[UIAlertView alloc] initWithTitle: @"Already working on a task" 
-//															  message: alertMessage
-//															 delegate: self 
-//													cancelButtonTitle: @"Ok" 
-//													otherButtonTitles: nil];
-//		
-//		[alreadyBusy show];
-//		[alreadyBusy release];
-//	}
-//	else {
-//		busy = YES;
-//		[sender setTitle: @"Pause" forState: UIControlStateNormal];
-//		[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
-//		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
-//		
-//		NSString *alertMessage = [NSString stringWithFormat:@"You have started working on '%@'. Press Pause to discontinue.",
-//								  nameLabel.text];
-//		UIAlertView *taskStarted = [[UIAlertView alloc] initWithTitle: @"Task started" 
-//															  message: alertMessage 
-//															 delegate:self 
-//													cancelButtonTitle: @"Ok" 
-//													otherButtonTitles: nil];
-//		
-//		[taskStarted show];
-//		[taskStarted release];
-//	}
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
-//	[startButton setTitle:@"Pause" forState:UIControlStateNormal];
-//	[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
     [self setup];
 }
 
 -(void)pausePressed:(UIButton*)sender
 {	
-//	busy = NO;
-//	[sender setTitle: @"Start" forState: UIControlStateNormal];
-//	[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
-//	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-//	
-//	NSString *alertMessage = [NSString stringWithFormat:@"You have stopped working on '%@'. Press Start to begin again.",
-//							  nameLabel.text];
-//	UIAlertView *taskEnded = [[UIAlertView alloc] initWithTitle: @"Task ended" 
-//														message: alertMessage 
-//													   delegate:self 
-//											  cancelButtonTitle: @"Ok" 
-//											  otherButtonTitles: nil];
-//	
-//	[taskEnded show];
-//	[taskEnded release];
-//	
-//	currentTask = nil;
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
-//	[startButton setTitle:@"Start" forState:UIControlStateNormal];
-//	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self setup];
 }
 

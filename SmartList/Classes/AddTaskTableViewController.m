@@ -44,7 +44,7 @@
 	duration = 1;
 	[durationLabel setText:@"1 hour and 0 minutes"];
 	
-	name = @"";
+	name = nil;
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
@@ -97,7 +97,7 @@
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
-	name = task.name;
+	name = [[NSString alloc] initWithString:task.name];
 	priority = [task.priority intValue];
 	chunk_size = [task.chunk_size intValue];
 	
@@ -142,8 +142,15 @@
 		[duplicate release];
 	
 	}
-	else 
-	{
+	else if (duration == 0) {
+		// duplicate task name exception
+		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Invalid duration" message: @"Duration must be greator than 0." 
+														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+		
+		[duplicate show];
+		[duplicate release];
+		
+	} else {
 		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
 		task.duration = [NSNumber numberWithFloat:duration];
 		task.due_date = dueDate;
@@ -180,7 +187,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[textField resignFirstResponder];
-	return NO;
+	return YES;
 }
 
 - (void)viewDidLoad {
@@ -205,7 +212,9 @@
     [super viewDidAppear:animated];
 	if (task != nil && name != nil)
 	{
-        [nameField setText:name];
+		assert (nameField != nil);
+		assert (name != nil);
+        nameField.text = name;
 		prioritySlider.minimumValue = 1;
 		prioritySlider.maximumValue = 5;
 		prioritySlider.value = priority;
@@ -369,16 +378,14 @@
 	
 	if (indexPath.row == 1)
 	{
-		name = nameField.text;
-        NSLog(@"Name: %@", name);
+		name = [[NSString alloc] initWithString:[nameField text]];
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:ddvc animated:YES];
 	}
 	else if (indexPath.row == 2)
 	{
-        NSLog(@"Name: %@", name);
-		name = nameField.text;
+		name = [[NSString alloc] initWithString:[nameField text]];
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:dvc animated:YES];
@@ -416,6 +423,7 @@
 	[formatter release];
 	[durationLabel release];
 	[nameField release];
+	[name release];
 	[slider release];
 	[prioritySlider release];
 	[blacklistedSwitch release];
