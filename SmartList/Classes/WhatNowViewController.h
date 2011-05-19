@@ -34,6 +34,7 @@
 -(void)viewBlacklist;
 -(void)getTaskFromCalendar;
 -(EKEvent *)getCurrentCalendarTask;
+-(EKEvent *)getNextCalendarTask;
 -(void)updateCurrentTask;
 -(BOOL)canBecomeFirstResponder;
 -(void)viewDidAppear:(BOOL)animated;
