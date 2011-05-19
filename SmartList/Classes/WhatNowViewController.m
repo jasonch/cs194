@@ -44,7 +44,6 @@
 	// set up event listeners
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
-	[self getTaskFromCalendar];
 	
 	[self setup];
 	return self;
@@ -54,8 +53,12 @@
 -(void)startPressedWithTask:(NSNotification *)note
 {
 	if (busy) {
-		assert(currentTask != nil);
-		NSString *message = [NSString stringWithFormat:@"You are working on %@", [currentTask name]];
+        NSString *taskName = nil;
+        if (currentTask != nil)
+            taskName = [currentTask name];
+        else
+            taskName = [taskLabel text];
+        NSString *message = [NSString stringWithFormat:@"You are working on %@", taskName];
 		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
 													delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
 		
@@ -99,8 +102,9 @@
 {
 	NSLog(@"start pressed");
 	
-	if (!busy && currentTask != nil && [self addCurrentTaskToCalendar] == YES) {
-		
+	//if (!busy && currentTask != nil && [self addCurrentTaskToCalendar] == YES) {
+	if (!busy && currentTask != nil) {
+	
 		[freeTimeLabel setText:@"You are currently working on..."];
 
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
@@ -213,7 +217,8 @@
 }
 
 -(void) updateCurrentTask {
-	
+    
+    [self getTaskFromCalendar];
 	EKEvent *calendarTask = [self getCurrentCalendarTask];
 	if (calendarTask != nil) {
 		busy = YES;
@@ -280,6 +285,8 @@
 
 -(void)viewDidAppear:(BOOL)animated {
     [self becomeFirstResponder];
+    [self getTaskFromCalendar];
+
 	if (!busy) {
 		NSLog(@"refreshing What Now? view controller");
 		[self updateCurrentTask];

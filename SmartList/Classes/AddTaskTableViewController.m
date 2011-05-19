@@ -203,7 +203,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if (task != nil && ![task.name isEqual:@""])
+	if (task != nil && name != nil)
 	{
         [nameField setText:name];
 		prioritySlider.minimumValue = 1;
