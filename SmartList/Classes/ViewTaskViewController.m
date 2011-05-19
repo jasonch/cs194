@@ -134,6 +134,7 @@
  - (void)viewDidAppear:(BOOL)animated {
 	 [super viewDidAppear:animated];
 	 [self setup];
+	 [self.tableView reloadData];
  }
  
 /*
@@ -166,7 +167,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 5;
+    return 6;
 }
 
 
@@ -257,6 +258,24 @@
 			[priorityLabel setText: priorityString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			
+			break;
+		case 5:
+			[cell.textLabel setText: @"Blacklist"];
+            NSString *blacklistedString = @"";
+			blacklistedLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
+            switch ([task.blacklisted intValue]) {
+                case 0:
+                    blacklistedString = @"No";
+                    break;
+                case 1:
+                    blacklistedString = @"Yes";
+                    break;
+                default:
+                    break;
+            }
+			[blacklistedLabel setText: blacklistedString];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			[cell addSubview:blacklistedLabel];			
 			break;
 		default:
 			break;
