@@ -258,7 +258,34 @@
 	double minutes = floor([sittingsSlider value]*4)/4;
 	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
 	hourString = [hourString stringByAppendingString:@" hours"];
+	slider.value = minutes;
 	hourLabel.text = hourString;
+}
+
+-(void)prioritySliderChanged:(id)sender
+{
+	UISlider *thePrioritySlider = (UISlider *)sender;
+	int priorityValue = floor([thePrioritySlider value]*5)/5;
+	
+	switch (priorityValue) {
+		case 1:
+			priorityLabel.text = @"Very Low";
+			break;
+		case 2:
+			priorityLabel.text = @"Low";
+			break;
+		case 3:
+			priorityLabel.text = @"Medium";
+			break;
+		case 4:
+			priorityLabel.text = @"High";
+			break;
+		case 5:
+			priorityLabel.text = @"Very High";
+			break;
+		default:
+			break;
+	}
 }
 
 // Customize the appearance of table view cells.
@@ -303,12 +330,17 @@
 
 			break;
 		case 4:
+			priorityLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 18)];
+			priorityLabel.text = @"Medium";
+			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(144,23,154,15)];
+			[prioritySlider addTarget:self action:@selector(prioritySliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Priority"];
-			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(100, 12, 194, 23)];
 			prioritySlider.minimumValue = 1;
 			prioritySlider.maximumValue = 5;
+			prioritySlider.value = 3;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:prioritySlider];
+			[cell addSubview:priorityLabel];
 			break;
 		case 5:
 			[cell.textLabel setText:@"Blacklisted"];
