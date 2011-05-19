@@ -100,8 +100,9 @@
 //	}
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
-	[startButton setTitle:@"Pause" forState:UIControlStateNormal];
-	[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+//	[startButton setTitle:@"Pause" forState:UIControlStateNormal];
+//	[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self setup];
 }
 
 -(void)pausePressed:(UIButton*)sender
@@ -125,8 +126,9 @@
 //	currentTask = nil;
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
-	[startButton setTitle:@"Start" forState:UIControlStateNormal];
-	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+//	[startButton setTitle:@"Start" forState:UIControlStateNormal];
+//	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self setup];
 }
 
 -(void)completePressed:(UIButton*)sender

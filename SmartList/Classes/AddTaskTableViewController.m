@@ -413,7 +413,7 @@
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
-	//[nameField release];
+	[nameField release];
 	[slider release];
 	[prioritySlider release];
 	[blacklistedSwitch release];
