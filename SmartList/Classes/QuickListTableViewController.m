@@ -87,7 +87,10 @@
 		UITableViewCellStyle cellStyle = self.subtitleKey ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
         cell = [[[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:ReuseIdentifier] autorelease];
     }
-	
+	if (((Task*)managedObject).status == [NSNumber numberWithInt:1])
+    {
+        cell.backgroundColor = [UIColor greenColor];
+    }
 	if (self.titleKey) {
 		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 82, 20)];
 		titleLabel.text = [managedObject valueForKey:self.titleKey];
