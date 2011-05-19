@@ -22,7 +22,6 @@
 	[slider setValue:aDuration];
 	chunk_size = aDuration;
 	[hourLabel setText:[NSString stringWithFormat:@"%.2f", aDuration]];
-
 	duration = aDuration;
 }
 
@@ -173,7 +172,7 @@
 		task.name = nameField.text;
 		task.due_date = dueDate;
 		task.priority = [NSNumber numberWithInt:([prioritySlider value])];
-		task.chunk_size = [NSNumber numberWithInt:([slider value])];
+		task.chunk_size = [NSNumber numberWithDouble:([slider value])];
 		task.blacklisted = [NSNumber numberWithBool:blacklistedSwitch.on];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
