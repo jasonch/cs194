@@ -25,15 +25,9 @@
 	// set up blacklist
 	blacklist = [[[NSMutableArray alloc] init] retain];   	
 
-	//startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	//startButton.frame = CGRectMake(30, 300, 125, 40);
-	[startButton setTitle:@"Start" forState:UIControlStateNormal];
+	[startButton setTitle:@"Start!" forState:UIControlStateNormal];
 	[startButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
-	//[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-	//blacklistButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	//blacklistButton.frame = CGRectMake(170, 300, 125, 40);
 	[blacklistButton setTitle:@"Blacklist" forState:UIControlStateNormal];
-	//[blacklistButton addTarget:self action:@selector(blacklistPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:startButton];
 	[self.view addSubview:blacklistButton];
 	
@@ -42,16 +36,16 @@
 
 	busy = NO;
 	
-	// set up event listeners
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
-
 	[self updateCurrentTask];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
 {
 	context = aContext;
+	// set up event listeners
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
+	
 	[self setup];
 	return self;
 }

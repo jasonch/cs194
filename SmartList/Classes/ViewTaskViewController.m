@@ -23,6 +23,14 @@
 		[format release];
 		[dueDateLabel setText:dateString];
 	}
+	if ([task.status intValue] == 1) { // started
+		[startButton setTitle:@"Pause" forState:UIControlStateNormal];
+		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+	} else {
+		[startButton setTitle:@"Start" forState:UIControlStateNormal];
+		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+	}
+	
 	[durationLabel setText: [task.duration stringValue]];
 	[chunksLabel setText: [task.chunk_size stringValue]];
 	[priorityLabel setText: [task.priority stringValue]];
@@ -92,6 +100,8 @@
 //	}
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
+	[startButton setTitle:@"Pause" forState:UIControlStateNormal];
+	[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)pausePressed:(UIButton*)sender
@@ -115,6 +125,8 @@
 //	currentTask = nil;
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
+	[startButton setTitle:@"Start" forState:UIControlStateNormal];
+	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)completePressed:(UIButton*)sender
