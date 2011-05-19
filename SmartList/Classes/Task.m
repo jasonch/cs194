@@ -33,7 +33,7 @@
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:aContext];
 	//request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
-	request.predicate = [NSPredicate predicateWithFormat:@"name LIKE %@", aName];
+	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
 	
 	NSError *error = nil;
 	task = [[aContext executeFetchRequest:request error:&error] lastObject];
@@ -60,7 +60,7 @@
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:aContext];
-	request.predicate = [NSPredicate predicateWithFormat:@"name LIKE %@", aName];
+	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
 	NSError *error = nil;
 	task = [[aContext executeFetchRequest:request error:&error] lastObject];
 	

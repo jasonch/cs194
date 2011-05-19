@@ -111,6 +111,15 @@
 		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 		busy = YES;
 		NSLog (@"%@", [currentTask description]);
+	} else if (currentTask == nil) {
+		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
+														  message: @"Action could not be performed because there are no tasks in your QuickList." 
+														 delegate:self 
+												cancelButtonTitle: @"Ok" 
+												otherButtonTitles: nil];
+		
+		[noTasks show];
+		[noTasks release];
 	}
 }
 
@@ -161,7 +170,7 @@
 
 -(void)blacklistPressed:(UIButton*)sender
 {
-	/*
+	
 	if (currentTask == nil) {
 		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
 														  message: @"Action could not be performed because there are no tasks in your QuickList." 
@@ -182,12 +191,8 @@
 		[currentlyBusy show];
 		[currentlyBusy release];
 		return;
-	}	*/
-	
-	if (currentTask == nil || busy) {
-		return;
-	}
-	
+	}	
+		
 	NSString *blacklisted = [NSString stringWithFormat:@"'%@' will no longer be scheduled until you remove it from the Blacklist.",
 						 taskLabel.text];
 	UIAlertView *blacklistAlert = [[UIAlertView alloc] initWithTitle: @"Task blacklisted" message: blacklisted

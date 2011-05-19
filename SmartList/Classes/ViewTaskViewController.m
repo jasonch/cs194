@@ -31,9 +31,9 @@
 		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	}
 	
-	[durationLabel setText: [task.duration stringValue]];
-	[chunksLabel setText: [task.chunk_size stringValue]];
-	[priorityLabel setText: [task.priority stringValue]];
+	//[durationLabel setText: [task.duration stringValue]];
+	//[chunksLabel setText: [task.chunk_size stringValue]];
+	//[priorityLabel setText: [task.priority stringValue]];
 }
 
 
@@ -69,6 +69,35 @@
 
 -(void)startPressed:(UIButton*)sender
 {
+//	if (busy) {
+//		NSString *alertMessage = [NSString stringWithFormat:@"You are already working on '%@'.",
+//								  currentTask.name];
+//		UIAlertView *alreadyBusy = [[UIAlertView alloc] initWithTitle: @"Already working on a task" 
+//															  message: alertMessage
+//															 delegate: self 
+//													cancelButtonTitle: @"Ok" 
+//													otherButtonTitles: nil];
+//		
+//		[alreadyBusy show];
+//		[alreadyBusy release];
+//	}
+//	else {
+//		busy = YES;
+//		[sender setTitle: @"Pause" forState: UIControlStateNormal];
+//		[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+//		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+//		
+//		NSString *alertMessage = [NSString stringWithFormat:@"You have started working on '%@'. Press Pause to discontinue.",
+//								  nameLabel.text];
+//		UIAlertView *taskStarted = [[UIAlertView alloc] initWithTitle: @"Task started" 
+//															  message: alertMessage 
+//															 delegate:self 
+//													cancelButtonTitle: @"Ok" 
+//													otherButtonTitles: nil];
+//		
+//		[taskStarted show];
+//		[taskStarted release];
+//	}
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
 	[startButton setTitle:@"Pause" forState:UIControlStateNormal];
@@ -77,6 +106,23 @@
 
 -(void)pausePressed:(UIButton*)sender
 {	
+//	busy = NO;
+//	[sender setTitle: @"Start" forState: UIControlStateNormal];
+//	[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+//	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+//	
+//	NSString *alertMessage = [NSString stringWithFormat:@"You have stopped working on '%@'. Press Start to begin again.",
+//							  nameLabel.text];
+//	UIAlertView *taskEnded = [[UIAlertView alloc] initWithTitle: @"Task ended" 
+//														message: alertMessage 
+//													   delegate:self 
+//											  cancelButtonTitle: @"Ok" 
+//											  otherButtonTitles: nil];
+//	
+//	[taskEnded show];
+//	[taskEnded release];
+//	
+//	currentTask = nil;
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
 	[startButton setTitle:@"Start" forState:UIControlStateNormal];
@@ -203,21 +249,57 @@
 		case 2:
 			[cell.textLabel setText: @"Duration"];
 			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-			[durationLabel setText: [task.duration stringValue]];
+            NSString *durationString = [task.duration stringValue];
+            if ([task.duration floatValue] == 1.0)
+            {
+                durationString = [durationString stringByAppendingString:@" hour"];
+            }else
+            {
+                durationString = [durationString stringByAppendingString:@" hours"];
+            }
+			[durationLabel setText: durationString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
-			[cell.textLabel setText: @"Chunks"];
+			[cell.textLabel setText: @"Slice"];
 			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-			[chunksLabel setText: [task.chunk_size stringValue]];
+            NSString *chunksString = [task.chunk_size stringValue];
+            if ([task.chunk_size floatValue] == 1.0)
+            {
+                chunksString = [chunksString stringByAppendingString:@" hour"];
+            }else
+            {
+                chunksString = [chunksString stringByAppendingString:@" hours"];
+            }
+			[chunksLabel setText: chunksString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:chunksLabel];			
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
+            NSString *priorityString = @"";
 			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-			[priorityLabel setText: [task.priority stringValue]];
+            switch ([task.priority intValue]) {
+                case 1:
+                    priorityString = @"Very Low";
+                    break;
+                case 2:
+                    priorityString = @"Low";
+                    break;
+                case 3:
+                    priorityString = @"Medium";
+                    break;
+                case 4:
+                    priorityString = @"High";
+                    break;
+                case 5:
+                    priorityString = @"Very High";
+                    break;
+                default:
+                    break;
+            }
+			[priorityLabel setText: priorityString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			
 			break;
