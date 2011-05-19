@@ -30,6 +30,7 @@
 -(void)pausePressed:(UIButton*)sender;
 -(void)startPressedWithTask:(NSNotification *)note;
 -(void)pausePressedWithTask:(NSNotification *)note;
+-(void)completePressedWithTask:(NSNotification *)note;
 -(void)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
 -(void)getTaskFromCalendar;
