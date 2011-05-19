@@ -53,12 +53,7 @@
 -(void)startPressedWithTask:(NSNotification *)note
 {
 	if (busy) {
-        NSString *taskName = nil;
-        if (currentTask != nil)
-            taskName = [currentTask name];
-        else
-            taskName = [taskLabel text];
-        NSString *message = [NSString stringWithFormat:@"You are working on %@", taskName];
+        NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
 		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
 													delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
 		
@@ -67,6 +62,7 @@
 	} else {
 		Task *aTask = [[note userInfo] valueForKey:@"task"];
 		[freeTimeLabel setText:@"You are currently working on..."];
+		[taskLabel setText:aTask.name];
 		
 		currentTask = aTask;
 		busy = YES;
@@ -102,9 +98,7 @@
 {
 	NSLog(@"start pressed");
 	
-	//if (!busy && currentTask != nil && [self addCurrentTaskToCalendar] == YES) {
 	if (!busy && currentTask != nil) {
-	
 		[freeTimeLabel setText:@"You are currently working on..."];
 
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
@@ -126,6 +120,8 @@
 	}
 }
 
+// called on a "started" task, finish up the task, calculates its progress,
+// adds to the calendar, and sets its status as appropriate 
 - (BOOL)updateProgressOfTask:(Task *)task {
 	if ([task.status intValue] != 1)
 		return NO;
@@ -139,6 +135,8 @@
 	
 	if (timePassed/3600. >= [task.chunk_size doubleValue])
 		timePassed = [task.chunk_size doubleValue];
+	
+	[self addTaskToCalendar:task fromTime:task.started_time toTime:[NSDate date]];
 	
 	double progress = timePassed / (3600.*[task.duration doubleValue]) + [task.progress doubleValue];
 
@@ -235,12 +233,9 @@
 	Task * task = [self getNextScheduledTaskWithDurationOf:spareTime];
 	if (task == nil) {
 		[taskLabel setText:@"No task to schedule!"];
-		//startButton.enabled = NO;
 	} else {
 		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
 		currentTask = task;
-		NSLog(@"%@", [task description]);
-		//startButton.enabled = YES;
 	}
 }
 
@@ -350,6 +345,7 @@
 	
 	// reverse the index because zero priority is highest
 	int index = count - rand; 
+	NSLog(@"random index: %d", index);
 	
 	return [m_array objectAtIndex:index];
 }
@@ -369,12 +365,18 @@
 	NSArray *array = [context executeFetchRequest:request error:&error];
 	
 	if (!error & array != nil) {
-		NSLog(@"Fetched %d objects", [array count]);
-
 		// schedule 
 		int count = [array count];
+		NSLog(@"Fetched %d objects", count);
+		
+		// short circuit out if we already know the decision
+		// also prevents infinite loop at the end
+		if (count == 0) return nil;
+		if (count == 1) return [array objectAtIndex:0];
+		
 		NSMutableArray *m_array = [[NSMutableArray alloc] initWithCapacity:[array count]];
 		[m_array addObjectsFromArray:array];
+		
 		
 		// pre-sort it by due date, progress, and priority
 		// eff_priority = priority * duration * progress / (due_date - today)
@@ -404,25 +406,29 @@
 				return nil;
 			}
 		}
-		return [self getTaskWithPriorityArray:m_array];
+		
+		Task *candidate = [self getTaskWithPriorityArray:m_array];
+		while (currentTask != nil && [candidate.name isEqualToString:currentTask.name])
+			candidate = [self getTaskWithPriorityArray:m_array];
+		return candidate;
 	}
 	return nil;
 }
 
-- (BOOL)addCurrentTaskToCalendar {
+- (BOOL)addTaskToCalendar:(Task *)aTask fromTime:(NSDate *)from toTime:(NSDate *)to {
 	EKEventStore *eventStore = [[EKEventStore alloc] init];
 	EKEvent *event = [EKEvent eventWithEventStore:eventStore];
 	event.title = currentTask.name;
-	event.startDate = [NSDate date];
-	event.endDate = [NSDate dateWithTimeIntervalSinceNow:60*60*2];
+	event.startDate = from;
+	event.endDate = to;
 	[event setCalendar:[eventStore defaultCalendarForNewEvents]];
 	
 	NSError *error;
 	[eventStore	saveEvent:event span:EKSpanThisEvent error:&error];
 	if (error == noErr) {
 		UIAlertView *alert = [[UIAlertView alloc]
-							  initWithTitle:@"Task Added to Calendar"
-							  message:[NSString stringWithFormat:@"Start working on %@, and come back when you're done!", currentTask.name]
+							  initWithTitle:@"Task added to your calendar"
+							  message:[NSString stringWithFormat:@"You can review your day any time!", currentTask.name]
 							  delegate:nil
 							  cancelButtonTitle:@"Okay"
 							  otherButtonTitles:nil];
