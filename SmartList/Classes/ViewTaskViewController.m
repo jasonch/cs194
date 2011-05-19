@@ -88,7 +88,7 @@
 						  message: @"Marking this task as complete will remove it from your QuickList."
 						  delegate: self
 						  cancelButtonTitle:@"Cancel"
-						  otherButtonTitles:@"OK",nil];
+						  otherButtonTitles:@"Ok",nil];
 	 
 	[removeTask show];
 	[removeTask release];

@@ -25,7 +25,7 @@
 	// set up blacklist
 	blacklist = [[[NSMutableArray alloc] init] retain];   	
 
-	[startButton setTitle:@"Start!" forState:UIControlStateNormal];
+	[startButton setTitle:@"Start" forState:UIControlStateNormal];
 	[startButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
 	[blacklistButton setTitle:@"Blacklist" forState:UIControlStateNormal];
 	[self.view addSubview:startButton];
@@ -56,7 +56,7 @@
 	if (busy) {
         NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
 		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
-													delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+													delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 		
 		[busyAlert show];
 		[busyAlert release];
@@ -114,8 +114,6 @@
 
 -(void)startPressed:(UIButton*)sender
 {
-	NSLog(@"start pressed");
-	
 	if (!busy && currentTask != nil) {
 		[freeTimeLabel setText:@"You are currently working on..."];
 
@@ -126,6 +124,19 @@
 		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 		busy = YES;
 		NSLog (@"%@", [currentTask description]);
+		
+		NSLog(@"start pressed");
+		NSString *startedString = [NSString stringWithFormat:@"You have started working on '%@'.",
+								   taskLabel.text];
+		UIAlertView *startedTask = [[UIAlertView alloc] initWithTitle: @"Started task" 
+															  message: startedString
+															 delegate:self 
+													cancelButtonTitle: @"Ok" 
+													otherButtonTitles: nil];
+		
+		[startedTask show];
+		[startedTask release];
+		
 	} else if (currentTask == nil) {
 		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
 														  message: @"Action could not be performed because there are no tasks in your QuickList." 
