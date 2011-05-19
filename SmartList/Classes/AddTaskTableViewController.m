@@ -370,12 +370,14 @@
 	if (indexPath.row == 1)
 	{
 		name = nameField.text;
+        NSLog(@"Name: %@", name);
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:ddvc animated:YES];
 	}
 	else if (indexPath.row == 2)
 	{
+        NSLog(@"Name: %@", name);
 		name = nameField.text;
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
