@@ -20,6 +20,7 @@
 {
 	[slider setMaximumValue:aDuration];
 	[slider setValue:aDuration];
+	chunk_size = aDuration;
 	[hourLabel setText:[NSString stringWithFormat:@"%.2f", aDuration]];
 
 	duration = aDuration;
@@ -89,11 +90,11 @@
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
 	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
-	if ([dueDate timeIntervalSinceNow] > 60*60*24*30*100) // over 100 months from now
-		[dueDateLabel setText:@"N/A"];
-	else
+
+	if ([dueDate timeIntervalSinceNow] < 2592000)
+	{
 		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
-	
+	}
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
@@ -209,8 +210,8 @@
 		prioritySlider.minimumValue = 1;
 		prioritySlider.maximumValue = 5;
 		prioritySlider.value = priority;
-		slider.maximumValue = 20;
-		slider.value = chunk_size;
+		//slider.maximumValue = 20;
+		//slider.value = chunk_size;
 		[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
 	}
 }

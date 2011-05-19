@@ -22,7 +22,6 @@
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withBlacklist:(NSMutableArray*)aBlacklist
 {
 	context = aContext;	
-	//blacklist = aBlacklist;
 	
 	NSArray *fetchResults = [[NSArray alloc] init];
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -83,6 +82,11 @@
 		[blacklist removeObjectAtIndex:indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
 	}
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	[self.tableView reloadData];
 }
 
 - (void)dealloc {

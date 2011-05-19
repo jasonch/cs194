@@ -25,25 +25,27 @@
 	// set up blacklist
 	blacklist = [[[NSMutableArray alloc] init] retain];   	
 
-	startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	startButton.frame = CGRectMake(30, 300, 125, 40);
+	//startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	//startButton.frame = CGRectMake(30, 300, 125, 40);
 	[startButton setTitle:@"Start" forState:UIControlStateNormal];
 	[startButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
-	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-	blacklistButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	blacklistButton.frame = CGRectMake(170, 300, 125, 40);
+	//[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+	//blacklistButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	//blacklistButton.frame = CGRectMake(170, 300, 125, 40);
 	[blacklistButton setTitle:@"Blacklist" forState:UIControlStateNormal];
-	[blacklistButton addTarget:self action:@selector(blacklistPressed:) forControlEvents:UIControlEventTouchUpInside];
+	//[blacklistButton addTarget:self action:@selector(blacklistPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:startButton];
 	[self.view addSubview:blacklistButton];
 	
-	currentTask = [Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
+	currentTask = nil; //[Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
 	calendarTasks = nil;
 
 	busy = NO;
 	
 	// set up event listeners
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
+
 	[self updateCurrentTask];
 }
 
@@ -54,9 +56,11 @@
 	return self;
 }
 
--(void)startPressedWithTask:(Task *)aTask
+
+-(void)startPressedWithTask:(NSNotification *)note
 {
 	if (busy) {
+		assert(currentTask != nil);
 		NSString *message = [NSString stringWithFormat:@"You are working on %@", [currentTask name]];
 		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
 													delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
@@ -64,10 +68,37 @@
 		[busyAlert show];
 		[busyAlert release];
 	} else {
-	}
-
+		Task *aTask = [[note userInfo] valueForKey:@"task"];
+		[freeTimeLabel setText:@"You are currently working on..."];
 		
+		currentTask = aTask;
+		busy = YES;
+		
+		NSLog(@"task duration: %.2f", [currentTask duration]);
+		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
+		[currentTask setValue:[NSDate date] forKey:@"started_time"];		
+		[startButton setTitle: @"Pause" forState: UIControlStateNormal];
+		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+	}
+}
+
+-(void)pausePressedWithTask:(NSNotification *)note
+{
+	assert (currentTask != nil);
 	
+	Task *aTask = [[note userInfo] valueForKey:@"task"];
+	assert (currentTask.id == aTask.id);	
+	
+	[freeTimeLabel setText:@"You have some free time!"];
+	[startButton setTitle: @"Start" forState: UIControlStateNormal];
+	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+	
+	// update database
+	[self updateProgressOfTask:aTask];	
+	busy = NO;
+	
+	[self updateCurrentTask];	
 }
 
 -(void)startPressed:(UIButton*)sender
@@ -75,6 +106,7 @@
 	NSLog(@"start pressed");
 	
 	if (!busy && currentTask != nil && [self addCurrentTaskToCalendar] == YES) {
+		
 		[freeTimeLabel setText:@"You are currently working on..."];
 
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
@@ -240,9 +272,10 @@
 
 -(void)viewDidAppear:(BOOL)animated {
     [self becomeFirstResponder];
-	NSLog(@"refreshing What Now? view controller");
-	[self updateCurrentTask];
-	
+	if (!busy) {
+		NSLog(@"refreshing What Now? view controller");
+		[self updateCurrentTask];
+	}
 }
 
 - (void)didReceiveMemoryWarning {

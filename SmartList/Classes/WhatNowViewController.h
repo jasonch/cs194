@@ -20,14 +20,16 @@
 	BOOL busy;
 	IBOutlet UILabel *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
-	UIButton *startButton;
-	UIButton *blacklistButton;
+	IBOutlet UIButton *startButton;
+	IBOutlet UIButton *blacklistButton;
 }
 
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
 -(void)startPressed:(UIButton*)sender;
 -(void)pausePressed:(UIButton*)sender;
+-(void)startPressedWithTask:(NSNotification *)note;
+-(void)pausePressedWithTask:(NSNotification *)note;
 -(void)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
 -(void)getTaskFromCalendar;

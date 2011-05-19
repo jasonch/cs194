@@ -15,38 +15,37 @@
 {
 	self.title = task.name;	
 	[nameLabel setText: task.name];
-	NSDateFormatter *format = [[NSDateFormatter alloc] init];
-	[format setDateFormat:@"MMM dd, yyyy HH:mm"];
-	NSString *dateString = [format stringFromDate:task.due_date];
-	[format release];
-	[dueDateLabel setText:dateString];
+	if ([task.due_date timeIntervalSinceNow] < 2592000)
+	{
+		NSDateFormatter *format = [[NSDateFormatter alloc] init];
+		[format setDateFormat:@"MMM dd, yyyy HH:mm"];
+		NSString *dateString = [format stringFromDate:task.due_date];
+		[format release];
+		[dueDateLabel setText:dateString];
+	}
 	[durationLabel setText: [task.duration stringValue]];
 	[chunksLabel setText: [task.chunk_size stringValue]];
 	[priorityLabel setText: [task.priority stringValue]];
-	//busy = [WhatNowViewController busy];	
-	//currentTask = [WhatNowViewController currentTask];	
 }
 
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask
 {
-	if (self = [super initWithStyle:UITableViewStyleGrouped]) {
+	if (self == [super initWithStyle:UITableViewStyleGrouped]) {
 		context = aContext;
 		task = aTask;
+		
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		startButton.frame = CGRectMake(30, 300, 125, 40);
-		[startButton setTitle:@"Start" forState:UIControlStateNormal];
-		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-
-		/* what we want:
-		if (currentTask != task) {
-			[startButton setTitle:@"Start" forState:UIControlStateNormal];
-			[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-		} else {
+		
+		if ([task.status intValue] == 1) { // started
 			[startButton setTitle:@"Pause" forState:UIControlStateNormal];
 			[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+		} else {
+			[startButton setTitle:@"Start" forState:UIControlStateNormal];
+			[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 		}
-		 */
+		
 
 		completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		completeButton.frame = CGRectMake(170, 300, 125, 40);
@@ -62,35 +61,37 @@
 
 -(void)startPressed:(UIButton*)sender
 {
-	if (busy) {
-		NSString *alertMessage = [NSString stringWithFormat:@"You are already working on '%@'.",
-								  currentTask.name];
-		UIAlertView *alreadyBusy = [[UIAlertView alloc] initWithTitle: @"Already working on a task" 
-															  message: alertMessage
-															 delegate: self 
-													cancelButtonTitle: @"Ok" 
-													otherButtonTitles: nil];
-		
-		[alreadyBusy show];
-		[alreadyBusy release];
-	}
-	else {
-		busy = YES;
-		[sender setTitle: @"Pause" forState: UIControlStateNormal];
-		[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
-		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
-		
-		NSString *alertMessage = [NSString stringWithFormat:@"You have started working on '%@'. Press Pause to discontinue.",
-								  nameLabel.text];
-		UIAlertView *taskStarted = [[UIAlertView alloc] initWithTitle: @"Task started" 
-															  message: alertMessage 
-															 delegate:self 
-													cancelButtonTitle: @"Ok" 
-													otherButtonTitles: nil];
-		
-		[taskStarted show];
-		[taskStarted release];
-	}
+//	if (busy) {
+//		NSString *alertMessage = [NSString stringWithFormat:@"You are already working on '%@'.",
+//								  currentTask.name];
+//		UIAlertView *alreadyBusy = [[UIAlertView alloc] initWithTitle: @"Already working on a task" 
+//															  message: alertMessage
+//															 delegate: self 
+//													cancelButtonTitle: @"Ok" 
+//													otherButtonTitles: nil];
+//		
+//		[alreadyBusy show];
+//		[alreadyBusy release];
+//	}
+//	else {
+//		busy = YES;
+//		[sender setTitle: @"Pause" forState: UIControlStateNormal];
+//		[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+//		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+//		
+//		NSString *alertMessage = [NSString stringWithFormat:@"You have started working on '%@'. Press Pause to discontinue.",
+//								  nameLabel.text];
+//		UIAlertView *taskStarted = [[UIAlertView alloc] initWithTitle: @"Task started" 
+//															  message: alertMessage 
+//															 delegate:self 
+//													cancelButtonTitle: @"Ok" 
+//													otherButtonTitles: nil];
+//		
+//		[taskStarted show];
+//		[taskStarted release];
+//	}
+	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
 }
 
 -(void)pausePressed:(UIButton*)sender
@@ -112,24 +113,21 @@
 //	[taskEnded release];
 //	
 //	currentTask = nil;
-
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:task];
+	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
 }
 
 -(void)completePressed:(UIButton*)sender
 {
-//	UIAlertView *removeTask = [[UIAlertView alloc]
-//						  initWithTitle: @"Complete this task"
-//						  message: @"Marking this task as complete will remove it from your QuickList."
-//						  delegate: self
-//						  cancelButtonTitle:@"Cancel"
-//						  otherButtonTitles:@"OK",nil];
-//	[removeTask show];
-//	[removeTask release];
-
-	[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
-//	[context deleteObject:(NSManagedObject*)task];
-	[self.navigationController popViewControllerAnimated:YES];
+	UIAlertView *removeTask = [[UIAlertView alloc]
+						  initWithTitle: @"Complete this task"
+						  message: @"Marking this task as complete will remove it from your QuickList."
+						  delegate: self
+						  cancelButtonTitle:@"Cancel"
+						  otherButtonTitles:@"OK",nil];
+	 
+	[removeTask show];
+	[removeTask release];
 }
 
 
@@ -145,6 +143,7 @@
 		// user pressed cancel, do nothing
 	}
 	else {
+		[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 		[context deleteObject:(NSManagedObject*)task];
 		[self.navigationController popViewControllerAnimated:YES];
 	}
@@ -216,39 +215,42 @@
     switch (indexPath.row) {
 		case 0:
 			[cell.textLabel setText: @"Task"];
-			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[nameLabel setText: task.name];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:nameLabel];
 			break;
 		case 1:
-			[cell.textLabel setText: @"Due Date"];
-			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
-			NSDateFormatter *format = [[NSDateFormatter alloc] init];
-			[format setDateFormat:@"MMM dd, yyyy HH:mm"];
-			NSString *dateString = [format stringFromDate:task.due_date];
-			[format release];
-			[dueDateLabel setText:dateString];
+			[cell.textLabel setText: @"Due Date"];			
+			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
+			if ([task.due_date timeIntervalSinceNow] < 2592000)
+			{
+				NSDateFormatter *format = [[NSDateFormatter alloc] init];
+				[format setDateFormat:@"MMM dd, yyyy HH:mm"];
+				NSString *dateString = [format stringFromDate:task.due_date];
+				[format release];
+				[dueDateLabel setText:dateString];
+			}
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
 			[cell.textLabel setText: @"Duration"];
-			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[durationLabel setText: [task.duration stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
 			[cell.textLabel setText: @"Chunks"];
-			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[chunksLabel setText: [task.chunk_size stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:chunksLabel];			
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
-			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(135,10,165,25)] autorelease]; 
+			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			[priorityLabel setText: [task.priority stringValue]];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			
@@ -268,7 +270,7 @@
 	 return YES;
  }
  
-
+*/
 
 /*
  // Override to support editing the table view.

@@ -25,8 +25,6 @@
 	UIButton *startButton;
 	UIButton *completeButton;
 	Task *task;
-	Task *currentTask;
-	BOOL busy;
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
