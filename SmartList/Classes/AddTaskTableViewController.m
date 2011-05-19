@@ -204,7 +204,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if (task != nil && ![task.name isEqual:@""])
+	if (task != nil && name != nil)
 	{
         [nameField setText:name];
 		prioritySlider.minimumValue = 1;
@@ -414,7 +414,7 @@
 	[dueDateLabel release];
 	[formatter release];
 	[durationLabel release];
-	[nameField release];
+	//[nameField release];
 	[slider release];
 	[prioritySlider release];
 	[blacklistedSwitch release];
