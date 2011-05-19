@@ -52,6 +52,7 @@
 
 -(void)startPressedWithTask:(NSNotification *)note
 {
+	NSLog(@"start pressed with task");
 	if (busy) {
         NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
 		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
@@ -78,13 +79,12 @@
 -(void)pausePressedWithTask:(NSNotification *)note
 {
 	assert (currentTask != nil);
+	NSLog(@"pause pressed with task");
 	
 	Task *aTask = [[note userInfo] valueForKey:@"task"];
-	assert (currentTask.id == aTask.id);	
 	
 	[freeTimeLabel setText:@"You have some free time!"];
 	[startButton setTitle: @"Start" forState: UIControlStateNormal];
-	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
 	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	
 	// update database
@@ -217,6 +217,7 @@
 -(void) updateCurrentTask {
     
     [self getTaskFromCalendar];
+	[self checkAndUpdateTaskDB];
 	EKEvent *calendarTask = [self getCurrentCalendarTask];
 	if (calendarTask != nil) {
 		busy = YES;
@@ -314,7 +315,19 @@
 
 - (void)checkAndUpdateTaskDB {
 	
+	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	
+	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 1"];
+	
+	NSError *error = nil; 
+	NSArray *array = [context executeFetchRequest:request error:&error];
+	
+	for (int i = 0; i < [array count]; i++) {
+		Task *task = [array objectAtIndex:i];
+		if ([task.started_time timeIntervalSinceNow]*-1/3600. >= [task.chunk_size doubleValue])
+			[self updateProgressOfTask:task];
+	}
 }
 
 - (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k {
