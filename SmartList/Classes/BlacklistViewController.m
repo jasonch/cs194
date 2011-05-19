@@ -24,6 +24,20 @@
 	context = aContext;	
 	blacklist = aBlacklist;
 	
+	/*
+	NSArray *fetchResults = [[NSArray alloc] init];
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+	
+	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+	//request.predicate = [NSPredicate predicateWithFormat:@"blacklisted == 0"];
+	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", @"Test"];
+	NSError *error = nil;
+	fetchResults = [context executeFetchRequest:request error:&error];
+	NSLog(@"%@", fetchResults); //works ok
+	
+	blacklist = [NSMutableArray arrayWithArray:fetchResults];
+	*/
+	
 	if (self = [super initWithStyle:UITableViewStylePlain])
 	{
 		[self setup];
@@ -69,7 +83,6 @@
 		[deleted setValue:[NSNumber numberWithBool:NO] forKey:@"blacklisted"];
 		NSLog (@"unblacklisted: %@", [deleted description]);
 		[blacklist removeObjectAtIndex:indexPath.row];
-		// let what now? controller know
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
 	}
 }

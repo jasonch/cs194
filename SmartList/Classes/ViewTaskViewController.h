@@ -11,10 +11,11 @@
 #import "DueDateViewController.h"
 #import "DurationViewController.h"
 #import "AddTaskTableViewController.h"
+#import "WhatNowViewController.h"
 #import "Task.h"
 
 
-@interface ViewTaskViewController : UITableViewController {
+@interface ViewTaskViewController : UITableViewController <UIAlertViewDelegate> {
 	NSManagedObjectContext *context;
 	UILabel *chunksLabel;
 	UILabel *nameLabel;
@@ -28,6 +29,7 @@
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
 -(void)startPressed:(UIButton*)sender;
+-(void)pausePressed:(UIButton*)sender;
 -(void)completePressed:(UIButton*)sender; 
 
 @end

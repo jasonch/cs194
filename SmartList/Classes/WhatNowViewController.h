@@ -20,13 +20,17 @@
 	BOOL busy;
 	IBOutlet UILabel *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
+	IBOutlet UIButton *startButton;
+	IBOutlet UIButton *blacklistButton;
 }
 
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
--(IBAction)startPressed:(UIButton*)sender;
--(IBAction)finishPressed:(UIButton*)sender;
--(IBAction)blacklistPressed:(UIButton*)sender; 
+-(void)startPressed:(UIButton*)sender;
+-(void)pausePressed:(UIButton*)sender;
+-(void)startPressedWithTask:(NSNotification *)note;
+-(void)pausePressedWithTask:(NSNotification *)note;
+-(void)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
 -(void)getTaskFromCalendar;
 -(void)updateCurrentTask;
@@ -38,5 +42,7 @@
 -(void)MutableArraySwap:(NSMutableArray *)m_array indexOne:(int)i indexTwo:(int)j;
 -(BOOL)addCurrentTaskToCalendar;
 -(BOOL)updateProgressOfTask:(Task *)task;
+//+ (Task*) currentTask;
+//+ (BOOL) busy;
 
 @end

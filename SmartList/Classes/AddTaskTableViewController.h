@@ -19,6 +19,7 @@
 	UILabel *dueDateLabel;
 	UILabel *durationLabel;
 	UILabel *hourLabel;
+	UISwitch *blacklistedSwitch;
 	NSDate *dueDate;
 	float duration;
 	NSDateFormatter *formatter;
