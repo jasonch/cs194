@@ -93,7 +93,7 @@
 		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
         if (((Task*)managedObject).status == [NSNumber numberWithInt:1])
         {
-            titleLabel.textColor = [UIColor greenColor];
+            titleLabel.textColor = [UIColor colorWithRed:0 green:.7 blue:0 alpha:1];
         }
 		[cell addSubview:titleLabel];
 		[titleLabel release];
