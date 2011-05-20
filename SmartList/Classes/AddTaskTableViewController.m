@@ -42,6 +42,7 @@
 	
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = 1;
+    chunk_size = 1;
 	[durationLabel setText:@"1 hour and 0 minutes"];
 	
 	name = nil;
@@ -76,6 +77,17 @@
 	[durationLabel setText:durationString];
 }
 
+-(void)resetSlider
+{
+	slider.maximumValue = duration;
+	slider.minimumValue = .25;
+	double minutes = floor([slider value]*4)/4;
+	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
+	hourString = [hourString stringByAppendingString:@" hours"];
+	slider.value = minutes;
+	hourLabel.text = hourString;    
+}
+
 -(void) setupEditMode
 {
 	self.title = @"Edit Task";
@@ -100,7 +112,11 @@
 	name = [[NSString alloc] initWithString:task.name];
 	priority = [task.priority intValue];
 	chunk_size = [task.chunk_size intValue];
-	
+    slider.maximumValue = duration;
+    slider.minimumValue = 0.25;
+	[slider setValue:chunk_size];
+
+    [self resetSlider];
 	[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
 	NSLog(@"edit task: %@", [task description]);
 		
@@ -260,14 +276,7 @@
 
 -(void)sliderChanged:(id)sender
 {
-	UISlider *sittingsSlider = (UISlider *)sender;
-	sittingsSlider.maximumValue = duration;
-	sittingsSlider.minimumValue = .25;
-	double minutes = floor([sittingsSlider value]*4)/4;
-	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
-	hourString = [hourString stringByAppendingString:@" hours"];
-	slider.value = minutes;
-	hourLabel.text = hourString;
+    [self resetSlider];
 }
 
 -(void)prioritySliderChanged:(id)sender
@@ -326,21 +335,27 @@
 			[cell addSubview:durationLabel];
 			break;
 		case 3:			
-			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 15)];
-			hourLabel.text = @"1 hour";
-			slider = [[UISlider alloc] initWithFrame:CGRectMake(144,20,154,15)];
+			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(104, 3, 194, 17)];
+            //CHANGE FOR EDIT MODE
+            hourLabel.text = @"1 hour";
+            hourLabel.textAlignment = UITextAlignmentCenter;
+			slider = [[UISlider alloc] initWithFrame:CGRectMake(104,20,194,15)];
 			[slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
-			[cell.textLabel setText: @"Sitting Length"];
-			[slider setValue:1];
+			[cell.textLabel setText: @"Slice"];
+            //CHANGE FOR EDIT MODE
+			//[slider setValue:1];
+            [slider setValue:chunk_size];
+            [self resetSlider];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
 			[cell addSubview:hourLabel];
 
 			break;
 		case 4:
-			priorityLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 18)];
+			priorityLabel = [[UILabel alloc] initWithFrame:CGRectMake(104, 3, 194, 17)];
 			priorityLabel.text = @"Medium";
-			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(144,23,154,15)];
+            priorityLabel.textAlignment = UITextAlignmentCenter;
+			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(104,20,194,15)];
 			[prioritySlider addTarget:self action:@selector(prioritySliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Priority"];
 			prioritySlider.minimumValue = 1;
