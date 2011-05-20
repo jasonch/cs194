@@ -45,7 +45,7 @@
     chunk_size = 1;
 	[durationLabel setText:@"1 hour and 0 minutes"];
 	
-	name = nil;
+	name = [[NSString alloc] initWithString:@""];
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
@@ -391,16 +391,22 @@
 		[nameField resignFirstResponder];
 	}
 	
-	if (indexPath.row == 1)
+	if (indexPath.row == 1) // due date
 	{
-		name = [[NSString alloc] initWithString:[nameField text]];
+		if ([nameField text] != nil) {
+			[name release];
+			name = [[NSString alloc] initWithString:[nameField text]];
+		}
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:ddvc animated:YES];
 	}
-	else if (indexPath.row == 2)
+	else if (indexPath.row == 2) // duration
 	{
-		name = [[NSString alloc] initWithString:[nameField text]];
+		if ([nameField text] != nil) {
+			[name release];
+			name = [[NSString alloc] initWithString:[nameField text]];
+		}
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:dvc animated:YES];

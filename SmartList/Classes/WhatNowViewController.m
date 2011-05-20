@@ -73,6 +73,15 @@
 		[currentTask setValue:[NSDate date] forKey:@"started_time"];		
 		[startButton setTitle: @"Pause" forState: UIControlStateNormal];
 		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+
+        NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
+		UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle: @"Task Started" message: message
+														   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[startAlert show];
+		[startAlert release];
+		
+	
 	}
 }
 
@@ -107,6 +116,15 @@
 		//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
 		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 		busy = YES;
+		
+		NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
+		UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle: @"Task Started" message: message
+															delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[startAlert show];
+		[startAlert release];
+		
+		
 		NSLog (@"%@", [currentTask description]);
 	} else if (currentTask == nil) {
 		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
@@ -217,7 +235,7 @@
 -(void) updateCurrentTask {
     
     [self getTaskFromCalendar];
-	[self checkAndUpdateTaskDB];
+	//[self checkAndUpdateTaskDB];
 	EKEvent *calendarTask = [self getCurrentCalendarTask];
 	if (calendarTask != nil) {
 		busy = YES;
@@ -236,8 +254,8 @@
 		[taskLabel setText:@"No task to schedule!"];
 	} else {
 		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
-		currentTask = task;
 	}
+	currentTask = task;
 }
 
 #pragma mark Shake Functionality
