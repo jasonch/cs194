@@ -421,6 +421,7 @@
 	int count = [m_array count];
 	if (count == 0) return nil;
 	
+/*
 	// use a linear function to give higher priority more weight
 	// total number of "lottery tickets"
 	int total = (count + 1) * count / 2;
@@ -435,7 +436,18 @@
 	// reverse the index because zero priority is highest
 	int index = count - rand; 
 	NSLog(@"random index: %d", index);
+*/
 	
+	// use parabolic function
+	int total = count * (count + 1) * (2*count + 1) / 6;
+	int rand = arc4random() % (total + 1);
+	
+	int j = 1;
+	for (; j <= count; j++) {
+		if (j*(j+1)*(2*j + 1) / 6 >= rand) break;
+	}
+	int index = count - j;
+	NSLog(@"random index: %d", index);
 	return [m_array objectAtIndex:index];
 }
 
@@ -468,14 +480,14 @@
 		
 		
 		// pre-sort it by due date, progress, and priority
-		// eff_priority = priority * duration * progress / (due_date - today)
+		// eff_priority = priority * duration * (1 - progress) / (due_date - today)
 		NSComparator taskSorter = ^(id id1, id id2) {
 			double effective_priority_1 = [[id1 valueForKey:@"priority"] doubleValue]
-				* [[id1 valueForKey:@"duration"] doubleValue] * (1 - [[id1 valueForKey:@"progress"] doubleValue])
+				//* [[id1 valueForKey:@"duration"] doubleValue] * (1 - [[id1 valueForKey:@"progress"] doubleValue])
 				/ [[id1 valueForKey:@"due_date"] timeIntervalSinceNow];
 						
 			double effective_priority_2 = [[id2 valueForKey:@"priority"] doubleValue]
-				* [[id2 valueForKey:@"duration"] doubleValue] * (1 - [[id2 valueForKey:@"progress"] doubleValue])
+				//* [[id2 valueForKey:@"duration"] doubleValue] * (1 - [[id2 valueForKey:@"progress"] doubleValue])
 				/ [[id2 valueForKey:@"due_date"] timeIntervalSinceNow];
 			return effective_priority_1 > effective_priority_2? NSOrderedAscending: NSOrderedDescending;
 		};
