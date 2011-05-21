@@ -44,6 +44,7 @@
 	// set up event listeners
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completePressedWithTask:) name:@"completePressedWithTask" object:nil];
 	
 	[self setup];
 	return self;
@@ -98,6 +99,23 @@
 	
 	// update database
 	[self updateProgressOfTask:aTask];	
+	busy = NO;
+	
+	[self updateCurrentTask];	
+}
+
+-(void)completePressedWithTask:(NSNotification *)note
+{
+	NSLog(@"complete pressed");
+		
+	Task *aTask = [[note userInfo] valueForKey:@"task"];
+	
+	[freeTimeLabel setText:@"You have some free time!"];
+	[startButton setTitle: @"Start" forState: UIControlStateNormal];
+	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+	
+	[aTask setValue:[NSNumber numberWithInt:2] forKey:@"status"]; 
 	busy = NO;
 	
 	[self updateCurrentTask];	
@@ -298,6 +316,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated {
+	NSLog(@"appeared");
     [self becomeFirstResponder];
     [self getTaskFromCalendar];
 
@@ -499,13 +518,5 @@
 	}
 	return nil;
 }
-
-//+ (Task*) currentTask {
-//	return currentTask;
-//}
-//
-//+ (BOOL) busy {
-//	return busy;
-//}
 
 @end

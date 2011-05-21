@@ -91,6 +91,9 @@
 	 
 	[removeTask show];
 	[removeTask release];
+	
+	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"completePressedWithTask" object:self userInfo:dict];
 }
 
 
@@ -107,7 +110,7 @@
 	}
 	else {
 		[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
-		[context deleteObject:(NSManagedObject*)task];
+		[context deleteObject:task];
 		[self.navigationController popViewControllerAnimated:YES];
 	}
 }
@@ -130,6 +133,7 @@
  - (void)viewDidAppear:(BOOL)animated {
 	 [super viewDidAppear:animated];
 	 [self setup];
+	 [self.tableView reloadData];
  }
  
 /*
@@ -162,7 +166,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 5;
+    return 6;
 }
 
 
@@ -253,6 +257,24 @@
 			[priorityLabel setText: priorityString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			
+			break;
+		case 5:
+			[cell.textLabel setText: @"Blacklist"];
+            NSString *blacklistedString = @"";
+			blacklistedLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
+            switch ([task.blacklisted intValue]) {
+                case 0:
+                    blacklistedString = @"No";
+                    break;
+                case 1:
+                    blacklistedString = @"Yes";
+                    break;
+                default:
+                    break;
+            }
+			[blacklistedLabel setText: blacklistedString];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			[cell addSubview:blacklistedLabel];			
 			break;
 		default:
 			break;
