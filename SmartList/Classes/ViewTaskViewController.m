@@ -188,7 +188,7 @@
 			[cell addSubview:nameLabel];
 			break;
 		case 1:
-			[cell.textLabel setText: @"Due Date"];			
+			[cell.textLabel setText: @"Deadline"];			
 			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			if ([task.due_date timeIntervalSinceNow] < 2592000)
 			{

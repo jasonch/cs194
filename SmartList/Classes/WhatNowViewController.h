@@ -33,7 +33,8 @@
 -(void)completePressedWithTask:(NSNotification *)note;
 -(void)blacklistPressed:(UIButton*)sender; 
 -(void)viewBlacklist;
--(void)checkAndUpdateTaskDB;
+-(Task *)checkAndUpdateTaskDB;
+-(void)checkAndSetCurrentTask;
 -(void)getTaskFromCalendar;
 -(EKEvent *)getCurrentCalendarTask;
 -(EKEvent *)getNextCalendarTask;
