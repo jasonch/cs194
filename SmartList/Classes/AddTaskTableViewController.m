@@ -44,7 +44,7 @@
 	duration = 1;
 	[durationLabel setText:@"1 hour and 0 minutes"];
 	
-	name = nil;
+	name = [[NSString alloc] initWithString:@""];
 	
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
@@ -317,7 +317,7 @@
 			break;
 		case 1:
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			[cell.textLabel setText: @"Due Date"];
+			[cell.textLabel setText: @"Deadline"];
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
@@ -330,7 +330,7 @@
 			hourLabel.text = @"1 hour";
 			slider = [[UISlider alloc] initWithFrame:CGRectMake(144,20,154,15)];
 			[slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
-			[cell.textLabel setText: @"Sitting Length"];
+			[cell.textLabel setText: @"Slice"];
 			[slider setValue:1];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
@@ -376,16 +376,22 @@
 		[nameField resignFirstResponder];
 	}
 	
-	if (indexPath.row == 1)
+	if (indexPath.row == 1) // due date
 	{
-		name = [[NSString alloc] initWithString:[nameField text]];
+		if ([nameField text] != nil) {
+			[name release];
+			name = [[NSString alloc] initWithString:[nameField text]];
+		}
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:ddvc animated:YES];
 	}
-	else if (indexPath.row == 2)
+	else if (indexPath.row == 2) // duration
 	{
-		name = [[NSString alloc] initWithString:[nameField text]];
+		if ([nameField text] != nil) {
+			[name release];
+			name = [[NSString alloc] initWithString:[nameField text]];
+		}
 		priority = [prioritySlider value];
 		chunk_size = [slider value];
 		[self.navigationController pushViewController:dvc animated:YES];

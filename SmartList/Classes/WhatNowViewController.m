@@ -11,6 +11,36 @@
 
 @implementation WhatNowViewController
 
+/** moved all user-facing messages to the top so they're consistent **/
+-(void)taskStartedAlert {
+	NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
+	UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle: @"Task Started" message: message
+														delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+	
+	[startAlert show];
+	[startAlert release];
+}
+-(void)busyAlert {
+	NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
+	UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
+													   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+	
+	[busyAlert show];
+	[busyAlert release];	
+}
+-(void)updateFreeTImeLabel:(double)spareTime {
+	if (busy) {
+		if (currentTask == nil) {
+			[freeTimeLabel setText:[NSString stringWithFormat:@"Your calendar indicates you are currently ..."]];
+		} else {
+			[freeTimeLabel setText:[NSString stringWithFormat:@"You are currently working on ..."]];	
+		}
+	} else {
+		[freeTimeLabel setText:[NSString stringWithFormat:@"You have some %.2f hours of free time!", spareTime]];
+	}
+}
+/** end user-facing messages **/
+
 -(void) setup
 {
 	self.title = @"What Now?";	
@@ -23,18 +53,22 @@
 	[viewBlacklist release];
 
 	// set up blacklist
+<<<<<<< HEAD
 	blacklist = [[[NSMutableArray alloc] init] retain];   	
 
 	[startButton setTitle:@"Start" forState:UIControlStateNormal];
+=======
+	blacklist = [[[NSMutableArray alloc] init] retain];
+	[startButton setTitle:@"Start!" forState:UIControlStateNormal];
+>>>>>>> 1dfb0c9c363ad8998e10e4d7b3f98b4932784a2d
 	[startButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
 	[blacklistButton setTitle:@"Blacklist" forState:UIControlStateNormal];
 	[self.view addSubview:startButton];
 	[self.view addSubview:blacklistButton];
 	
 	currentTask = nil; //[Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
-
 	busy = NO;
-	
+	[self checkAndSetCurrentTask];
 	[self updateCurrentTask];
 }
 
@@ -53,39 +87,48 @@
 
 -(void)startPressedWithTask:(NSNotification *)note
 {
+	NSLog(@"start pressed with task");
 	if (busy) {
+<<<<<<< HEAD
         NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
 		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
 													delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 		
 		[busyAlert show];
 		[busyAlert release];
+=======
+		[self busyAlert];
+>>>>>>> 1dfb0c9c363ad8998e10e4d7b3f98b4932784a2d
 	} else {
 		Task *aTask = [[note userInfo] valueForKey:@"task"];
-		[freeTimeLabel setText:@"You are currently working on..."];
 		[taskLabel setText:aTask.name];
 		
 		currentTask = aTask;
 		busy = YES;
+		[self updateFreeTImeLabel:0];
 		
 		NSLog(@"task duration: %.2f", [currentTask duration]);
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
 		[currentTask setValue:[NSDate date] forKey:@"started_time"];		
+
+		[startButton removeTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[startButton setTitle: @"Pause" forState: UIControlStateNormal];
 		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+
+		[self taskStartedAlert];
+	
 	}
 }
 
 -(void)pausePressedWithTask:(NSNotification *)note
 {
 	assert (currentTask != nil);
+	NSLog(@"pause pressed with task");
 	
 	Task *aTask = [[note userInfo] valueForKey:@"task"];
-	assert (currentTask.id == aTask.id);	
-	
-	[freeTimeLabel setText:@"You have some free time!"];
+
+	[startButton removeTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 	[startButton setTitle: @"Start" forState: UIControlStateNormal];
-	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
 	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	
 	// update database
@@ -100,14 +143,16 @@
 	NSLog(@"complete pressed");
 		
 	Task *aTask = [[note userInfo] valueForKey:@"task"];
+
+	if ([aTask.name isEqualToString:currentTask.name]) {
+		[startButton removeTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+		[startButton setTitle: @"Start" forState: UIControlStateNormal];
+		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];		
+		[self updateProgressOfTask:aTask];		
+		busy = NO;
+	}
 	
-	[freeTimeLabel setText:@"You have some free time!"];
-	[startButton setTitle: @"Start" forState: UIControlStateNormal];
-	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
-	[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-	
-	[aTask setValue:[NSNumber numberWithInt:2] forKey:@"status"]; 
-	busy = NO;
+	[aTask setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 	
 	[self updateCurrentTask];	
 }
@@ -115,14 +160,17 @@
 -(void)startPressed:(UIButton*)sender
 {
 	if (!busy && currentTask != nil) {
-		[freeTimeLabel setText:@"You are currently working on..."];
-
+		assert ([currentTask.name isEqualToString:[taskLabel text]]);
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
 		[currentTask setValue:[NSDate date] forKey:@"started_time"];
 		[sender setTitle: @"Pause" forState: UIControlStateNormal];
 		//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+		[sender removeTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[sender addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 		busy = YES;
+		[self updateFreeTImeLabel:0];
+		[self taskStartedAlert];
+		
 		NSLog (@"%@", [currentTask description]);
 		
 		NSLog(@"start pressed");
@@ -181,9 +229,11 @@
 
 -(void)pausePressed:(UIButton*)sender
 {
-	[freeTimeLabel setText:@"You have some free time!"];
+	assert (busy);
+	assert (currentTask != nil);
 	[sender setTitle: @"Start" forState: UIControlStateNormal];
 	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
+	[sender removeTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	
 	// update database
@@ -196,7 +246,6 @@
 
 -(void)blacklistPressed:(UIButton*)sender
 {
-	
 	if (currentTask == nil) {
 		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
 														  message: @"Action could not be performed because there are no tasks in your QuickList." 
@@ -250,9 +299,8 @@
 	if (calendarTask != nil) {
 		busy = YES;
 		currentTask = nil;
-		[freeTimeLabel setText:@"You are currently working on..."];
+		[self updateFreeTImeLabel:0];
 		[taskLabel setText:calendarTask.title];
-		NSLog(@"CALENDAR BUSY!!");
 		return;
 	}
 	
@@ -264,15 +312,15 @@
 		[taskLabel setText:@"No task to schedule!"];
 	} else {
 		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
-		currentTask = task;
 	}
+	currentTask = task;
+	[self updateFreeTImeLabel:spareTime];
 }
 
 #pragma mark Shake Functionality
 -(BOOL)canBecomeFirstResponder {
     return YES;
 }
-
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
@@ -354,9 +402,46 @@
     [super dealloc];
 }
 
-- (void)checkAndUpdateTaskDB {
+/* called on startup, checks the DB for any task already started. If so, and it is not yet 
+ * finished, set it as current task. */
+- (void)checkAndSetCurrentTask {
+	Task *started = [self checkAndUpdateTaskDB];
+	if (started != nil) {
+		currentTask = started;
+		busy = YES;
+		[self updateFreeTImeLabel:0.];
+		[taskLabel setText:[NSString stringWithFormat:@"%@",started.name]];
+		return;
+	}
+}
+
+/* check the DB for all tasks of status 1 (there should only be one). If it is done with its slice,
+ * then calculate progress accordingly. Otherwise return it. */
+- (Task *)checkAndUpdateTaskDB {
 	
+	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	
+	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 1"];
+	
+	NSError *error = nil; 
+	NSArray *array = [context executeFetchRequest:request error:&error];
+	
+	Task *startedTask = nil;
+	
+	for (int i = 0; i < [array count]; i++) {
+		Task *task = [array objectAtIndex:i];
+		if ([task.started_time timeIntervalSinceNow]*-1/3600. >= [task.chunk_size doubleValue]) {
+			[self updateProgressOfTask:task];
+		} else {
+			if (startedTask == nil) {
+				startedTask = task;
+			} else {
+				NSLog(@"ERROR: more than one currently started task");
+			}
+		}
+	}
+	return startedTask;
 }
 
 - (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k {
@@ -460,7 +545,7 @@
 - (BOOL)addTaskToCalendar:(Task *)aTask fromTime:(NSDate *)from toTime:(NSDate *)to {
 	EKEventStore *eventStore = [[EKEventStore alloc] init];
 	EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-	event.title = currentTask.name;
+	event.title = aTask.name;
 	event.startDate = from;
 	event.endDate = to;
 	[event setCalendar:[eventStore defaultCalendarForNewEvents]];
@@ -470,7 +555,7 @@
 	if (error == noErr) {
 		UIAlertView *alert = [[UIAlertView alloc]
 							  initWithTitle:@"Task added to your calendar"
-							  message:[NSString stringWithFormat:@"You can review your day any time!", currentTask.name]
+							  message:[NSString stringWithFormat:@"You can review your day any time!", aTask.name]
 							  delegate:nil
 							  cancelButtonTitle:@"Okay"
 							  otherButtonTitles:nil];

@@ -23,6 +23,8 @@
 		[format release];
 		[dueDateLabel setText:dateString];
 	}
+
+	[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 	if ([task.status intValue] == 1) { // started
 		[startButton setTitle:@"Pause" forState:UIControlStateNormal];
 		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -30,10 +32,6 @@
 		[startButton setTitle:@"Start" forState:UIControlStateNormal];
 		[startButton addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 	}
-	
-	//[durationLabel setText: [task.duration stringValue]];
-	//[chunksLabel setText: [task.chunk_size stringValue]];
-	//[priorityLabel setText: [task.priority stringValue]];
 }
 
 
@@ -46,6 +44,7 @@
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		startButton.frame = CGRectMake(30, 300, 125, 40);
 		
+		[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 		if ([task.status intValue] == 1) { // started
 			[startButton setTitle:@"Pause" forState:UIControlStateNormal];
 			[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -189,7 +188,7 @@
 			[cell addSubview:nameLabel];
 			break;
 		case 1:
-			[cell.textLabel setText: @"Due Date"];			
+			[cell.textLabel setText: @"Deadline"];			
 			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
 			if ([task.due_date timeIntervalSinceNow] < 2592000)
 			{
