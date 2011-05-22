@@ -281,6 +281,18 @@
 	}
 }
 
+//-(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event 
+//{
+//	UITouch *touch = [touches anyObject];
+//	if(touch.view == (UIView*)taskLabel)
+//		NSLog(@"swipe detected")
+//}
+//
+//(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent*)event 
+//{q
+//	UITouch *touch = [touches anyObject];
+//}
+
 #pragma mark memory management
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
