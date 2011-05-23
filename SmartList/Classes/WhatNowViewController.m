@@ -53,14 +53,8 @@
 	[viewBlacklist release];
 
 	// set up blacklist
-<<<<<<< HEAD
 	blacklist = [[[NSMutableArray alloc] init] retain];   	
-
 	[startButton setTitle:@"Start" forState:UIControlStateNormal];
-=======
-	blacklist = [[[NSMutableArray alloc] init] retain];
-	[startButton setTitle:@"Start!" forState:UIControlStateNormal];
->>>>>>> 1dfb0c9c363ad8998e10e4d7b3f98b4932784a2d
 	[startButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
 	[blacklistButton setTitle:@"Blacklist" forState:UIControlStateNormal];
 	[self.view addSubview:startButton];
@@ -89,16 +83,7 @@
 {
 	NSLog(@"start pressed with task");
 	if (busy) {
-<<<<<<< HEAD
-        NSString *message = [NSString stringWithFormat:@"You are working on %@", [taskLabel text]];
-		UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
-													delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
-		
-		[busyAlert show];
-		[busyAlert release];
-=======
 		[self busyAlert];
->>>>>>> 1dfb0c9c363ad8998e10e4d7b3f98b4932784a2d
 	} else {
 		Task *aTask = [[note userInfo] valueForKey:@"task"];
 		[taskLabel setText:aTask.name];
