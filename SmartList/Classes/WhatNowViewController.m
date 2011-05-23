@@ -93,6 +93,7 @@
 -(void)startPressedWithTask:(NSNotification *)note
 {
 	NSLog(@"start pressed with task");
+	startButton.enabled = YES;
 	if (busy) {
 		[self busyAlert];
 	} else {
@@ -112,7 +113,6 @@
 		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 
 		[self taskStartedAlert];
-	
 	}
 }
 
