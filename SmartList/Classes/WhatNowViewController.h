@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <EventKit/EKEventStore.h>
 #import <EventKit/EKEvent.h>
+#import <AudioToolbox/AudioServices.h>
 #import "BlacklistViewController.h"
 #import "Task.h"
 
@@ -35,6 +36,7 @@
 -(void)viewBlacklist;
 -(Task *)checkAndUpdateTaskDB;
 -(void)checkAndSetCurrentTask;
+-(void) checkForLateTasks;
 -(void)getTaskFromCalendar;
 -(EKEvent *)getCurrentCalendarTask;
 -(EKEvent *)getNextCalendarTask;

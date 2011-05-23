@@ -33,7 +33,7 @@
 	[wnvc release]; [qltvc release]; 
 	
 	UITabBarController *tbc = [[UITabBarController alloc] init];
-	tbc.viewControllers = [NSArray arrayWithObjects:nav1, nav2, nil];
+	tbc.viewControllers = [NSArray arrayWithObjects:nav2, nav1, nil];
 	
 	[nav1 release]; [nav2 release];
 	
