@@ -199,32 +199,6 @@
 				[dueDateLabel setText:dateString];
 				[format release];				
 			}
-			
-//			if (dateString == nil) {
-//				dateString = @"None";
-//			}
-//			
-//			NSString *statusString = @"";
-//			switch ([task.status intValue]) {
-//				case 0:
-//					statusString = @" (Not started)";
-//					break;
-//				case 1:
-//					statusString = @" (Active)";
-//					statusLabel.textColor = [UIColor greenColor];
-//					break;
-//				case 2:
-//					statusString = @" (Completed)";
-//					break;					
-//				default:
-//					break;
-//			}
-//			
-//			if ([task.due_date compare:[[NSDate alloc] init]] == NSOrderedDescending) { // == 1
-//				statusString = @" (Overdue)";
-//			}
-//			dateString = [dateString stringByAppendingString:statusString];	
-
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:dueDateLabel];
 			break;

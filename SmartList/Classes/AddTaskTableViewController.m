@@ -187,7 +187,7 @@
 		task.name = nameField.text;
 		task.due_date = dueDate;
 		if (task.status == [NSNumber numberWithInt:3]) {
-			task.status = [NSNumber numberWithInt:0];
+			task.status = [NSNumber numberWithInt:0]; // can set the status to something else if we want to
 		}
 		task.priority = [NSNumber numberWithInt:([prioritySlider value])];
 		task.chunk_size = [NSNumber numberWithDouble:([slider value])];
@@ -198,7 +198,6 @@
 
 - (BOOL) dueDateCheck {
 	if ([dueDate compare:[[NSDate alloc] init]] == NSOrderedAscending) {
-		NSLog(@"Due date selected is earlier than right now.");
 		return NO;
 	}
 	return YES;

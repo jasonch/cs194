@@ -65,6 +65,7 @@
 	[startButton setTitle:@"Start" forState:UIControlStateNormal];
 	[startButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
 	[blacklistButton setTitle:@"Blacklist" forState:UIControlStateNormal];
+	[blacklistButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
 	[self.view addSubview:startButton];
 	[self.view addSubview:blacklistButton];
 	
@@ -167,29 +168,9 @@
 		[self taskStartedAlert];
 		
 		NSLog (@"%@", [currentTask description]);
-		
 		NSLog(@"start pressed");
-		NSString *startedString = [NSString stringWithFormat:@"You have started working on '%@'.",
-								   taskLabel.text];
-		UIAlertView *startedTask = [[UIAlertView alloc] initWithTitle: @"Started task" 
-															  message: startedString
-															 delegate:self 
-													cancelButtonTitle: @"Ok" 
-													otherButtonTitles: nil];
-		
-		[startedTask show];
-		[startedTask release];
-		
-	} else if (currentTask == nil) {
-		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
-														  message: @"Action could not be performed because there are no tasks in your QuickList." 
-														 delegate:self 
-												cancelButtonTitle: @"Ok" 
-												otherButtonTitles: nil];
-		
-		[noTasks show];
-		[noTasks release];
-	}
+		blacklistButton.enabled = NO;
+	} 
 }
 
 // called on a "started" task, finish up the task, calculates its progress,
@@ -236,33 +217,12 @@
 	busy = NO;
 	
 	[self updateCurrentTask];
+	blacklistButton.enabled = YES;
 }
 
 
 -(void)blacklistPressed:(UIButton*)sender
 {
-	if (currentTask == nil) {
-		UIAlertView *noTasks = [[UIAlertView alloc] initWithTitle: @"No tasks" 
-														  message: @"Action could not be performed because there are no tasks in your QuickList." 
-														 delegate:self 
-												cancelButtonTitle: @"Ok" 
-												otherButtonTitles: nil];
-		
-		[noTasks show];
-		[noTasks release];
-		return;
-	} else if (busy) {
-		UIAlertView *currentlyBusy = [[UIAlertView alloc] initWithTitle: @"Task cannot be Blacklisted" 
-														  message: @"You cannot Blacklist a task you are currently working on. Pause or Complete the task." 
-														 delegate:self 
-												cancelButtonTitle: @"Ok" 
-												otherButtonTitles: nil];
-		
-		[currentlyBusy show];
-		[currentlyBusy release];
-		return;
-	}	
-		
 	NSString *blacklisted = [NSString stringWithFormat:@"'%@' will no longer be scheduled until you remove it from the Blacklist.",
 						 taskLabel.text];
 	UIAlertView *blacklistAlert = [[UIAlertView alloc] initWithTitle: @"Task blacklisted" message: blacklisted
@@ -305,8 +265,12 @@
 	Task * task = [self getNextScheduledTaskWithDurationOf:spareTime];
 	if (task == nil) {
 		[taskLabel setText:@"No task to schedule!"];
+		startButton.enabled = NO;
+		blacklistButton.enabled = NO;
 	} else {
 		[taskLabel setText:[NSString stringWithFormat:@"%@",task.name]];
+		startButton.enabled = YES;
+		blacklistButton.enabled = YES;
 	}
 	currentTask = task;
 	[self updateFreeTImeLabel:spareTime];
