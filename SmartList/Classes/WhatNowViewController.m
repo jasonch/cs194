@@ -28,6 +28,14 @@
 	[busyAlert show];
 	[busyAlert release];	
 }
+-(void)dueDatePassedAlert:(int)number {
+	NSString *message = [NSString stringWithFormat:@"%d tasks have passed their due date. Update the tasks with red names in your QuickList!", number];
+	UIAlertView *passAlert = [[UIAlertView alloc] initWithTitle: @"Deadline Passed" message: message
+													   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+	
+	[passAlert show];
+	[passAlert release];	
+}
 -(void)updateFreeTImeLabel:(double)spareTime {
 	if (busy) {
 		if (currentTask == nil) {
@@ -73,6 +81,8 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startPressedWithTask:) name:@"startPressedWithTask" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePressedWithTask:) name:@"pausePressedWithTask" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completePressedWithTask:) name:@"completePressedWithTask" object:nil];
+	
+	[self checkForLateTasks];
 	
 	[self setup];
 	return self;
@@ -179,7 +189,7 @@
 	
 	NSTimeInterval timePassed = [task.started_time timeIntervalSinceNow];
 	if (timePassed > 0.0) {
-		[task setValue:[NSNumber numberWithInt:3] forKey:@"status"]; // 3 => error
+		[task setValue:[NSNumber numberWithInt:4] forKey:@"status"]; // 3 => error
 		return NO; // started in the future!?
 	}
 	timePassed = -1*timePassed;
@@ -298,8 +308,10 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		if (currentTask == nil || !busy) 
+		if (currentTask == nil || !busy) {
+			AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
 			[self updateCurrentTask];
+		}
 	}
 }
 
@@ -364,6 +376,27 @@
     [super dealloc];
 }
 
+/* called on start up, check for tasks whose due dates have passed. */
+- (void)checkForLateTasks {
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+	
+	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+	// find all active, uncompleted tasks due in the next 15 mintues 
+	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND progress < 1 AND due_date < %@", [NSDate dateWithTimeIntervalSinceNow:(15*60)]];
+						 
+	NSError *error = nil; 
+						 
+	NSArray *array = [context executeFetchRequest:request error:&error];
+						 
+	if (!error && array != nil && [array count] != 0) {
+		[self dueDatePassedAlert:[array count]];
+		[array makeObjectsPerformSelector:@selector(setStatus:) withObject:[NSNumber numberWithInt:3]];
+	}
+	
+	[request release];
+}
+						 
+
 /* called on startup, checks the DB for any task already started. If so, and it is not yet 
  * finished, set it as current task. */
 - (void)checkAndSetCurrentTask {
@@ -381,7 +414,7 @@
  * then calculate progress accordingly. Otherwise return it. */
 - (Task *)checkAndUpdateTaskDB {
 	
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
 	request.predicate = [NSPredicate predicateWithFormat:@"status == 1"];
@@ -389,7 +422,12 @@
 	NSError *error = nil; 
 	NSArray *array = [context executeFetchRequest:request error:&error];
 	
+	[request release];
+	
 	Task *startedTask = nil;
+	
+	if (error || array == nil) // some error
+		return nil;
 	
 	for (int i = 0; i < [array count]; i++) {
 		Task *task = [array objectAtIndex:i];
@@ -456,7 +494,7 @@
 	
 	NSLog(@"Get Next Scheduled Task");
 		
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
 	request.predicate = [NSPredicate predicateWithFormat:@"status == 0 AND chunk_size <= %f and blacklisted == NO", spareTime];
@@ -465,7 +503,9 @@
 	
 	NSArray *array = [context executeFetchRequest:request error:&error];
 	
-	if (!error & array != nil) {
+	[request release];
+	
+	if (!error && array != nil) {
 		// schedule 
 		int count = [array count];
 		NSLog(@"Fetched %d objects", count);
