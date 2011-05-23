@@ -23,6 +23,7 @@
 	UILabel *durationLabel;
 	UILabel *priorityLabel;
 	UILabel *blacklistedLabel;
+	UILabel *statusLabel;
 	UIButton *startButton;
 	UIButton *completeButton;
 	Task *task;

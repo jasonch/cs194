@@ -35,6 +35,7 @@
 
 -(void)setDate:(NSDate *)aDate;
 -(void)setDuration: (float) aDuration;
+-(BOOL)dueDateCheck;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext;
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withTask:(Task*)aTask;
 

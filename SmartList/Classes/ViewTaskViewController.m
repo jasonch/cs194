@@ -190,14 +190,41 @@
 		case 1:
 			[cell.textLabel setText: @"Deadline"];			
 			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
+			NSString *dateString = @"";
 			if ([task.due_date timeIntervalSinceNow] < 2592000)
 			{
 				NSDateFormatter *format = [[NSDateFormatter alloc] init];
 				[format setDateFormat:@"MMM dd, yyyy HH:mm"];
-				NSString *dateString = [format stringFromDate:task.due_date];
-				[format release];
+				dateString = [format stringFromDate:task.due_date];
 				[dueDateLabel setText:dateString];
+				[format release];				
 			}
+			
+//			if (dateString == nil) {
+//				dateString = @"None";
+//			}
+//			
+//			NSString *statusString = @"";
+//			switch ([task.status intValue]) {
+//				case 0:
+//					statusString = @" (Not started)";
+//					break;
+//				case 1:
+//					statusString = @" (Active)";
+//					statusLabel.textColor = [UIColor greenColor];
+//					break;
+//				case 2:
+//					statusString = @" (Completed)";
+//					break;					
+//				default:
+//					break;
+//			}
+//			
+//			if ([task.due_date compare:[[NSDate alloc] init]] == NSOrderedDescending) { // == 1
+//				statusString = @" (Overdue)";
+//			}
+//			dateString = [dateString stringByAppendingString:statusString];	
+
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:dueDateLabel];
 			break;
@@ -275,7 +302,7 @@
 			[blacklistedLabel setText: blacklistedString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:blacklistedLabel];			
-			break;
+			break;			
 		default:
 			break;
 	}

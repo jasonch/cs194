@@ -96,8 +96,8 @@
             titleLabel.textColor = [UIColor colorWithRed:0 green:.7 blue:0 alpha:1];
 		} else if (((Task*)managedObject).status == [NSNumber numberWithInt:3]) {
 			titleLabel.textColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
-		}
-
+		} else 
+			titleLabel.textColor = [UIColor blackColor];
 		[cell addSubview:titleLabel];
 		[titleLabel release];
 	}
