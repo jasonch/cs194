@@ -57,7 +57,7 @@
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
 	[ddvc setDelegate:self];
-	dvc = [[DurationViewController alloc] init];
+	dvc = [[DurationViewController alloc] initWithDuration:duration];
 	[dvc setDelegate:self];
 }
 

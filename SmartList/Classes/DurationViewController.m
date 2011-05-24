@@ -41,7 +41,7 @@
 -(void)setDuration
 {
     int hours = (int)duration;
-    double minutes = duration = (double)hours;
+    double minutes = duration - (double)hours;
     [durationPicker selectRow:hours inComponent:0 animated:NO];
     [durationPicker selectRow:minutes*4 inComponent:1 animated:NO];
 }
