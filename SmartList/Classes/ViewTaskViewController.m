@@ -89,7 +89,8 @@
 		task = aTask;
 		
 		startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-		startButton.frame = CGRectMake(30, 300, 125, 40);
+		//startButton.frame = CGRectMake(30, 300, 125, 40);
+		startButton.frame = CGRectMake(30, 330, 125, 40);
 		
 		[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 		if ([task.status intValue] == 1) { // started
@@ -102,7 +103,9 @@
 		
 
 		completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-		completeButton.frame = CGRectMake(170, 300, 125, 40);
+		//completeButton.frame = CGRectMake(170, 300, 125, 40);
+		completeButton.frame = CGRectMake(170, 330, 125, 40);
+
 		[completeButton setTitle:@"Complete" forState:UIControlStateNormal];
 		[completeButton addTarget:self action:@selector(completePressed:) forControlEvents:UIControlEventTouchUpInside];
 		[self.view addSubview:startButton];
@@ -118,6 +121,7 @@
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
     [self setup];
+	[self.tableView reloadData];
 }
 
 -(void)pausePressed:(UIButton*)sender
@@ -125,6 +129,7 @@
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
     [self setup];
+	[self.tableView reloadData];
 }
 
 -(void)completePressed:(UIButton*)sender
@@ -212,7 +217,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 6;
+    return 7;
 }
 
 
@@ -273,6 +278,33 @@
 			[blacklistedLabel setText: blacklistedString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:blacklistedLabel];			
+			break;			
+		case 6:
+			[cell.textLabel setText: @"Status"];
+			statusLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
+			statusLabel.textColor = [UIColor blackColor];
+            NSString *statusString = @"";
+			switch ([task.status intValue]) {
+				case 0:
+					statusString = @"Not active";
+					break;
+				case 1:
+					statusString = @"Active";
+					statusLabel.textColor = [UIColor colorWithRed:0 green:.7 blue:0 alpha:1];
+					break;
+				case 2:
+					statusString = @"Completed";
+					break;	
+				case 3:
+					statusString = @"Overdue";
+					statusLabel.textColor = [UIColor redColor];
+					break;		
+				default:
+					break;
+				}
+			[statusLabel setText: statusString];
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			[cell addSubview:statusLabel];			
 			break;			
 		default:
 			break;
