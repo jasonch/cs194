@@ -172,13 +172,21 @@
 	}
 	else if (duration == 0) {
 		// duplicate task name exception
-		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Invalid duration" message: @"Duration must be greator than 0." 
+		UIAlertView *durationError = [[UIAlertView alloc] initWithTitle: @"Invalid duration" message: @"Duration must be greater than 0." 
 														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 		
-		[duplicate show];
-		[duplicate release];
+		[durationError show];
+		[durationError release];
 		
-	} else {
+	} 
+	else if (![self dueDateCheck]) {
+		UIAlertView *dueDateError = [[UIAlertView alloc] initWithTitle: @"Invalid due date" message: @"Due date must be in the future." 
+															   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+		
+		[dueDateError show];
+		[dueDateError release];
+	}
+	else {
 		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
 		task.duration = [NSNumber numberWithFloat:duration];
 		task.due_date = dueDate;
@@ -206,11 +214,21 @@
 		task.duration = [NSNumber numberWithFloat:duration];
 		task.name = nameField.text;
 		task.due_date = dueDate;
+		if (task.status == [NSNumber numberWithInt:3]) {
+			task.status = [NSNumber numberWithInt:0]; // can set the status to something else if we want to
+		}
 		task.priority = [NSNumber numberWithInt:([prioritySlider value])];
 		task.chunk_size = [NSNumber numberWithDouble:([slider value])];
 		task.blacklisted = [NSNumber numberWithBool:blacklistedSwitch.on];
 		[self.navigationController popViewControllerAnimated: YES];
 	}
+}
+
+- (BOOL) dueDateCheck {
+	if ([dueDate compare:[[NSDate alloc] init]] == NSOrderedAscending) {
+		return NO;
+	}
+	return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -338,7 +356,7 @@
 			break;
 		case 1:
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			[cell.textLabel setText: @"Due Date"];
+			[cell.textLabel setText: @"Deadline"];
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:

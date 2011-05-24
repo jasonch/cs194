@@ -67,6 +67,10 @@
 	return task;
 }
 
+-(void) updateStatus:(NSNumber *)number {
+	self.status = number;
+}
+
 @end
 
 

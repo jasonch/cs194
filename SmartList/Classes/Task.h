@@ -29,7 +29,6 @@
 
 +(Task*) taskWithName:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext;
 +(Task*) findTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext; 
-
 @end
 
 
