@@ -110,7 +110,7 @@
 	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
 
-	if ([dueDate timeIntervalSinceNow] < 2592000)
+	if ([dueDate timeIntervalSinceNow] < 525600*60*10)
 	{
 		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	}
@@ -135,7 +135,7 @@
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
-	dvc = [[DurationViewController alloc] init];
+	dvc = [[DurationViewController alloc] initWithDuration:duration];
 	[dvc setDelegate:self];
 }
 
