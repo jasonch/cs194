@@ -86,47 +86,76 @@
     if (cell == nil) {
 		UITableViewCellStyle cellStyle = self.subtitleKey ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
         cell = [[[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:ReuseIdentifier] autorelease];
-    }
-	if (self.titleKey) {
+    
+		// predefine all spaces where subviews would go
 		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 82, 20)];
-		titleLabel.text = [managedObject valueForKey:self.titleKey];
 		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
-        if (((Task*)managedObject).status == [NSNumber numberWithInt:1])
-        {
-            titleLabel.textColor = [UIColor colorWithRed:0 green:.7 blue:0 alpha:1];
-		} else if (((Task*)managedObject).status == [NSNumber numberWithInt:3]) {
-			titleLabel.textColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
-		} else 
-			titleLabel.textColor = [UIColor blackColor];
+		titleLabel.tag = 1;
 		[cell addSubview:titleLabel];
 		[titleLabel release];
-	}
-	if (self.subtitleKey) cell.detailTextLabel.text = [managedObject valueForKey:self.subtitleKey];
-	cell.accessoryType = [self accessoryTypeForManagedObject:managedObject];
-	
-	UIProgressView *progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-	[progressBar setProgress:[((Task*)managedObject).progress floatValue]];
-	[progressBar setFrame:CGRectMake(5, cell.frame.size.height - 15, 150, 10)];
-	[cell addSubview:progressBar];
-	[progressBar release];
-	
-	if ([((Task*)managedObject).due_date timeIntervalSinceNow] < 2592000)
-	{
+		
+		UIProgressView *progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+		[progressBar setFrame:CGRectMake(5, cell.frame.size.height - 15, 150, 10)];
+		progressBar.tag = 2;
+		[cell addSubview:progressBar];
+		[progressBar release];
+		
 		UILabel *dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.frame.size.width - 80, (cell.frame.size.height - 15)/2, 80, 15)]; 
-		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-		[formatter setDateStyle:NSDateFormatterNoStyle];
-		[formatter setTimeStyle:NSDateFormatterShortStyle];
-		[formatter setDateFormat:(NSString*) @"MMM dd"];
-		[dueDateLabel setText:[formatter stringFromDate:((Task*)managedObject).due_date]];
+		dueDateLabel.tag = 3;
 		[dueDateLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:14]];
-		if ([((Task*)managedObject).due_date timeIntervalSinceNow] < 86400)
-		{
-			dueDateLabel.textColor = [UIColor redColor];
-		}
 		[cell addSubview:dueDateLabel];
-		[formatter release];
 		[dueDateLabel release];
 	}
+	
+	
+	Task *task = (Task *)managedObject;
+	int taskStatus = [task.status intValue];
+	int NUM_CELL_SUBVIEWS = 3;
+	
+	for (int i = 1; i <= NUM_CELL_SUBVIEWS; i++) {
+		UIView *subview = [cell viewWithTag:i];
+		switch (i) {
+			case 1: // title
+				if (self.titleKey) {
+					if (taskStatus == 1)
+						((UILabel*)subview).textColor = [UIColor colorWithRed:0 green:.7 blue:0 alpha:1];
+					else if (taskStatus)
+						((UILabel*)subview).textColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
+					else 
+						((UILabel*)subview).textColor = [UIColor blackColor];
+					[(UILabel *)subview setText:task.name];
+				}
+				break;
+			case 2: // progress bar
+				[((UIProgressView*)subview) setProgress:[task.progress floatValue]];
+				break;
+				
+			case 3: // due date
+				if ([task.due_date timeIntervalSinceNow] < 2592000) // 30 days
+				{
+					NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+					[formatter setDateStyle:NSDateFormatterNoStyle];
+					[formatter setTimeStyle:NSDateFormatterShortStyle];
+					[formatter setDateFormat:(NSString*) @"MMM dd"];
+					[(UILabel *)subview setText:[formatter stringFromDate:task.due_date]];
+					if ([task.due_date timeIntervalSinceNow] < 86400) // one day
+					{
+						((UILabel *)subview).textColor = [UIColor redColor];
+					}
+					[formatter release];
+				} else {
+					[(UILabel *)subview setText:@""];
+				}
+				break;
+			default:
+				break;
+		}
+		
+	}
+		
+	//if (self.subtitleKey) cell.detailTextLabel.text = [managedObject valueForKey:self.subtitleKey];
+	cell.accessoryType = [self accessoryTypeForManagedObject:managedObject];
+	
 	UIImage *thumbnail = [self thumbnailImageForManagedObject:managedObject];
 	if (thumbnail) cell.imageView.image = thumbnail;
 	
@@ -148,7 +177,9 @@
 {
 	//remove from database
 	NSLog(@"something happened");
-	[context deleteObject:managedObject];
+	[(Task*)managedObject setStatus:[NSNumber numberWithInt:2]];
+	
+	//[context deleteObject:managedObject];
 }
 
 - (BOOL)canDeleteManagedObject:(NSManagedObject *)managedObject

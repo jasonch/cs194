@@ -70,6 +70,16 @@
 
 -(void)saveDate
 {
+	if ([[dueDatePicker date] timeIntervalSinceNow] < 900) { // within the next 15 minutes
+		NSString *message = [NSString stringWithFormat:@"Deadline must be in the future."];
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Invalid Deadline" message: message
+														   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[alert show];
+		[alert release];	
+		return;
+	}
+	
 	[self.delegate setDate:[dueDatePicker date]];
 	[self.navigationController popViewControllerAnimated:YES];
 }

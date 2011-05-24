@@ -15,9 +15,8 @@
 {
 	self.title = task.name;	
 	[nameLabel setText: task.name];
-    
     //Set due date
-	if ([task.due_date timeIntervalSinceNow] < 2592000)
+	if ([task.due_date timeIntervalSinceNow] < 2592000*12*10) // ten years
 	{
 		NSDateFormatter *format = [[NSDateFormatter alloc] init];
 		[format setDateFormat:@"MMM dd, yyyy HH:mm"];

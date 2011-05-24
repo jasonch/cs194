@@ -160,7 +160,7 @@
 		[noName show];
 		[noName release];
 	} 
-	else if ([Task findTask:nameField.text inManagedObjectContext:context]) 
+	else if ([Task findTask:nameField.text activeOnly:YES inManagedObjectContext:context]) 
 	{
 		// duplicate task name exception
 		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Duplicate task" message: @"A task with this name already exists." 
@@ -169,22 +169,6 @@
 		[duplicate show];
 		[duplicate release];
 	
-	}
-	else if (duration == 0) {
-		// duplicate task name exception
-		UIAlertView *durationError = [[UIAlertView alloc] initWithTitle: @"Invalid duration" message: @"Duration must be greater than 0." 
-														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
-		
-		[durationError show];
-		[durationError release];
-		
-	} 
-	else if (![self dueDateCheck]) {
-		UIAlertView *dueDateError = [[UIAlertView alloc] initWithTitle: @"Invalid due date" message: @"Due date must be in the future." 
-															   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
-		
-		[dueDateError show];
-		[dueDateError release];
 	}
 	else {
 		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
@@ -225,7 +209,7 @@
 }
 
 - (BOOL) dueDateCheck {
-	if ([dueDate compare:[[NSDate alloc] init]] == NSOrderedAscending) {
+	if ([dueDate compare:[NSDate date]] == NSOrderedAscending) {
 		return NO;
 	}
 	return YES;
