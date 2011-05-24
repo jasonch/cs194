@@ -64,6 +64,19 @@
 		default:
 			break;
 	}
+	
+	if (hour == 0.0) {
+		NSString *message = [NSString stringWithFormat:@"Duration must be longer than 0 minute"];
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Invalid Duration" message: message
+														   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[alert show];
+		[alert release];
+		return;
+		
+	}
+	
+	
 	[self.delegate setDuration:hour];
 	[self.navigationController popViewControllerAnimated:YES];
 }
