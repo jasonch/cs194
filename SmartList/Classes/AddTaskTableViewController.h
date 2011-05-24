@@ -30,7 +30,7 @@
 	Task *task;
 	NSString *name;
 	int priority;
-	int chunk_size;
+	float chunk_size;
 }
 
 -(void)setDate:(NSDate *)aDate;

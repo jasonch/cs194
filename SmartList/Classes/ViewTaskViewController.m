@@ -15,7 +15,8 @@
 {
 	self.title = task.name;	
 	[nameLabel setText: task.name];
-	if ([task.due_date timeIntervalSinceNow] < 2592000)
+    //Set due date
+	if ([task.due_date timeIntervalSinceNow] < 2592000*12*10) // ten years
 	{
 		NSDateFormatter *format = [[NSDateFormatter alloc] init];
 		[format setDateFormat:@"MMM dd, yyyy HH:mm"];
@@ -23,7 +24,53 @@
 		[format release];
 		[dueDateLabel setText:dateString];
 	}
-
+    
+    //Set chunk size
+    NSString *chunksString = [task.chunk_size stringValue];
+    if ([task.chunk_size floatValue] == 1.0)
+    {
+        chunksString = [chunksString stringByAppendingString:@" hour"];
+    }else
+    {
+        chunksString = [chunksString stringByAppendingString:@" hours"];
+    }
+    [chunksLabel setText: chunksString];
+    
+    //Set Priority
+    NSString *priorityString = @"";
+    switch ([task.priority intValue]) {
+        case 1:
+            priorityString = @"Very Low";
+            break;
+        case 2:
+            priorityString = @"Low";
+            break;
+        case 3:
+            priorityString = @"Medium";
+            break;
+        case 4:
+            priorityString = @"High";
+            break;
+        case 5:
+            priorityString = @"Very High";
+            break;
+        default:
+            break;
+    }
+    [priorityLabel setText: priorityString];
+    
+    //Set Duration
+    NSString *durationString = [task.duration stringValue];
+    if ([task.duration floatValue] == 1.0)
+    {
+        durationString = [durationString stringByAppendingString:@" hour"];
+    }else
+    {
+        durationString = [durationString stringByAppendingString:@" hours"];
+    }
+    [durationLabel setText: durationString];
+    
+    
 	[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 	if ([task.status intValue] == 1) { // started
 		[startButton setTitle:@"Pause" forState:UIControlStateNormal];
@@ -138,7 +185,6 @@
  - (void)viewDidAppear:(BOOL)animated {
 	 [super viewDidAppear:animated];
 	 [self setup];
-	 [self.tableView reloadData];
  }
  
 /*
@@ -188,79 +234,30 @@
 		case 0:
 			[cell.textLabel setText: @"Task"];
 			nameLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-			[nameLabel setText: task.name];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:nameLabel];
 			break;
 		case 1:
 			[cell.textLabel setText: @"Deadline"];			
 			dueDateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-			NSString *dateString = @"";
-			if ([task.due_date timeIntervalSinceNow] < 2592000)
-			{
-				NSDateFormatter *format = [[NSDateFormatter alloc] init];
-				[format setDateFormat:@"MMM dd, yyyy HH:mm"];
-				dateString = [format stringFromDate:task.due_date];
-				[dueDateLabel setText:dateString];
-				[format release];				
-			}
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:dueDateLabel];
 			break;
 		case 2:
 			[cell.textLabel setText: @"Duration"];
 			durationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-            NSString *durationString = [task.duration stringValue];
-            if ([task.duration floatValue] == 1.0)
-            {
-                durationString = [durationString stringByAppendingString:@" hour"];
-            }else
-            {
-                durationString = [durationString stringByAppendingString:@" hours"];
-            }
-			[durationLabel setText: durationString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:durationLabel];
 			break;
 		case 3:
 			[cell.textLabel setText: @"Slice"];
 			chunksLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-            NSString *chunksString = [task.chunk_size stringValue];
-            if ([task.chunk_size floatValue] == 1.0)
-            {
-                chunksString = [chunksString stringByAppendingString:@" hour"];
-            }else
-            {
-                chunksString = [chunksString stringByAppendingString:@" hours"];
-            }
-			[chunksLabel setText: chunksString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:chunksLabel];			
 			break;
 		case 4:
 			[cell.textLabel setText: @"Priority"];
-            NSString *priorityString = @"";
 			priorityLabel = [[[UILabel alloc] initWithFrame:CGRectMake(110,10,190,25)] autorelease]; 
-            switch ([task.priority intValue]) {
-                case 1:
-                    priorityString = @"Very Low";
-                    break;
-                case 2:
-                    priorityString = @"Low";
-                    break;
-                case 3:
-                    priorityString = @"Medium";
-                    break;
-                case 4:
-                    priorityString = @"High";
-                    break;
-                case 5:
-                    priorityString = @"Very High";
-                    break;
-                default:
-                    break;
-            }
-			[priorityLabel setText: priorityString];
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:priorityLabel];			
 			break;
@@ -362,14 +359,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    // Navigation logic may go here. Create and push another view controller.
-	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-	 [self.navigationController pushViewController:detailViewController animated:YES];
-	 [detailViewController release];
-	 */
+    AddTaskTableViewController *attvc = [[AddTaskTableViewController alloc] initInManagedObjectContext:context withTask:task];
+	[self.navigationController pushViewController:attvc animated:YES];
+	[attvc release];
 }
 
 

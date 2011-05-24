@@ -38,11 +38,26 @@
 	}
 }
 
+-(void)setDuration
+{
+    int hours = (int)duration;
+    double minutes = duration - (double)hours;
+    [durationPicker selectRow:hours inComponent:0 animated:NO];
+    [durationPicker selectRow:minutes*4 inComponent:1 animated:NO];
+}
+
+-initWithDuration:(float)aDuration
+{
+    duration = aDuration;
+    return self;
+}
+
 -(void) viewDidLoad
 {
 	self.title = @"Duration";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDuration)];
 	[self setup];
+    [self setDuration];
 }
 
 -(void)saveDuration
@@ -64,6 +79,19 @@
 		default:
 			break;
 	}
+	
+	if (hour == 0.0) {
+		NSString *message = [NSString stringWithFormat:@"Duration must be longer than 0 minute"];
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Invalid Duration" message: message
+														   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+		
+		[alert show];
+		[alert release];
+		return;
+		
+	}
+	
+	
 	[self.delegate setDuration:hour];
 	[self.navigationController popViewControllerAnimated:YES];
 }

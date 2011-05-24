@@ -20,7 +20,10 @@
 @interface DurationViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate> {
 	NSMutableArray *minuteArray;
 	NSMutableArray *hourArray;
+    float duration;
 }
+
+-initWithDuration:(float)aDuration;
 
 @property(assign) id delegate;
 @property (nonatomic, retain) IBOutlet UIPickerView *durationPicker;

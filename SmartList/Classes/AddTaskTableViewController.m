@@ -35,21 +35,29 @@
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
 	[formatter setDateFormat:(NSString*) @"EEE, MM/d, hh:mm aaa"];
 	
+    //Set up due date label
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
 	dueDate = [[NSDate alloc] init];
 	dueDate = [NSDate distantFuture];
 	//[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
+    //Set up duration label
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = 1;
+    chunk_size = 1;
 	[durationLabel setText:@"1 hour and 0 minutes"];
 	
+    //Set up name
 	name = [[NSString alloc] initWithString:@""];
 	
+    
+    //Set up priority
+    priority = 3;
+    
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
 	[ddvc setDelegate:self];
-	dvc = [[DurationViewController alloc] init];
+	dvc = [[DurationViewController alloc] initWithDuration:duration];
 	[dvc setDelegate:self];
 }
 
@@ -76,11 +84,23 @@
 	[durationLabel setText:durationString];
 }
 
+-(void)resetSlider
+{
+	slider.maximumValue = duration;
+	slider.minimumValue = .25;
+	double minutes = floor([slider value]*4)/4;
+	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
+	hourString = [hourString stringByAppendingString:@" hours"];
+	slider.value = minutes;
+	hourLabel.text = hourString;    
+}
+
 -(void) setupEditMode
 {
 	self.title = @"Edit Task";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveExistingTask)];
 	
+    //Set up due date
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
@@ -90,24 +110,32 @@
 	dueDate = [[NSDate alloc] init];
 	dueDate = task.due_date;
 
-	if ([dueDate timeIntervalSinceNow] < 2592000)
+	if ([dueDate timeIntervalSinceNow] < 525600*60*10)
 	{
 		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	}
+    
+    //Set up duration
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
+    
+    //Set up name
 	name = [[NSString alloc] initWithString:task.name];
+    
+    //Set up priority
 	priority = [task.priority intValue];
-	chunk_size = [task.chunk_size intValue];
-	
+    
+    //Set up chunk_size
+	chunk_size = [task.chunk_size floatValue];
+
 	[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
 	NSLog(@"edit task: %@", [task description]);
 		
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:dueDate];
 	[ddvc setDelegate:self];
-	dvc = [[DurationViewController alloc] init];
+	dvc = [[DurationViewController alloc] initWithDuration:duration];
 	[dvc setDelegate:self];
 }
 
@@ -132,7 +160,7 @@
 		[noName show];
 		[noName release];
 	} 
-	else if ([Task findTask:nameField.text inManagedObjectContext:context]) 
+	else if ([Task findTask:nameField.text activeOnly:YES inManagedObjectContext:context]) 
 	{
 		// duplicate task name exception
 		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Duplicate task" message: @"A task with this name already exists." 
@@ -141,22 +169,6 @@
 		[duplicate show];
 		[duplicate release];
 	
-	}
-	else if (duration == 0) {
-		// duplicate task name exception
-		UIAlertView *durationError = [[UIAlertView alloc] initWithTitle: @"Invalid duration" message: @"Duration must be greater than 0." 
-														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
-		
-		[durationError show];
-		[durationError release];
-		
-	} 
-	else if (![self dueDateCheck]) {
-		UIAlertView *dueDateError = [[UIAlertView alloc] initWithTitle: @"Invalid due date" message: @"Due date must be in the future." 
-															   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
-		
-		[dueDateError show];
-		[dueDateError release];
 	}
 	else {
 		task = [Task taskWithName:nameField.text inManagedObjectContext:context];
@@ -197,7 +209,7 @@
 }
 
 - (BOOL) dueDateCheck {
-	if ([dueDate compare:[[NSDate alloc] init]] == NSOrderedAscending) {
+	if ([dueDate compare:[NSDate date]] == NSOrderedAscending) {
 		return NO;
 	}
 	return YES;
@@ -278,14 +290,7 @@
 
 -(void)sliderChanged:(id)sender
 {
-	UISlider *sittingsSlider = (UISlider *)sender;
-	sittingsSlider.maximumValue = duration;
-	sittingsSlider.minimumValue = .25;
-	double minutes = floor([sittingsSlider value]*4)/4;
-	NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
-	hourString = [hourString stringByAppendingString:@" hours"];
-	slider.value = minutes;
-	hourLabel.text = hourString;
+    [self resetSlider];
 }
 
 -(void)prioritySliderChanged:(id)sender
@@ -344,26 +349,52 @@
 			[cell addSubview:durationLabel];
 			break;
 		case 3:			
-			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 15)];
-			hourLabel.text = @"1 hour";
-			slider = [[UISlider alloc] initWithFrame:CGRectMake(144,20,154,15)];
+			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(104, 3, 194, 17)];
+            hourLabel.textAlignment = UITextAlignmentCenter;
+			slider = [[UISlider alloc] initWithFrame:CGRectMake(104,20,194,15)];
 			[slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Slice"];
-			[slider setValue:1];
+            slider.maximumValue = duration;
+            slider.minimumValue = .25;
+            [slider setValue:chunk_size];
+            double minutes = floor([slider value]*4)/4;
+            NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
+            hourString = [hourString stringByAppendingString:@" hours"];
+            slider.value = minutes;
+            hourLabel.text = hourString;  
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
 			[cell addSubview:hourLabel];
 
 			break;
 		case 4:
-			priorityLabel = [[UILabel alloc] initWithFrame:CGRectMake(181, 5, 120, 18)];
-			priorityLabel.text = @"Medium";
-			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(144,23,154,15)];
+			priorityLabel = [[UILabel alloc] initWithFrame:CGRectMake(104, 3, 194, 17)];
+            switch (priority) {
+                case 1:
+                    priorityLabel.text = @"Very Low";
+                    break;
+                case 2:
+                    priorityLabel.text = @"Low";
+                    break;
+                case 3:
+                    priorityLabel.text = @"Medium";
+                    break;
+                case 4:
+                    priorityLabel.text = @"High";
+                    break;
+                case 5:
+                    priorityLabel.text = @"Very High";
+                    break;
+                default:
+                    break;
+            }
+            priorityLabel.textAlignment = UITextAlignmentCenter;
+			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(104,20,194,15)];
 			[prioritySlider addTarget:self action:@selector(prioritySliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Priority"];
 			prioritySlider.minimumValue = 1;
 			prioritySlider.maximumValue = 5;
-			prioritySlider.value = 3;
+			prioritySlider.value = priority;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:prioritySlider];
 			[cell addSubview:priorityLabel];
