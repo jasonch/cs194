@@ -446,23 +446,6 @@
 	int count = [m_array count];
 	if (count == 0) return nil;
 	
-/*
-	// use a linear function to give higher priority more weight
-	// total number of "lottery tickets"
-	int total = (count + 1) * count / 2;
-	
-	// randomly pick one lottery ticket
-	int rand = arc4random() % total + 1;
-	
-	// convert lottery ticket number back to the ticket holder
-	// this should be the inverse function of assigning tickets
-	rand = floor(sqrt(1+8*rand)-1)/2; 
-	
-	// reverse the index because zero priority is highest
-	int index = count - rand; 
-	NSLog(@"random index: %d", index);
-*/
-	
 	// use parabolic function
 	int total = count * (count + 1) * (2*count + 1) / 6;
 	int rand = arc4random() % (total + 1);
@@ -471,16 +454,14 @@
 	for (; j <= count; j++) {
 		if (j*(j+1)*(2*j + 1) / 6 >= rand) break;
 	}
+	// reverse the index because lowest index is highest priority
 	int index = count - j;
-	NSLog(@"random index: %d", index);
 	return [m_array objectAtIndex:index];
 }
 
 
 - (Task *)getNextScheduledTaskWithDurationOf: (double)spareTime {
-	
-	NSLog(@"Get Next Scheduled Task");
-		
+			
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];

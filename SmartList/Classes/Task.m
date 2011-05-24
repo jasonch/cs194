@@ -53,14 +53,17 @@
 }
 
 // This code is duplicate. Find a way to condense it with the above function while maintaining the full functionality.
-+(Task*) findTask:(NSString*)aName inManagedObjectContext:(NSManagedObjectContext*)aContext 
++(Task*) findTask:(NSString*)aName activeOnly:(BOOL)active inManagedObjectContext:(NSManagedObjectContext*)aContext 
 {
 	Task *task = nil;
 	
 	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:aContext];
-	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
+	if (active)
+		request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@ AND status != 2", aName];
+	else 
+		request.predicate = [NSPredicate predicateWithFormat:@"name =[c]", aName];
 	NSError *error = nil;
 	task = [[aContext executeFetchRequest:request error:&error] lastObject];
 	

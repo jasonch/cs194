@@ -15,6 +15,7 @@
 {
 	self.title = task.name;	
 	[nameLabel setText: task.name];
+    //Set due date
 	if ([task.due_date timeIntervalSinceNow] < 2592000*12*10) // ten years
 	{
 		NSDateFormatter *format = [[NSDateFormatter alloc] init];
@@ -23,7 +24,53 @@
 		[format release];
 		[dueDateLabel setText:dateString];
 	}
-
+    
+    //Set chunk size
+    NSString *chunksString = [task.chunk_size stringValue];
+    if ([task.chunk_size floatValue] == 1.0)
+    {
+        chunksString = [chunksString stringByAppendingString:@" hour"];
+    }else
+    {
+        chunksString = [chunksString stringByAppendingString:@" hours"];
+    }
+    [chunksLabel setText: chunksString];
+    
+    //Set Priority
+    NSString *priorityString = @"";
+    switch ([task.priority intValue]) {
+        case 1:
+            priorityString = @"Very Low";
+            break;
+        case 2:
+            priorityString = @"Low";
+            break;
+        case 3:
+            priorityString = @"Medium";
+            break;
+        case 4:
+            priorityString = @"High";
+            break;
+        case 5:
+            priorityString = @"Very High";
+            break;
+        default:
+            break;
+    }
+    [priorityLabel setText: priorityString];
+    
+    //Set Duration
+    NSString *durationString = [task.duration stringValue];
+    if ([task.duration floatValue] == 1.0)
+    {
+        durationString = [durationString stringByAppendingString:@" hour"];
+    }else
+    {
+        durationString = [durationString stringByAppendingString:@" hours"];
+    }
+    [durationLabel setText: durationString];
+    
+    
 	[startButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
 	if ([task.status intValue] == 1) { // started
 		[startButton setTitle:@"Pause" forState:UIControlStateNormal];
