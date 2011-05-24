@@ -35,18 +35,25 @@
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
 	[formatter setDateFormat:(NSString*) @"EEE, MM/d, hh:mm aaa"];
 	
+    //Set up due date label
 	dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(115,15,175,15)]; 
 	dueDate = [[NSDate alloc] init];
 	dueDate = [NSDate distantFuture];
 	//[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	
+    //Set up duration label
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = 1;
     chunk_size = 1;
 	[durationLabel setText:@"1 hour and 0 minutes"];
 	
+    //Set up name
 	name = [[NSString alloc] initWithString:@""];
 	
+    
+    //Set up priority
+    priority = 3;
+    
 	//Declare DueDateViewController
 	ddvc = [[DueDateViewController alloc] initWithDate:[NSDate date]];
 	[ddvc setDelegate:self];
@@ -93,6 +100,7 @@
 	self.title = @"Edit Task";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveExistingTask)];
 	
+    //Set up due date
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterNoStyle];
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
@@ -106,17 +114,21 @@
 	{
 		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	}
+    
+    //Set up duration
 	durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(115, 15, 175, 15)];
 	duration = [task.duration floatValue];
 	[self setDurationLabel];
+    
+    //Set up name
 	name = [[NSString alloc] initWithString:task.name];
+    
+    //Set up priority
 	priority = [task.priority intValue];
-	chunk_size = [task.chunk_size intValue];
-    slider.maximumValue = duration;
-    slider.minimumValue = 0.25;
-	[slider setValue:chunk_size];
+    
+    //Set up chunk_size
+	chunk_size = [task.chunk_size floatValue];
 
-    [self resetSlider];
 	[blacklistedSwitch setOn:[task.blacklisted boolValue] animated:NO];
 	NSLog(@"edit task: %@", [task description]);
 		
@@ -336,16 +348,18 @@
 			break;
 		case 3:			
 			hourLabel = [[UILabel alloc] initWithFrame:CGRectMake(104, 3, 194, 17)];
-            //CHANGE FOR EDIT MODE
-            hourLabel.text = @"1 hour";
             hourLabel.textAlignment = UITextAlignmentCenter;
 			slider = [[UISlider alloc] initWithFrame:CGRectMake(104,20,194,15)];
 			[slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Slice"];
-            //CHANGE FOR EDIT MODE
-			//[slider setValue:1];
+            slider.maximumValue = duration;
+            slider.minimumValue = .25;
             [slider setValue:chunk_size];
-            [self resetSlider];
+            double minutes = floor([slider value]*4)/4;
+            NSString *hourString = [NSString stringWithFormat:@"%.2f", minutes];
+            hourString = [hourString stringByAppendingString:@" hours"];
+            slider.value = minutes;
+            hourLabel.text = hourString;  
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:slider];
 			[cell addSubview:hourLabel];
@@ -353,14 +367,32 @@
 			break;
 		case 4:
 			priorityLabel = [[UILabel alloc] initWithFrame:CGRectMake(104, 3, 194, 17)];
-			priorityLabel.text = @"Medium";
+            switch (priority) {
+                case 1:
+                    priorityLabel.text = @"Very Low";
+                    break;
+                case 2:
+                    priorityLabel.text = @"Low";
+                    break;
+                case 3:
+                    priorityLabel.text = @"Medium";
+                    break;
+                case 4:
+                    priorityLabel.text = @"High";
+                    break;
+                case 5:
+                    priorityLabel.text = @"Very High";
+                    break;
+                default:
+                    break;
+            }
             priorityLabel.textAlignment = UITextAlignmentCenter;
 			prioritySlider = [[UISlider alloc] initWithFrame:CGRectMake(104,20,194,15)];
 			[prioritySlider addTarget:self action:@selector(prioritySliderChanged:) forControlEvents:UIControlEventValueChanged];
 			[cell.textLabel setText: @"Priority"];
 			prioritySlider.minimumValue = 1;
 			prioritySlider.maximumValue = 5;
-			prioritySlider.value = 3;
+			prioritySlider.value = priority;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			[cell addSubview:prioritySlider];
 			[cell addSubview:priorityLabel];
