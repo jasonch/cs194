@@ -17,6 +17,7 @@
 @end
 
 @interface DueDateViewController : UIViewController {
+    IBOutlet UILabel *yearLabel;
 	IBOutlet UIDatePicker *dueDatePicker;
 	NSDate *date;
 }

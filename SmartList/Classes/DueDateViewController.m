@@ -31,12 +31,41 @@
 */
 
 
+- (void) dateChanged:(id)sender{
+    if ([[dueDatePicker date] timeIntervalSinceNow] < 525600*60*10)
+    {
+        int year = [[dueDatePicker date] timeIntervalSince1970]/(60*525600);
+        year += 1970;
+        NSString *yearString = @"";
+        yearString = [yearString stringByAppendingFormat:@"%d", year];
+        yearLabel.text = yearString;
+    }else
+    {
+        [dueDatePicker setDate:[NSDate date]];
+        yearLabel.text = @"";
+    }
+}
+
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	self.title = @"Due Date";
+	self.title = @"Deadline";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDate)];
-	[dueDatePicker setDate:date animated:NO];
+    [dueDatePicker addTarget:self action:@selector(dateChanged:) forControlEvents:UIControlEventValueChanged];
+    if ([date timeIntervalSinceNow] < 525600*60*10)
+    {
+        [dueDatePicker setDate:date animated:NO];
+        int year = [date timeIntervalSince1970]/(60*525600);
+        year += 1970;
+        NSString *yearString = @"";
+        yearString = [yearString stringByAppendingFormat:@"%d", year];
+        yearLabel.text = yearString;
+    }else
+    {
+        [dueDatePicker setDate:[NSDate date]];
+        yearLabel.text = @"";
+    }
 }
 
 -(void)saveDate
