@@ -71,7 +71,7 @@
 	
 	currentTask = nil; //[Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
 	busy = NO;
-	[self checkAndSetCurrentTask];
+	
 	[self updateCurrentTask];
 }
 
@@ -84,16 +84,17 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completePressedWithTask:) name:@"completePressedWithTask" object:nil];
 	
 	[self checkForLateTasks];
-	
+
 	[self setup];
+	[self checkAndSetCurrentTask];
+	NSLog(@"current task after init: %@", [currentTask description]);
+	
 	return self;
 }
-
 
 -(void)startPressedWithTask:(NSNotification *)note
 {
 	NSLog(@"start pressed with task");
-	startButton.enabled = YES;
 	if (busy) {
 		[self busyAlert];
 	} else {
@@ -108,6 +109,7 @@
 		[currentTask setValue:[NSNumber numberWithInt:1] forKey:@"status"]; // 1 => started
 		[currentTask setValue:[NSDate date] forKey:@"started_time"];		
 
+		startButton.enabled = YES;
 		[startButton removeTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[startButton setTitle: @"Pause" forState: UIControlStateNormal];
 		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -150,7 +152,7 @@
 	
 	[aTask setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 	
-	[self updateCurrentTask];	
+	[self updateCurrentTask];
 }
 
 -(void)startPressed:(UIButton*)sender
@@ -179,12 +181,14 @@
 	if ([task.status intValue] != 1)
 		return NO;
 	
+	NSLog(@"update progress:1");
 	NSTimeInterval timePassed = [task.started_time timeIntervalSinceNow];
 	if (timePassed > 0.0) {
 		[task setValue:[NSNumber numberWithInt:4] forKey:@"status"]; // 3 => error
 		return NO; // started in the future!?
 	}
 	timePassed = -1*timePassed;
+	NSLog(@"update progress:2");
 	
 	if (timePassed/3600. >= [task.chunk_size doubleValue])
 		timePassed = [task.chunk_size doubleValue];
@@ -192,14 +196,17 @@
 	[self addTaskToCalendar:task fromTime:task.started_time toTime:[NSDate date]];
 	
 	double progress = timePassed / (3600.*[task.duration doubleValue]) + [task.progress doubleValue];
+	NSLog(@"update progress:3");
 
+	
 	if (progress >= 1)
 		[task setValue:[NSNumber numberWithInt:2] forKey:@"status"]; // 2 => completed
 	else 
 		[task setValue:[NSNumber numberWithInt:0] forKey:@"status"]; // 0 => active
 
 	[task setValue:[NSNumber numberWithDouble:progress] forKey:@"progress"];
-		
+	NSLog(@"update progress:4");
+	
 	return YES;
 }
 
@@ -208,10 +215,10 @@
 	assert (busy);
 	assert (currentTask != nil);
 	[sender setTitle: @"Start" forState: UIControlStateNormal];
-	//[sender removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents]; 
 	[sender removeTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
 	[sender addTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
-	
+
+	NSLog(@"pause, current task: %@", [currentTask description]);
 	// update database
 	[self updateProgressOfTask:currentTask];	
 	busy = NO;
@@ -249,6 +256,7 @@
 
 -(void) updateCurrentTask {
     
+	assert (!busy);
     [self getTaskFromCalendar];
 	EKEvent *calendarTask = [self getCurrentCalendarTask];
 	if (calendarTask != nil) {
@@ -329,7 +337,6 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated {
-	NSLog(@"appeared");
     [self becomeFirstResponder];
     [self getTaskFromCalendar];
 
@@ -389,8 +396,15 @@
 - (void)checkAndSetCurrentTask {
 	Task *started = [self checkAndUpdateTaskDB];
 	if (started != nil) {
+		NSLog(@"started task: %@", [started description]);
 		currentTask = started;
 		busy = YES;
+		blacklistButton.enabled = NO;
+		startButton.enabled = YES;
+		[startButton removeTarget:self action:@selector(startPressed:) forControlEvents:UIControlEventTouchUpInside];
+		[startButton setTitle: @"Pause" forState: UIControlStateNormal];
+		[startButton addTarget:self action:@selector(pausePressed:) forControlEvents:UIControlEventTouchUpInside];
+				
 		[self updateFreeTImeLabel:0.];
 		[taskLabel setText:[NSString stringWithFormat:@"%@",started.name]];
 		return;
@@ -428,6 +442,7 @@
 			}
 		}
 	}
+
 	return startedTask;
 }
 

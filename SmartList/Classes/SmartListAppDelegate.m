@@ -20,7 +20,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
 	// Override point for customization after application launch.
-    
 	WhatNowViewController *wnvc = [[WhatNowViewController alloc] initInManagedObjectContext: self.managedObjectContext];
 	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext: self.managedObjectContext withUser:nil];
 	
