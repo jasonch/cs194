@@ -121,7 +121,7 @@
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"startPressedWithTask" object:self userInfo:dict];
     [self setup];
-	[self.tableView reloadData];
+	[self reloadStatus];
 }
 
 -(void)pausePressed:(UIButton*)sender
@@ -129,7 +129,18 @@
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"pausePressedWithTask" object:self userInfo:dict];
     [self setup];
-	[self.tableView reloadData];
+	[self reloadStatus];
+}
+
+-(void)reloadStatus {
+	[self.tableView beginUpdates];
+	NSUInteger _path[2] = {0, 6};
+	NSIndexPath *_indexPath = [[NSIndexPath alloc] initWithIndexes:_path length:2];
+	NSArray *_indexPaths = [[NSArray alloc] initWithObjects:_indexPath, nil];
+	[_indexPath release];
+	[self.tableView reloadRowsAtIndexPaths:_indexPaths withRowAnimation:UITableViewRowAnimationFade];
+	[_indexPaths release];
+	[self.tableView endUpdates];
 }
 
 -(void)completePressed:(UIButton*)sender

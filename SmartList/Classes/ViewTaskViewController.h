@@ -33,5 +33,6 @@
 -(void)startPressed:(UIButton*)sender;
 -(void)pausePressed:(UIButton*)sender;
 -(void)completePressed:(UIButton*)sender; 
+-(void)reloadStatus;
 
 @end
