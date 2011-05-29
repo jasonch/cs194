@@ -93,15 +93,11 @@
 	EKEvent *currentEvent = [self getCurrentCalendarTask];
 	
 	if ([currentEvent.title isEqualToString:task.name]) {
-		NSLog(@"updating end time of task %@", [currentEvent description]);
 		[currentEvent setEndDate:[NSDate date]];
 		NSError *error;
 		[eventStore	saveEvent:currentEvent span:EKSpanThisEvent error:&error];
-		NSLog(@"current time %@, end date now is %@", [NSDate date], currentEvent.endDate);
 		if (error) {
 			NSLog (@"error: %@", [error description]);
-		} else {
-			NSLog(@"success");
 		}
 	}
 	
@@ -159,7 +155,6 @@
 	
 	[self setup];
 	[self checkAndSetCurrentTask];
-	NSLog(@"current task after init: %@", [currentTask description]);
 	
 	return self;
 }
@@ -583,7 +578,7 @@
 		EKEvent *event = [calendarTasks objectAtIndex:i];
 		if ([event.startDate timeIntervalSinceNow] > 0) break;
 		if ([event.endDate timeIntervalSinceNow] < 0) continue;
-		NSLog(@"found calendar task: %@", [event description]);
+		NSLog(@"found calendar task: %@", event.title);
 		return event;
 	}
 	return nil;
