@@ -33,7 +33,7 @@
 	
 	request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:aContext];
 	//request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
-	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@", aName];
+	request.predicate = [NSPredicate predicateWithFormat:@"name =[c] %@ AND status != 2", aName];
 	
 	NSError *error = nil;
 	task = [[aContext executeFetchRequest:request error:&error] lastObject];

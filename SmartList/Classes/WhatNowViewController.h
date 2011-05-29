@@ -18,6 +18,7 @@
 	NSMutableArray *blacklist;
 	NSMutableArray *calendarTasks;
 	Task *currentTask;
+	EKEventStore *eventStore;
 	BOOL busy;
 	IBOutlet UILabel *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
