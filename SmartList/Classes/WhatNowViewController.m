@@ -532,7 +532,8 @@
 		}
 		
 		Task *candidate = [self getTaskWithPriorityArray:m_array];
-		while (currentTask != nil && [candidate.name isEqualToString:currentTask.name])
+		
+        
 			candidate = [self getTaskWithPriorityArray:m_array];
 		return candidate;
 	}

@@ -229,7 +229,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	[self setDurationLabel];	
-	if ([dueDate timeIntervalSinceNow] < 2592000)
+	if ([task.due_date timeIntervalSinceNow] < 525600*60*10)
 	{
 		[dueDateLabel setText:[formatter stringFromDate:dueDate]];
 	}
