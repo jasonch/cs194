@@ -23,7 +23,6 @@
 	UILabel *durationLabel;
 	UILabel *priorityLabel;
 	UILabel *blacklistedLabel;
-	UILabel *statusLabel;
 	UIButton *startButton;
 	UIButton *completeButton;
 	Task *task;
@@ -33,6 +32,5 @@
 -(void)startPressed:(UIButton*)sender;
 -(void)pausePressed:(UIButton*)sender;
 -(void)completePressed:(UIButton*)sender; 
--(void)reloadStatus;
 
 @end
