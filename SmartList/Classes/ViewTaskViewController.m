@@ -155,8 +155,6 @@
 	[removeTask show];
 	[removeTask release];
 	
-	NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"completePressedWithTask" object:self userInfo:dict];
 }
 
 
@@ -172,6 +170,9 @@
 		// user pressed cancel, do nothing
 	}
 	else {
+		NSDictionary *dict = [NSDictionary dictionaryWithObject:task forKey:@"task"];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"completePressedWithTask" object:self userInfo:dict];
+
 		[task setValue:[NSNumber numberWithInt:2] forKey:@"status"];
 		[context deleteObject:task];
 		[self.navigationController popViewControllerAnimated:YES];
