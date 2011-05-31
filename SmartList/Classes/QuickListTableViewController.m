@@ -17,9 +17,9 @@
 	UITabBarItem *item = [[UITabBarItem alloc] initWithTitle: @"QuickList" image:[UIImage imageNamed: @"179-notepad.png"] tag:0];
 	self.tabBarItem = item;
 	[item release];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"New" style:UIBarButtonItemStyleBordered target:self action:@selector(addTask
-																																						   )];
-
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"New" style:UIBarButtonItemStyleBordered target:self action:@selector(addTask)];
+    self.tableView.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
+    self.tableView.separatorColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withUser:(User*)aUser
@@ -86,10 +86,11 @@
     if (cell == nil) {
 		UITableViewCellStyle cellStyle = self.subtitleKey ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
         cell = [[[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:ReuseIdentifier] autorelease];
-    
 		// predefine all spaces where subviews would go
 		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 82, 20)];
 		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
+        titleLabel.textColor = [UIColor whiteColor];
+        titleLabel.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
 		titleLabel.tag = 1;
 		[cell addSubview:titleLabel];
 		[titleLabel release];
@@ -102,9 +103,15 @@
 		
 		UILabel *dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.frame.size.width - 80, (cell.frame.size.height - 15)/2, 80, 15)]; 
 		dueDateLabel.tag = 3;
+        dueDateLabel.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
+        dueDateLabel.textColor = [UIColor whiteColor];
 		[dueDateLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:14]];
 		[cell addSubview:dueDateLabel];
 		[dueDateLabel release];
+        
+//        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arrow.jpeg"]];
+//        cell.accessoryView = iv;
+//        [iv release];
 	}
 	
 	
@@ -122,7 +129,7 @@
 					else if (taskStatus)
 						((UILabel*)subview).textColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
 					else 
-						((UILabel*)subview).textColor = [UIColor blackColor];
+						((UILabel*)subview).textColor = [UIColor whiteColor];
 					[(UILabel *)subview setText:task.name];
 				}
 				break;

@@ -67,6 +67,7 @@
 		context = aContext;
 		[self setup];
     }
+    self.tableView.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
 	return self;
 }
 
@@ -146,6 +147,7 @@
 		context = aContext;
 		[self setupEditMode];
     }
+    self.tableView.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
 	return self;
 }
 

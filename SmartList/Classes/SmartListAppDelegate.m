@@ -25,7 +25,9 @@
 	
 	UINavigationController *nav1 = [[UINavigationController alloc] init];
 	UINavigationController *nav2 = [[UINavigationController alloc] init];
-	
+
+    nav1.navigationBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
+    nav2.navigationBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
 	[nav1 pushViewController:qltvc animated:NO];
 	[nav2 pushViewController:wnvc animated:NO];
 	
@@ -73,7 +75,7 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
-	[wnvc updateCurrentTask];
+	[wnvc viewDidAppear:NO];
 }
 
 

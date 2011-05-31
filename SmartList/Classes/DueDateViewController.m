@@ -51,6 +51,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	self.title = @"Deadline";
+    self.view.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
+    yearLabel.textColor = [UIColor whiteColor];
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDate)];
     [dueDatePicker addTarget:self action:@selector(dateChanged:) forControlEvents:UIControlEventValueChanged];
     if ([date timeIntervalSinceNow] < 525600*60*10)

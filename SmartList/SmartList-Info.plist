@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>icon2.jpg</string>
+	<string>icon3.jpg</string>
 	<key>CFBundleIdentifier</key>
 	<string>edu.stanford.jdiprete.smartlist</string>
 	<key>CFBundleInfoDictionaryVersion</key>
