@@ -20,7 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
 	// Override point for customization after application launch.
-	WhatNowViewController *wnvc = [[WhatNowViewController alloc] initInManagedObjectContext: self.managedObjectContext];
+	wnvc = [[WhatNowViewController alloc] initInManagedObjectContext: self.managedObjectContext];
 	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext: self.managedObjectContext withUser:nil];
 	
 	UINavigationController *nav1 = [[UINavigationController alloc] init];
@@ -29,7 +29,7 @@
 	[nav1 pushViewController:qltvc animated:NO];
 	[nav2 pushViewController:wnvc animated:NO];
 	
-	[wnvc release]; [qltvc release]; 
+	[qltvc release]; 
 	
 	UITabBarController *tbc = [[UITabBarController alloc] init];
 	tbc.viewControllers = [NSArray arrayWithObjects:nav2, nav1, nil];
@@ -73,6 +73,7 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+	[wnvc updateCurrentTask];
 }
 
 
@@ -211,7 +212,8 @@
     [managedObjectContext_ release];
     [managedObjectModel_ release];
     [persistentStoreCoordinator_ release];
-    
+    [wnvc release];
+	 
     [window release];
     [super dealloc];
 }

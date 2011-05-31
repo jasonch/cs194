@@ -20,7 +20,7 @@
 	Task *currentTask;
 	EKEventStore *eventStore;
 	BOOL busy;
-	IBOutlet UILabel *taskLabel;
+	IBOutlet UITextView *taskLabel;
 	IBOutlet UILabel *freeTimeLabel;
 	IBOutlet UIButton *startButton;
 	IBOutlet UIButton *blacklistButton;

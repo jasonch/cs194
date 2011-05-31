@@ -19,6 +19,7 @@
     NSManagedObjectContext *managedObjectContext_;
     NSManagedObjectModel *managedObjectModel_;
     NSPersistentStoreCoordinator *persistentStoreCoordinator_;
+	WhatNowViewController *wnvc;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
