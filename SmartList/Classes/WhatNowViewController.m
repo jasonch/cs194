@@ -107,7 +107,7 @@
 	currentTask = nil;
 	startButton.enabled = NO;
 	blacklistButton.enabled = NO;
-	[freeTimeLabel setText:[NSString stringWithFormat:@"Your calendar indicates you are currently ..."]];
+	[freeTimeLabel setText:[NSString stringWithFormat:@"Your calendar indicates\n you are currently ..."]];
 	[taskLabel setText:event.title];
 }
 /** end state-changing functions **/
@@ -147,7 +147,8 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(completePressedWithTask:) name:@"completePressedWithTask" object:nil];
 
 	self.title = @"What Now?";	
-	taskLabel.tag = TASK_LABEL_TAG;
+	
+	taskLabel.font = [UIFont boldSystemFontOfSize:100];
 	calendarTasks = nil;
 	eventStore = [[EKEventStore alloc] init];
 	
@@ -307,7 +308,11 @@
 		blacklistButton.enabled = YES;
 		NSLog(@"current task updated: %@", [currentTask description]);
 	}
-	[freeTimeLabel setText:[NSString stringWithFormat:@"You have at least %.2f hours of free time!", spareTime]];
+	if (spareTime >= 24.) {
+		[freeTimeLabel setText:[NSString stringWithFormat:@"You have all day free!", spareTime]];
+	} else {
+		[freeTimeLabel setText:[NSString stringWithFormat:@"You have %.2f hours of free time!", spareTime]];
+	}
 }
 
 #pragma mark Shake Functionality
