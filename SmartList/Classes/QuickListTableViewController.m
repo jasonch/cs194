@@ -11,6 +11,86 @@
 
 @implementation QuickListTableViewController
 
+-(void)lastAddedPressed
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"creation_time"
+                                                                                     ascending:NO
+                                                                                      selector:@selector(compare:)]];
+    
+    //request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"(status == 0) OR (status == 1) OR (status == 3)"];
+    request.fetchBatchSize = 20;
+    
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc]
+                                       initWithFetchRequest:request
+                                       managedObjectContext:context
+                                       sectionNameKeyPath:nil
+                                       cacheName:nil];
+    
+    [request release];
+    
+    self.fetchedResultsController = frc;
+    [frc release];
+    
+    self.titleKey = @"name";
+}
+
+-(void)dueDatePressed
+{
+
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"due_date"
+                                                                                     ascending:YES
+                                                                                      selector:@selector(compare:)]];
+    
+    //request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"(status == 0) OR (status == 1) OR (status == 3)"];
+    request.fetchBatchSize = 20;
+    
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc]
+                                       initWithFetchRequest:request
+                                       managedObjectContext:context
+                                       sectionNameKeyPath:nil
+                                       cacheName:nil];
+    
+    [request release];
+    
+    self.fetchedResultsController = frc;
+    [frc release];
+    
+    self.titleKey = @"name";
+
+}
+
+-(void)priorityPressed
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"priority"
+                                                                                     ascending:NO
+                                                                                      selector:@selector(compare:)]];
+    
+    //request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"(status == 0) OR (status == 1) OR (status == 3)"];
+    request.fetchBatchSize = 20;
+    
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc]
+                                       initWithFetchRequest:request
+                                       managedObjectContext:context
+                                       sectionNameKeyPath:nil
+                                       cacheName:nil];
+    
+    [request release];
+    
+    self.fetchedResultsController = frc;
+    [frc release];
+    
+    self.titleKey = @"name";
+}
+
 -(void) setup
 {
 	self.title = @"QuickList";	
@@ -20,6 +100,21 @@
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"New" style:UIBarButtonItemStyleBordered target:self action:@selector(addTask)];
     self.tableView.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
     self.tableView.separatorColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+    UIToolbar *toolBar = [[[UIToolbar alloc] init] autorelease];
+    toolBar.frame = CGRectMake(0, 0, 0, 36);
+   toolBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
+    UIBarButtonItem *lastAddedButton = [[UIBarButtonItem alloc] initWithTitle:@"   Last Added   " style:UIBarButtonItemStyleBordered target:self action:@selector(lastAddedPressed)];
+    UIBarButtonItem *dueDateButton = [[UIBarButtonItem alloc] initWithTitle:@"    Due Date    " style:UIBarButtonItemStyleBordered target:self action:@selector(dueDatePressed)];
+    UIBarButtonItem *priorityButton = [[UIBarButtonItem alloc] initWithTitle:@"    Priority    " style:UIBarButtonItemStyleBordered target:self action:@selector(priorityPressed)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSArray *toolBarButtons = [NSArray arrayWithObjects:flexibleSpace, lastAddedButton, dueDateButton, priorityButton, flexibleSpace, nil];
+    [toolBar setItems:toolBarButtons animated:NO];
+    self.tableView.tableHeaderView = toolBar;
+    [lastAddedButton release];
+    [dueDateButton release];
+    [priorityButton release];
+    [flexibleSpace release];
+    
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withUser:(User*)aUser
@@ -55,7 +150,7 @@
 			[frc release];
 			
 			self.titleKey = @"name";
-			self.searchKey = @"name";
+			//self.searchKey = @"name";
 		}
 	}
 	

@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "WhatNowViewController.h"
 #import "QuickListTableViewController.h"
+#import "QuickListViewController.h"
 
 @interface SmartListAppDelegate : NSObject <UIApplicationDelegate> {
     

@@ -540,7 +540,7 @@
 		
 		Task *candidate = [self getTaskWithPriorityArray:m_array];
 		
-        
+        while ([candidate.name isEqualToString:currentTask.name])
 			candidate = [self getTaskWithPriorityArray:m_array];
 		return candidate;
 	}
