@@ -135,7 +135,6 @@
 	currentTask = nil; //[Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
 	busy = NO;
 	
-	[self updateCurrentTask];
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext
@@ -223,7 +222,7 @@
 
 -(void)pausePressed:(UIButton*)sender
 {
-
+	NSLog(@"paused pressed, current task: %@", [currentTask description]);
 	[self updateProgressOfTask:currentTask];	
 	[self updateStatePauseTask:currentTask];
 	
@@ -336,11 +335,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self setup];		
+	[self updateCurrentTask];
+
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [self becomeFirstResponder];
-
+	if (currentTask == nil) {
+		[self checkAndSetCurrentTask];
+	}
 	if (!busy) {
 		NSLog(@"refreshing What Now? view controller");
 		[self updateCurrentTask];
@@ -411,18 +414,19 @@
 	
 	[request release];
 	
-	Task *startedTask = nil;
-	
 	if (error || array == nil) // some error
 		return nil;
+
+	Task *startedTask = nil;
 	
 	for (int i = 0; i < [array count]; i++) {
 		Task *task = [array objectAtIndex:i];
+		NSLog(@"task %d: %@", i, [task description]);
 		if ([task.started_time timeIntervalSinceNow]*-1/3600. >= [task.chunk_size doubleValue]) {
 			[self updateProgressOfTask:task];
 		} else {
 			if (startedTask == nil) {
-				startedTask = task;
+				startedTask = [task retain];
 			} else {
 				NSLog(@"ERROR: more than one currently started task");
 			}
