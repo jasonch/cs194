@@ -115,7 +115,7 @@
 
 -(void) setup
 {
-	UITabBarItem *item = [[UITabBarItem alloc] initWithTitle: @"What Now?" image:[UIImage imageNamed: @"78-stopwatch.png"] tag:0];
+	UITabBarItem *item = [[UITabBarItem alloc] initWithTitle: @"What Now?" image:[UIImage imageNamed: @"169-8ball.png"] tag:0];
 	self.tabBarItem = item;
 	[item release];
 	
@@ -517,7 +517,8 @@
 		}
 		
 		Task *candidate = [self getTaskWithPriorityArray:m_array];
-		while (currentTask != nil && [candidate.name isEqualToString:currentTask.name])
+		
+        
 			candidate = [self getTaskWithPriorityArray:m_array];
 		return candidate;
 	}
