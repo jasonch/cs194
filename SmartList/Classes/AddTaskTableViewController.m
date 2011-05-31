@@ -154,7 +154,7 @@
 {
 	if (nameField.text == nil || [nameField.text isEqualToString:@""]) { // This seems kind of dumb.
 		// blank task name exception
-		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
+		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No Task Name" message: @"You must enter a name for your task." 
 														   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 		
 		[noName show];
@@ -163,7 +163,7 @@
 	else if ([Task findTask:nameField.text activeOnly:YES inManagedObjectContext:context]) 
 	{
 		// duplicate task name exception
-		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Duplicate task" message: @"A task with this name already exists." 
+		UIAlertView *duplicate = [[UIAlertView alloc] initWithTitle: @"Duplicate Task" message: @"A task with this name already exists." 
 															   delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 			
 		[duplicate show];
@@ -187,7 +187,7 @@
 {
 	if (nameField.text == nil || [nameField.text isEqualToString:@""]) { // This seems kind of dumb.
 		// blank task name exception
-		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No task name" message: @"You must enter a name for your task." 
+		UIAlertView *noName = [[UIAlertView alloc] initWithTitle: @"No Task Name" message: @"You must enter a name for your task." 
 														delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 		
 		[noName show];

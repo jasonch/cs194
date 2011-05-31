@@ -14,7 +14,7 @@
 
 /** moved all user-facing messages to the top so they're consistent **/
 -(void)taskStartedAlert {
-	NSString *message = [NSString stringWithFormat:@"You are working on %@.\n Task added to your calendar.", [taskLabel text]];
+	NSString *message = [NSString stringWithFormat:@"You are working on '%@'.\n Task added to your calendar.", [taskLabel text]];
 	UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle: @"Task Started" message: message
 														delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
 	
@@ -22,7 +22,7 @@
 	[startAlert release];
 }
 -(void)busyAlert {
-	NSString *message = [NSString stringWithFormat:@"You are working on %@.", [taskLabel text]];
+	NSString *message = [NSString stringWithFormat:@"You are working on '%@'.", [taskLabel text]];
 	UIAlertView *busyAlert = [[UIAlertView alloc] initWithTitle: @"Currently Busy" message: message
 													   delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
 	
@@ -32,7 +32,7 @@
 -(void)blacklistAlert {
 	NSString *blacklisted = [NSString stringWithFormat:@"'%@' will no longer be scheduled until you remove it from the Blacklist.",
 							 taskLabel.text];
-	UIAlertView *blacklistAlert = [[UIAlertView alloc] initWithTitle: @"Task blacklisted" message: blacklisted
+	UIAlertView *blacklistAlert = [[UIAlertView alloc] initWithTitle: @"Task Blacklisted" message: blacklisted
 															delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 	
 	[blacklistAlert show];
@@ -48,10 +48,10 @@
 }
 -(void)calendarAlert:(Task *)aTask {
 	UIAlertView *alert = [[UIAlertView alloc]
-						  initWithTitle:@"Task added to your calendar"
+						  initWithTitle:@"Task Added to Your Calendar"
 						  message:[NSString stringWithFormat:@"You can review your day any time!", aTask.name]
 						  delegate:nil
-						  cancelButtonTitle:@"Okay"
+						  cancelButtonTitle:@"Ok"
 						  otherButtonTitles:nil];
 	[alert show];
 	[alert release];	

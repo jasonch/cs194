@@ -131,7 +131,7 @@
 -(void)completePressed:(UIButton*)sender
 {
 	UIAlertView *removeTask = [[UIAlertView alloc]
-						  initWithTitle: @"Complete this task"
+						  initWithTitle: @"Complete Task"
 						  message: @"Marking this task as complete will remove it from your QuickList."
 						  delegate: self
 						  cancelButtonTitle:@"Cancel"

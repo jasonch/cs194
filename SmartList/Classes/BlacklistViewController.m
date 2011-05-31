@@ -79,6 +79,13 @@
 		Task *deleted = [blacklist objectAtIndex:indexPath.row];
 		[deleted setValue:[NSNumber numberWithBool:NO] forKey:@"blacklisted"];
 		NSLog (@"unblacklisted: %@", [deleted description]);
+		NSString *message = [NSString stringWithFormat:@"You have removed '%@' from the Blacklist.", deleted.name];
+		UIAlertView *removed = [[UIAlertView alloc] initWithTitle: @"Removed from Blacklist" 
+														  message: message
+														delegate:self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+		
+		[removed show];
+		[removed release];
 		[blacklist removeObjectAtIndex:indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
 	}
