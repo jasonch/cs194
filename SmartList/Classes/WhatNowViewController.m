@@ -340,7 +340,7 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		if (currentTask == nil || !busy) {
+		if (!busy) {
 			[self updateCurrentTask];
 		}
 	}

@@ -35,6 +35,9 @@
     [frc release];
     
     self.titleKey = @"name";
+    [lastAddedButton setEnabled:NO];
+    [dueDateButton setEnabled:YES];
+    [priorityButton setEnabled:YES];
 }
 
 -(void)dueDatePressed
@@ -62,7 +65,9 @@
     [frc release];
     
     self.titleKey = @"name";
-
+    [lastAddedButton setEnabled:YES];
+    [dueDateButton setEnabled:NO];
+    [priorityButton setEnabled:YES];
 }
 
 -(void)priorityPressed
@@ -89,6 +94,9 @@
     [frc release];
     
     self.titleKey = @"name";
+    [lastAddedButton setEnabled:YES];
+    [dueDateButton setEnabled:YES];
+    [priorityButton setEnabled:NO];
 }
 
 -(void) setup
@@ -103,16 +111,14 @@
     UIToolbar *toolBar = [[[UIToolbar alloc] init] autorelease];
     toolBar.frame = CGRectMake(0, 0, 0, 36);
    toolBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
-    UIBarButtonItem *lastAddedButton = [[UIBarButtonItem alloc] initWithTitle:@"   Last Added   " style:UIBarButtonItemStyleBordered target:self action:@selector(lastAddedPressed)];
-    UIBarButtonItem *dueDateButton = [[UIBarButtonItem alloc] initWithTitle:@"    Due Date    " style:UIBarButtonItemStyleBordered target:self action:@selector(dueDatePressed)];
-    UIBarButtonItem *priorityButton = [[UIBarButtonItem alloc] initWithTitle:@"    Priority    " style:UIBarButtonItemStyleBordered target:self action:@selector(priorityPressed)];
+    lastAddedButton = [[UIBarButtonItem alloc] initWithTitle:@"   Last Added   " style:UIBarButtonItemStyleBordered target:self action:@selector(lastAddedPressed)];
+    [lastAddedButton setEnabled:NO];
+    dueDateButton = [[UIBarButtonItem alloc] initWithTitle:@"    Due Date    " style:UIBarButtonItemStyleBordered target:self action:@selector(dueDatePressed)];
+    priorityButton = [[UIBarButtonItem alloc] initWithTitle:@"    Priority    " style:UIBarButtonItemStyleBordered target:self action:@selector(priorityPressed)];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     NSArray *toolBarButtons = [NSArray arrayWithObjects:flexibleSpace, lastAddedButton, dueDateButton, priorityButton, flexibleSpace, nil];
     [toolBar setItems:toolBarButtons animated:NO];
     self.tableView.tableHeaderView = toolBar;
-    [lastAddedButton release];
-    [dueDateButton release];
-    [priorityButton release];
     [flexibleSpace release];
     
 }
@@ -292,6 +298,9 @@
 
 - (void)dealloc {
     [super dealloc];
+    [lastAddedButton release];
+    [dueDateButton release];
+    [priorityButton release];
 }
 
 @end

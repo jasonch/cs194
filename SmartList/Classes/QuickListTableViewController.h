@@ -17,6 +17,9 @@
 @interface QuickListTableViewController : CoreDataTableViewController {
 	NSManagedObjectContext *context;
 	User *user;
+    UIBarButtonItem *lastAddedButton;
+    UIBarButtonItem *dueDateButton;
+    UIBarButtonItem *priorityButton;
 }
 
 
