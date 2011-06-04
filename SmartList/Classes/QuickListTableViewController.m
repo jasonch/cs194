@@ -118,11 +118,11 @@
 			case 1: // title
 				if (self.titleKey) {
 					if (taskStatus == 1)
-						((UILabel*)subview).textColor = [UIColor colorWithRed:0 green:.7 blue:0 alpha:1];
+						((UILabel*)subview).textColor = [UIColor colorWithRed:0.404 green:0.663 blue:0.812 alpha:1];
 					else if (taskStatus)
-						((UILabel*)subview).textColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
+						((UILabel*)subview).textColor = [UIColor colorWithRed:0.937 green:0.542 blue:0.384 alpha:1];
 					else 
-						((UILabel*)subview).textColor = [UIColor blackColor];
+						((UILabel*)subview).textColor = [UIColor blackColor];					
 					[(UILabel *)subview setText:task.name];
 				}
 				break;

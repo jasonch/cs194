@@ -15,6 +15,15 @@
 {
 	self.title = task.name;	
 	[nameLabel setText: task.name];
+	int taskStatus = [task.status intValue];
+	
+	if (taskStatus == 1)		
+		nameLabel.textColor = [UIColor colorWithRed:0.404 green:0.663 blue:0.812 alpha:1];
+	else if (taskStatus)
+		nameLabel.textColor = [UIColor colorWithRed:0.937 green:0.542 blue:0.384 alpha:1];
+	else 
+		nameLabel.textColor = [UIColor blackColor];
+	
     //Set due date
 	if ([task.due_date timeIntervalSinceNow] < 2592000*12*10) // ten years
 	{
