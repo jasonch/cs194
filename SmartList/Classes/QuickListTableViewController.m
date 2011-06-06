@@ -196,7 +196,7 @@
 		[cell addSubview:titleLabel];
 		[titleLabel release];
 		
-		UIProgressView *progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+		UIProgressView *progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		[progressBar setFrame:CGRectMake(5, cell.frame.size.height - 15, 150, 10)];
 		progressBar.tag = 2;
 		[cell addSubview:progressBar];
