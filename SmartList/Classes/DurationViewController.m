@@ -56,7 +56,8 @@
 {
 	self.title = @"Duration";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(saveDuration)];
-	[self setup];
+    self.view.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
+    [self setup];
     [self setDuration];
 }
 

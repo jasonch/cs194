@@ -130,7 +130,7 @@
 	[blacklistButton setTitleColor: [UIColor grayColor] forState:UIControlStateDisabled];
 	[self.view addSubview:startButton];
 	[self.view addSubview:blacklistButton];
-	
+	taskLabel.font = [UIFont fontWithName:@"MarkerFelt-Thin" size:18];
 	currentTask = nil; //[Task findTask:taskLabel.text inManagedObjectContext:context]; 	// placeholder
 	busy = NO;
 	
@@ -283,6 +283,18 @@
 }
 
 
+
+//This delegate is called after the completion of Animation.
+-(void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:1.0];
+    [taskLabel setAlpha:1];
+    [UIView commitAnimations];
+    
+    [taskLabel setText:[NSString stringWithFormat:@"%@",currentTask.name]];
+}
+
 -(void) updateCurrentTask {
     
 	assert (!busy);
@@ -295,13 +307,20 @@
 	EKEvent *nextCalendarTask = [self getNextCalendarTask];
 	double spareTime = nextCalendarTask==nil?24.:[nextCalendarTask.startDate timeIntervalSinceNow]/3600.;
 	
+    
 	currentTask = [self getNextScheduledTaskWithDurationOf:spareTime];
 	if (currentTask == nil) {
 		[taskLabel setText:@"No task to schedule!"];
 		startButton.enabled = NO;
 		blacklistButton.enabled = NO;
-	} else {
-		[taskLabel setText:[NSString stringWithFormat:@"%@",currentTask.name]];
+	} else {      
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        [UIView setAnimationDuration:1.0];
+        [taskLabel setAlpha:0];
+        [UIView commitAnimations];
+        
 		startButton.enabled = YES;
 		blacklistButton.enabled = YES;
 		NSLog(@"current task updated: %@", [currentTask description]);
@@ -320,8 +339,7 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
 	if (event.type == UIEventSubtypeMotionShake) {
-		if (currentTask == nil || !busy) {
-			AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+		if (!busy) {
 			[self updateCurrentTask];
 		}
 	}

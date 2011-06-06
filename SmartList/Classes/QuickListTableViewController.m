@@ -11,15 +11,116 @@
 
 @implementation QuickListTableViewController
 
+-(void)lastAddedPressed
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"creation_time"
+                                                                                     ascending:NO
+                                                                                      selector:@selector(compare:)]];
+    
+    //request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"(status == 0) OR (status == 1) OR (status == 3)"];
+    request.fetchBatchSize = 20;
+    
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc]
+                                       initWithFetchRequest:request
+                                       managedObjectContext:context
+                                       sectionNameKeyPath:nil
+                                       cacheName:nil];
+    
+    [request release];
+    
+    self.fetchedResultsController = frc;
+    [frc release];
+    
+    self.titleKey = @"name";
+    [lastAddedButton setEnabled:NO];
+    [dueDateButton setEnabled:YES];
+    [priorityButton setEnabled:YES];
+}
+
+-(void)dueDatePressed
+{
+
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"due_date"
+                                                                                     ascending:YES
+                                                                                      selector:@selector(compare:)]];
+    
+    //request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"(status == 0) OR (status == 1) OR (status == 3)"];
+    request.fetchBatchSize = 20;
+    
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc]
+                                       initWithFetchRequest:request
+                                       managedObjectContext:context
+                                       sectionNameKeyPath:nil
+                                       cacheName:nil];
+    
+    [request release];
+    
+    self.fetchedResultsController = frc;
+    [frc release];
+    
+    self.titleKey = @"name";
+    [lastAddedButton setEnabled:YES];
+    [dueDateButton setEnabled:NO];
+    [priorityButton setEnabled:YES];
+}
+
+-(void)priorityPressed
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    request.entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:context];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"priority"
+                                                                                     ascending:NO
+                                                                                      selector:@selector(compare:)]];
+    
+    //request.predicate = nil;
+    request.predicate = [NSPredicate predicateWithFormat:@"(status == 0) OR (status == 1) OR (status == 3)"];
+    request.fetchBatchSize = 20;
+    
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc]
+                                       initWithFetchRequest:request
+                                       managedObjectContext:context
+                                       sectionNameKeyPath:nil
+                                       cacheName:nil];
+    
+    [request release];
+    
+    self.fetchedResultsController = frc;
+    [frc release];
+    
+    self.titleKey = @"name";
+    [lastAddedButton setEnabled:YES];
+    [dueDateButton setEnabled:YES];
+    [priorityButton setEnabled:NO];
+}
+
 -(void) setup
 {
 	self.title = @"QuickList";	
 	UITabBarItem *item = [[UITabBarItem alloc] initWithTitle: @"QuickList" image:[UIImage imageNamed: @"179-notepad.png"] tag:0];
 	self.tabBarItem = item;
 	[item release];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"New" style:UIBarButtonItemStyleBordered target:self action:@selector(addTask
-																																						   )];
-
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"New" style:UIBarButtonItemStyleBordered target:self action:@selector(addTask)];
+    self.tableView.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
+    self.tableView.separatorColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+    UIToolbar *toolBar = [[[UIToolbar alloc] init] autorelease];
+    toolBar.frame = CGRectMake(0, 0, 0, 36);
+   toolBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
+    lastAddedButton = [[UIBarButtonItem alloc] initWithTitle:@"   Last Added   " style:UIBarButtonItemStyleBordered target:self action:@selector(lastAddedPressed)];
+    [lastAddedButton setEnabled:NO];
+    dueDateButton = [[UIBarButtonItem alloc] initWithTitle:@"    Due Date    " style:UIBarButtonItemStyleBordered target:self action:@selector(dueDatePressed)];
+    priorityButton = [[UIBarButtonItem alloc] initWithTitle:@"    Priority    " style:UIBarButtonItemStyleBordered target:self action:@selector(priorityPressed)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSArray *toolBarButtons = [NSArray arrayWithObjects:flexibleSpace, lastAddedButton, dueDateButton, priorityButton, flexibleSpace, nil];
+    [toolBar setItems:toolBarButtons animated:NO];
+    self.tableView.tableHeaderView = toolBar;
+    [flexibleSpace release];
+    
 }
 
 -initInManagedObjectContext:(NSManagedObjectContext*)aContext withUser:(User*)aUser
@@ -55,7 +156,7 @@
 			[frc release];
 			
 			self.titleKey = @"name";
-			self.searchKey = @"name";
+			//self.searchKey = @"name";
 		}
 	}
 	
@@ -86,10 +187,11 @@
     if (cell == nil) {
 		UITableViewCellStyle cellStyle = self.subtitleKey ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault;
         cell = [[[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:ReuseIdentifier] autorelease];
-    
 		// predefine all spaces where subviews would go
 		UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, cell.frame.size.width - 82, 20)];
 		[titleLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:20]];
+        titleLabel.textColor = [UIColor whiteColor];
+        titleLabel.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
 		titleLabel.tag = 1;
 		[cell addSubview:titleLabel];
 		[titleLabel release];
@@ -102,9 +204,15 @@
 		
 		UILabel *dueDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.frame.size.width - 80, (cell.frame.size.height - 15)/2, 80, 15)]; 
 		dueDateLabel.tag = 3;
+        dueDateLabel.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1];
+        dueDateLabel.textColor = [UIColor whiteColor];
 		[dueDateLabel setFont:[UIFont fontWithName:@"MarkerFelt-Thin" size:14]];
 		[cell addSubview:dueDateLabel];
 		[dueDateLabel release];
+        
+//        UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arrow.jpeg"]];
+//        cell.accessoryView = iv;
+//        [iv release];
 	}
 	
 	
@@ -122,7 +230,7 @@
 					else if (taskStatus)
 						((UILabel*)subview).textColor = [UIColor colorWithRed:0.937 green:0.542 blue:0.384 alpha:1];
 					else 
-						((UILabel*)subview).textColor = [UIColor blackColor];					
+						((UILabel*)subview).textColor = [UIColor whiteColor];
 					[(UILabel *)subview setText:task.name];
 				}
 				break;
@@ -141,6 +249,8 @@
 					if ([task.due_date timeIntervalSinceNow] < 86400) // one day
 					{
 						((UILabel *)subview).textColor = [UIColor redColor];
+					} else {
+						((UILabel *)subview).textColor = [UIColor whiteColor];
 					}
 					[formatter release];
 				} else {
@@ -190,6 +300,9 @@
 
 - (void)dealloc {
     [super dealloc];
+    [lastAddedButton release];
+    [dueDateButton release];
+    [priorityButton release];
 }
 
 @end

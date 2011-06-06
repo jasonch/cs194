@@ -21,11 +21,13 @@
     
 	// Override point for customization after application launch.
 	wnvc = [[WhatNowViewController alloc] initInManagedObjectContext: self.managedObjectContext];
-	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext: self.managedObjectContext withUser:nil];
+	QuickListTableViewController *qltvc = [[QuickListTableViewController alloc] initInManagedObjectContext:self.managedObjectContext withUser: nil];
 	
 	UINavigationController *nav1 = [[UINavigationController alloc] init];
 	UINavigationController *nav2 = [[UINavigationController alloc] init];
-	
+
+    nav1.navigationBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
+    nav2.navigationBar.tintColor = [UIColor colorWithRed:.28 green:.23 blue:.56 alpha:1];
 	[nav1 pushViewController:qltvc animated:NO];
 	[nav2 pushViewController:wnvc animated:NO];
 	
