@@ -455,6 +455,39 @@
 
 - (BOOL)ScheduleFeasibleWith:(NSMutableArray *)m_array at:(int)k {
 	
+	//if ([calendarTasks count] == 0) return YES; // always true when you don't have calendar tasks
+
+	NSDate *deadline = [[m_array objectAtIndex:k] due_date];
+	NSDate *refereceTime = [NSDate date];
+
+	double totalDuration = 0.0;
+	double totalSpareTime = [deadline timeIntervalSinceDate:refereceTime];
+	NSLog(@"now til deadline: %.5f", totalSpareTime);
+	
+	for (int i = 0; i <= k; i++) {
+		Task *task = [m_array objectAtIndex:i];
+		totalDuration += [task.duration doubleValue]*3600;
+	}
+	
+
+	for (int j = 0; j < [calendarTasks count]; j++) {
+		EKEvent *event = [calendarTasks objectAtIndex:j];
+		if ([event.endDate timeIntervalSinceNow] < 0) continue;
+		if ([event.startDate timeIntervalSinceDate:deadline] > 0) break;
+		
+		if ([event.endDate timeIntervalSinceDate:deadline] > 0) {
+			totalSpareTime -= [event.startDate timeIntervalSinceDate:deadline];
+			break;
+		} else {
+			totalSpareTime -= [event.startDate timeIntervalSinceDate:event.endDate];
+		}
+		refereceTime = event.endDate;
+	}
+	
+	if (totalDuration > totalSpareTime) {
+		NSLog(@"Total Duration: %.3f , totalSpare: %.3f", totalDuration, totalSpareTime);
+		return NO;
+	}
 	return YES;
 }
 
@@ -532,6 +565,14 @@
 					break;
 			}
 			if (feasible == NO) {
+				
+				NSString *message = [NSString stringWithFormat:@"It is currently impossible to complete all your tasks."];
+				UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle: @"Schedule Not Feasible" message: message
+																	delegate:self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+				
+				[startAlert show];
+				[startAlert release];
+				
 				[m_array release];
 				return nil;
 			}
