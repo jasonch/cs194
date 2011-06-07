@@ -227,7 +227,7 @@
 				if (self.titleKey) {
 					if (taskStatus == 1)
 						((UILabel*)subview).textColor = [UIColor colorWithRed:0.404 green:0.663 blue:0.812 alpha:1];
-					else if (taskStatus)
+					else if (taskStatus == 3)
 						((UILabel*)subview).textColor = [UIColor colorWithRed:0.937 green:0.542 blue:0.384 alpha:1];
 					else 
 						((UILabel*)subview).textColor = [UIColor whiteColor];
@@ -248,7 +248,7 @@
 					[(UILabel *)subview setText:[formatter stringFromDate:task.due_date]];
 					if ([task.due_date timeIntervalSinceNow] < 86400) // one day
 					{
-						((UILabel *)subview).textColor = [UIColor redColor];
+						((UILabel *)subview).textColor = [UIColor colorWithRed:0.937 green:0.542 blue:0.384 alpha:1];
 					} else {
 						((UILabel *)subview).textColor = [UIColor whiteColor];
 					}
