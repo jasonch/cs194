@@ -193,7 +193,7 @@
 		
 	Task *aTask = [[note userInfo] valueForKey:@"task"];
 
-	if (busy && [aTask.name isEqualToString:currentTask.name]) {
+	if (busy && currentTask != nil && [aTask.name isEqualToString:currentTask.name]) {
 		[self updateProgressOfTask:aTask];
 		[self updateStatePauseTask:aTask];
 	}
@@ -314,12 +314,12 @@
 		startButton.enabled = NO;
 		blacklistButton.enabled = NO;
 	} else {      
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDelegate:self];
-        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-        [UIView setAnimationDuration:1.0];
-        [taskLabel setAlpha:0];
-        [UIView commitAnimations];
+//        [UIView beginAnimations:nil context:NULL];
+//        [UIView setAnimationDelegate:self];
+//        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+//        [UIView setAnimationDuration:.3];
+//        [taskLabel setAlpha:0];
+//        [UIView commitAnimations];
         
 		startButton.enabled = YES;
 		blacklistButton.enabled = YES;
@@ -341,10 +341,19 @@
 	if (event.type == UIEventSubtypeMotionShake) {
 		if (!busy) {
 			[self updateCurrentTask];
+			[self fadeAnimation];
 		}
 	}
 }
 
+-(void) fadeAnimation {
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView setAnimationDuration:.3];
+	[taskLabel setAlpha:0];
+	[UIView commitAnimations];
+}
 
 #pragma mark memory management
 
@@ -353,7 +362,7 @@
     [super viewDidLoad];
 	[self setup];		
 	[self updateCurrentTask];
-
+	[self fadeAnimation];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
